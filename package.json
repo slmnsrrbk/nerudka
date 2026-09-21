@@ -9,7 +9,8 @@
     "preview": "astro preview",
     "check:links": "node scripts/check-links.mjs",
     "check:mobile": "node scripts/check-mobile.mjs",
-    "check:ui": "node scripts/check-ui.mjs"
+    "check:ui": "node scripts/check-ui.mjs",
+    "portable": "astro build && node scripts/relativize.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
