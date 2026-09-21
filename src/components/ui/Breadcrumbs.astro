@@ -1,0 +1,30 @@
+---
+import Container from './Container.astro';
+interface Props { items: { href?: string; label: string }[] }
+const { items } = Astro.props;
+const all = [{ href: '/', label: 'Главная' }, ...items];
+const site = Astro.site?.origin ?? '';
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: all.map((item, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: item.label,
+    ...(item.href ? { item: site + item.href } : {}),
+  })),
+};
+---
+<nav data-block="X-00" data-block-name="Хлебные крошки" aria-label="Хлебные крошки" class="border-b border-line bg-white">
+  <Container>
+    <ol class="flex flex-wrap gap-x-2 gap-y-1 py-3 text-xs text-ink-2">
+      {all.map((item, i) => (
+        <li class="flex items-center gap-2">
+          {item.href && i < all.length - 1 ? <a href={item.href} class="hover:text-ink underline-offset-2 hover:underline">{item.label}</a> : <span class="text-ink">{item.label}</span>}
+          {i < all.length - 1 && <span aria-hidden="true" class="text-line">/</span>}
+        </li>
+      ))}
+    </ol>
+  </Container>
+</nav>
+<script type="application/ld+json" set:html={JSON.stringify(ld)} />

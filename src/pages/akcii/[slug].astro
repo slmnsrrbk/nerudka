@@ -1,0 +1,79 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import PageHead from '../../components/ui/PageHead.astro';
+import Block from '../../components/ui/Block.astro';
+import Container from '../../components/ui/Container.astro';
+import Btn from '../../components/ui/Btn.astro';
+import ImagePlaceholder from '../../components/ui/ImagePlaceholder.astro';
+import promos from '../../data/promos.json';
+import { getProduct, productPath } from '../../lib/catalog';
+import { formatPrice } from '../../lib/price';
+
+export function getStaticPaths() {
+  return promos.map((p) => ({ params: { slug: p.slug }, props: { promo: p } }));
+}
+const { promo } = Astro.props as { promo: (typeof promos)[number] };
+const related = promo.products.map(getProduct).filter(Boolean);
+const others = promos.filter((p) => p.slug !== promo.slug);
+---
+<BaseLayout title={`${promo.title}: условия акции`} description={promo.excerpt} template="T16" templateName="Публикация">
+  <Breadcrumbs items={[{ href: '/akcii/', label: 'Акции' }, { label: promo.title }]} />
+  <PageHead id="BD-01" name="H1 публикации" h1={promo.title} lead={promo.excerpt}>
+    <p class="mt-3 text-sm text-ink-2">Опубликовано {promo.date}, действует до {promo.until}</p>
+  </PageHead>
+
+  <Block id="BD-02" name="Текст публикации">
+    <Container class="grid gap-8 py-12 lg:grid-cols-[1fr_320px]">
+      <div class="max-w-3xl">
+        <ImagePlaceholder label="Баннер акции" ratio="16:9" />
+        <h2 class="mt-8 text-lg font-semibold">Как получить скидку</h2>
+        <p class="mt-3 text-[15px] text-ink-2">Сообщите менеджеру про акцию при оформлении заявки. Скидка фиксируется в счёте, отдельных промокодов нет.</p>
+        <h2 class="mt-8 text-lg font-semibold">Условия</h2>
+        <ul class="mt-3 grid gap-2">
+          {promo.terms.map((t) => <li class="rounded-md border border-line bg-white p-3 text-sm">{t}</li>)}
+        </ul>
+        <div class="mt-6 rounded-md border-l-2 border-accent bg-block p-4 text-sm">
+          Врезка: акции не суммируются между собой, но суммируются со скидкой от объёма по прайсу.
+        </div>
+      </div>
+      <aside class="grid content-start gap-3">
+        <div class="rounded-md border border-line bg-white p-5">
+          <div class="text-sm text-ink-2">Акция действует до</div>
+          <div class="mt-1 text-lg font-semibold">{promo.until}</div>
+          <Btn variant="primary" class="mt-4 w-full" data-modal-open="order" data-modal-title={promo.title}>Получить скидку</Btn>
+        </div>
+      </aside>
+    </Container>
+  </Block>
+
+  {related.length > 0 && (
+    <Block id="BD-04" name="Товары по теме" tone="block">
+      <Container class="py-12">
+        <h2 class="text-lg font-semibold">Подходящие позиции</h2>
+        <div class="mt-4 grid gap-3 md:grid-cols-3 lg:grid-cols-4">
+          {related.map((p) => p && (
+            <a href={productPath(p)} class="rounded-md border border-line bg-white p-4 hover:border-accent">
+              <div class="font-medium">{p.name}</div>
+              <div class="mt-2 text-sm text-ink-2">{formatPrice(p.price)} ₽ за м³</div>
+            </a>
+          ))}
+        </div>
+      </Container>
+    </Block>
+  )}
+
+  <Block id="BD-05" name="Другие публикации">
+    <Container class="py-12">
+      <h2 class="text-lg font-semibold">Другие акции</h2>
+      <div class="mt-4 grid gap-3 md:grid-cols-2">
+        {others.map((p) => (
+          <a href={`/akcii/${p.slug}/`} class="rounded-md border border-line bg-white p-4 hover:border-accent">
+            <div class="font-medium">{p.title}</div>
+            <p class="mt-1 text-sm text-ink-2">{p.excerpt}</p>
+          </a>
+        ))}
+      </div>
+    </Container>
+  </Block>
+</BaseLayout>

@@ -1,0 +1,22 @@
+---
+interface Props { items: { q: string; a: string }[]; class?: string }
+const { items, class: cls = '' } = Astro.props;
+---
+<div data-accordion class:list={['divide-y divide-line rounded-md border border-line bg-white', cls]}>
+  {items.map((item, i) => (
+    <div data-accordion-item data-search-text={`${item.q} ${item.a}`.toLowerCase()}>
+      <button
+        type="button"
+        data-accordion-trigger
+        aria-expanded={i === 0 ? 'true' : 'false'}
+        class="flex w-full items-start justify-between gap-4 px-4 py-4 text-left text-[15px] font-medium hover:bg-block"
+      >
+        <span>{item.q}</span>
+        <span aria-hidden="true" data-accordion-icon class="mt-1 shrink-0 text-ink-2">{i === 0 ? '−' : '+'}</span>
+      </button>
+      <div data-accordion-panel class={i === 0 ? 'px-4 pb-4 text-sm text-ink-2' : 'hidden px-4 pb-4 text-sm text-ink-2'}>
+        {item.a}
+      </div>
+    </div>
+  ))}
+</div>

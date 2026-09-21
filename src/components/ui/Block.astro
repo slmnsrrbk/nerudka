@@ -1,0 +1,16 @@
+---
+// Обёртка блока с разметкой для режима аннотаций (раздел 11 ТЗ).
+interface Props {
+  id: string;
+  name: string;
+  tone?: 'page' | 'block';
+  class?: string;
+  tag?: 'section' | 'div' | 'aside';
+}
+const { id, name, tone = 'page', class: cls = '', tag = 'section' } = Astro.props;
+const Tag = tag;
+const toneCls = tone === 'block' ? 'bg-block' : '';
+---
+<Tag data-block={id} data-block-name={name} class:list={['scroll-mt-24', toneCls, cls]}>
+  <slot />
+</Tag>

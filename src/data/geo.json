@@ -1,0 +1,185 @@
+[
+  {
+    "slug": "yuao",
+    "name": "ЮАО",
+    "namePrep": "ЮАО Москвы",
+    "group": "moscow",
+    "okrug": "Южный округ",
+    "distanceKm": 8,
+    "travelMin": 25,
+    "zone": "z1",
+    "neighbors": [
+      "yuzao",
+      "novomoskovskij",
+      "podolsk"
+    ]
+  },
+  {
+    "slug": "yuzao",
+    "name": "ЮЗАО",
+    "namePrep": "ЮЗАО Москвы",
+    "group": "moscow",
+    "okrug": "Юго-Западный округ",
+    "distanceKm": 10,
+    "travelMin": 30,
+    "zone": "z1",
+    "neighbors": [
+      "yuao",
+      "zao",
+      "troick"
+    ]
+  },
+  {
+    "slug": "zao",
+    "name": "ЗАО",
+    "namePrep": "ЗАО Москвы",
+    "group": "moscow",
+    "okrug": "Западный округ",
+    "distanceKm": 14,
+    "travelMin": 35,
+    "zone": "z2",
+    "neighbors": [
+      "yuzao",
+      "odincovo",
+      "vnukovo"
+    ]
+  },
+  {
+    "slug": "szao",
+    "name": "СЗАО",
+    "namePrep": "СЗАО Москвы",
+    "group": "moscow",
+    "okrug": "Северо-Западный округ",
+    "distanceKm": 16,
+    "travelMin": 40,
+    "zone": "z2",
+    "neighbors": [
+      "zao",
+      "krasnogorsk",
+      "himki"
+    ]
+  },
+  {
+    "slug": "novomoskovskij",
+    "name": "Новомосковский округ",
+    "namePrep": "Новомосковском округе",
+    "group": "new-moscow",
+    "distanceKm": 20,
+    "travelMin": 45,
+    "zone": "z3",
+    "neighbors": [
+      "troick",
+      "vnukovo",
+      "podolsk"
+    ]
+  },
+  {
+    "slug": "troick",
+    "name": "Троицк",
+    "namePrep": "Троицке",
+    "group": "new-moscow",
+    "distanceKm": 32,
+    "travelMin": 55,
+    "zone": "z3",
+    "neighbors": [
+      "novomoskovskij",
+      "yuzao",
+      "podolsk"
+    ]
+  },
+  {
+    "slug": "vnukovo",
+    "name": "Внуково",
+    "namePrep": "Внуково",
+    "group": "new-moscow",
+    "distanceKm": 24,
+    "travelMin": 45,
+    "zone": "z3",
+    "neighbors": [
+      "zao",
+      "novomoskovskij",
+      "odincovo"
+    ]
+  },
+  {
+    "slug": "odincovo",
+    "name": "Одинцово",
+    "namePrep": "Одинцово",
+    "group": "mo",
+    "distanceKm": 18,
+    "travelMin": 40,
+    "zone": "z2",
+    "neighbors": [
+      "golicyno",
+      "kubinka",
+      "zao"
+    ]
+  },
+  {
+    "slug": "golicyno",
+    "name": "Голицыно",
+    "namePrep": "Голицыно",
+    "group": "mo",
+    "distanceKm": 34,
+    "travelMin": 60,
+    "zone": "z3",
+    "neighbors": [
+      "odincovo",
+      "kubinka"
+    ]
+  },
+  {
+    "slug": "kubinka",
+    "name": "Кубинка",
+    "namePrep": "Кубинке",
+    "group": "mo",
+    "distanceKm": 48,
+    "travelMin": 75,
+    "zone": "z4",
+    "neighbors": [
+      "golicyno",
+      "odincovo"
+    ]
+  },
+  {
+    "slug": "krasnogorsk",
+    "name": "Красногорск",
+    "namePrep": "Красногорске",
+    "group": "mo",
+    "distanceKm": 22,
+    "travelMin": 45,
+    "zone": "z3",
+    "neighbors": [
+      "szao",
+      "himki",
+      "odincovo"
+    ]
+  },
+  {
+    "slug": "podolsk",
+    "name": "Подольск",
+    "namePrep": "Подольске",
+    "group": "mo",
+    "distanceKm": 26,
+    "travelMin": 50,
+    "zone": "z3",
+    "neighbors": [
+      "yuao",
+      "troick",
+      "novomoskovskij"
+    ]
+  },
+  {
+    "slug": "himki",
+    "name": "Химки",
+    "namePrep": "Химках",
+    "group": "mo",
+    "distanceKm": 20,
+    "travelMin": 45,
+    "zone": "z3",
+    "neighbors": [
+      "szao",
+      "krasnogorsk"
+    ]
+  }
+]

@@ -1,0 +1,124 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import PageHead from '../../components/ui/PageHead.astro';
+import Block from '../../components/ui/Block.astro';
+import Container from '../../components/ui/Container.astro';
+import PriceTable from '../../components/ui/PriceTable.astro';
+import FaqBlock from '../../components/blocks/FaqBlock.astro';
+import SeoText from '../../components/blocks/SeoText.astro';
+import CtaFinal from '../../components/blocks/CtaFinal.astro';
+import { geoPoints, getGeo, geoPath, neighborsOf } from '../../lib/geo';
+import { productsOfCategory, categoryPath, childCategories } from '../../lib/catalog';
+import { getZone, formatPrice } from '../../lib/price';
+import { seo } from '../../lib/seo';
+import projects from '../../data/projects.json';
+import site from '../../data/site.json';
+import type { Geo } from '../../lib/types';
+
+export function getStaticPaths() {
+  return geoPoints.map((g) => ({ params: { slug: g.slug }, props: { geo: g } }));
+}
+const { geo } = Astro.props as { geo: Geo };
+const zone = getZone(geo.zone);
+const meta = seo.geo(geo.namePrep);
+const tabs = [
+  { slug: 'tovarnyj', name: 'Товарный бетон' },
+  { slug: 'toshchij', name: 'Тощий' },
+  { slug: 'keramzitobeton', name: 'Керамзитобетон' },
+  { slug: 'rastvor', name: 'Растворы' },
+];
+const data = tabs.map((t) => ({ ...t, items: productsOfCategory(t.slug) }));
+const nearby = projects.filter((p) => p.geo === geo.slug);
+const neighbors = neighborsOf(geo);
+---
+<BaseLayout title={meta.title} description={meta.description} template="T07" templateName="Гео-страница">
+  <Breadcrumbs items={[{ href: '/dostavka/', label: 'Доставка' }, { label: geo.name }]} />
+  <PageHead
+    id="G-01"
+    name="H1 гео"
+    h1={meta.h1}
+    lead={`Возим бетон и растворы в ${geo.namePrep} с ближайшего узла. Расстояние ${geo.distanceKm} км, машина в пути около ${geo.travelMin} минут.`}
+  />
+
+  <Block id="G-02" name="Плашка параметров">
+    <Container class="py-8">
+      <div class="grid gap-3 md:grid-cols-4">
+        <div class="rounded-md border border-line bg-white p-4"><div class="text-xs text-ink-2">Расстояние</div><div class="mt-1 text-lg font-semibold">{geo.distanceKm} км</div></div>
+        <div class="rounded-md border border-line bg-white p-4"><div class="text-xs text-ink-2">Время в пути</div><div class="mt-1 text-lg font-semibold">{geo.travelMin} минут</div></div>
+        <div class="rounded-md border border-line bg-white p-4"><div class="text-xs text-ink-2">Доставка</div><div class="mt-1 text-lg font-semibold">{formatPrice(zone.pricePerM3)} ₽ за м³</div></div>
+        <div class="rounded-md border border-accent bg-white p-4"><div class="text-xs text-ink-2">Срок</div><div class="mt-1 text-[15px] font-medium text-accent">доставим сегодня при заявке до {site.orderDeadline}</div></div>
+      </div>
+    </Container>
+  </Block>
+
+  <Block id="G-03" name="Прайс с доставкой" tone="block">
+    <Container class="py-12">
+      <h2 class="text-xl font-semibold tracking-tight">Цены с доставкой в {geo.namePrep}</h2>
+      <p class="mt-2 text-sm text-ink-2">В таблице цена за м³ уже включает доставку в зону «{zone.name.toLowerCase()}».</p>
+      <div data-tabs-scope class="mt-5">
+        <div data-tabs role="tablist" class="flex flex-wrap gap-2">
+          {data.map((t, i) => (
+            <button type="button" role="tab" data-tab={t.slug} aria-selected={i === 0 ? 'true' : 'false'}
+              class:list={['rounded-md border px-3 py-2 text-sm', i === 0 ? 'border-accent text-accent' : 'border-line hover:border-ink-2']}>
+              {t.name}
+            </button>
+          ))}
+        </div>
+        {data.map((t, i) => (
+          <div data-tab-panel={t.slug} class={i === 0 ? 'mt-4' : 'mt-4 hidden'}>
+            <PriceTable items={t.items.map((p) => ({ ...p, price: p.price + zone.pricePerM3 }))} />
+          </div>
+        ))}
+      </div>
+    </Container>
+  </Block>
+
+  <Block id="G-04" name="Карта маршрута">
+    <Container class="py-12">
+      <div class="ph rounded-md" style="padding-top:40%">
+        <span class="absolute inset-0 grid place-items-center text-center text-xs text-ink-2">
+          Карта: завод и {geo.name}, маршрут {geo.distanceKm} км · 21:9
+        </span>
+      </div>
+    </Container>
+  </Block>
+
+  {nearby.length > 0 && (
+    <Block id="G-05" name="Объекты рядом" tone="block">
+      <Container class="py-12">
+        <h2 class="text-xl font-semibold tracking-tight">Объекты рядом</h2>
+        <div class="mt-4 grid gap-3 md:grid-cols-3">
+          {nearby.map((p) => (
+            <a href={`/proekty/${p.slug}/`} class="rounded-md border border-line bg-white p-4 hover:border-accent">
+              <div class="font-medium">{p.name}</div>
+              <div class="mt-1 text-sm text-ink-2">{p.grade}, {p.volume} м³</div>
+            </a>
+          ))}
+        </div>
+      </Container>
+    </Block>
+  )}
+
+  <Block id="G-06" name="Соседние пункты">
+    <Container class="py-12">
+      <h2 class="text-xl font-semibold tracking-tight">Соседние направления</h2>
+      <div class="mt-4 flex flex-wrap gap-2">
+        {neighbors.map((n) => (
+          <a href={geoPath(n.slug)} class="rounded-md border border-line bg-white px-3 py-2 text-sm hover:border-accent hover:text-accent">
+            Бетон в {n.namePrep}
+          </a>
+        ))}
+      </div>
+      <div class="mt-5 flex flex-wrap gap-2 text-sm">
+        {childCategories('beton').slice(0, 4).map((c) => (
+          <a href={categoryPath(c)} class="text-accent underline-offset-2 hover:underline">{c.name}</a>
+        ))}
+      </div>
+    </Container>
+  </Block>
+
+  <FaqBlock id="G-07" scope="geo" title={`Доставка в ${geo.namePrep}: вопросы`} limit={4} replace={{ city: geo.namePrep }} />
+  <SeoText id="G-08" topic={`бетон с доставкой в ${geo.namePrep}: цены, сроки, условия`} />
+  <CtaFinal id="G-09" title={`Рассчитать доставку в ${geo.namePrep}`} />
+</BaseLayout>

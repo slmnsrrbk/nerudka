@@ -1,0 +1,28 @@
+---
+import Block from '../ui/Block.astro';
+import Container from '../ui/Container.astro';
+import Btn from '../ui/Btn.astro';
+const points = [
+  'Отсрочка платежа до 30 дней',
+  'Договор поставки на сезон',
+  'Работаем с НДС, УПД через ЭДО',
+  'Опыт участия в 44-ФЗ и 223-ФЗ',
+  'Выделенный диспетчер на объект',
+];
+---
+<Block id="H-12" name="Юрлицам">
+  <Container class="py-12 md:py-20">
+    <div class="grid gap-6 rounded-md border border-line bg-white p-6 md:grid-cols-[1fr_auto] md:items-center md:p-8">
+      <div>
+        <h2 class="text-xl md:text-2xl font-semibold tracking-tight">Юрлицам и застройщикам</h2>
+        <ul class="mt-4 flex flex-wrap gap-2">
+          {points.map((p) => <li class="rounded-md border border-line px-3 py-1.5 text-sm">{p}</li>)}
+        </ul>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <Btn href="/yurlicam/" variant="secondary">Условия для юрлиц</Btn>
+        <Btn variant="primary" data-modal-open="order" data-modal-title="Запросить КП">Запросить КП</Btn>
+      </div>
+    </div>
+  </Container>
+</Block>

@@ -1,0 +1,69 @@
+---
+import Btn from '../ui/Btn.astro';
+import { products } from '../../lib/catalog';
+import { calc, formatPrice } from '../../lib/price';
+import site from '../../data/site.json';
+
+interface Props {
+  title?: string;
+  defaultProduct?: string;
+  fixedProduct?: string;
+  class?: string;
+  compact?: boolean;
+}
+const { title = 'Расчёт стоимости', defaultProduct = 'm300-b22-5-granit', fixedProduct, class: cls = '', compact = false } = Astro.props;
+const current = products.find((p) => p.id === (fixedProduct ?? defaultProduct)) ?? products[0]!;
+const zones = site.deliveryZones;
+const initial = calc({ price: current.price, volume: 10, zoneId: zones[0]!.id });
+const inputCls = 'w-full rounded-md border border-line bg-white px-3 py-2.5 text-[15px] outline-none focus:border-accent';
+---
+<div data-calc="price" data-calc-price={current.price} class:list={['rounded-md border border-line bg-white p-5', cls]}>
+  <h3 class="text-lg font-semibold">{title}</h3>
+  <p class="mt-1 text-sm text-ink-2">Считает так же, как калькулятор на отдельной странице и в карточке товара.</p>
+
+  <div class="mt-4 grid gap-3">
+    {!fixedProduct && (
+      <label class="grid gap-1.5">
+        <span class="text-xs text-ink-2">Марка</span>
+        <select data-calc-product class={inputCls}>
+          {products.map((p) => <option value={p.id} selected={p.id === current.id}>{p.name}</option>)}
+        </select>
+      </label>
+    )}
+
+    <div class="grid gap-3 md:grid-cols-2">
+      <div class="grid gap-1.5">
+        <span class="text-xs text-ink-2">Объём, м³</span>
+        <div class="flex items-center gap-2">
+          <button type="button" data-step="-1" aria-label="Меньше" class="size-10 shrink-0 rounded-md border border-line">−</button>
+          <input type="number" data-calc-volume value="10" min={site.minVolume} class={`${inputCls} text-center`} />
+          <button type="button" data-step="1" aria-label="Больше" class="size-10 shrink-0 rounded-md border border-line">+</button>
+        </div>
+      </div>
+      <label class="grid gap-1.5">
+        <span class="text-xs text-ink-2">Зона доставки</span>
+        <select data-calc-zone class={inputCls}>
+          {zones.map((z) => <option value={z.id}>{z.name}, {z.pricePerM3} ₽ за м³</option>)}
+        </select>
+      </label>
+    </div>
+
+    {!compact && (
+      <label class="flex items-center gap-2 text-sm">
+        <input type="checkbox" data-calc-pump class="size-4 accent-[#2563EB]" />
+        <span>Нужен автобетононасос, смена от {formatPrice(18000)} ₽</span>
+      </label>
+    )}
+  </div>
+
+  <div class="mt-4 rounded-md border border-dashed border-line bg-block p-4">
+    <div class="text-2xl font-semibold" data-calc-total>от {formatPrice(initial.total)} ₽</div>
+    <div class="text-sm text-ink-2" data-calc-per-m3>{formatPrice(initial.perM3)} ₽ за м³ с доставкой</div>
+    <div class="mt-1 text-xs text-ink-2" data-calc-detail></div>
+  </div>
+
+  <Btn variant="primary" class="mt-4 w-full" data-modal-open="order" data-modal-title="Заказ по расчёту" data-product={current.id} data-volume="10" data-zone={zones[0]!.id}>
+    Заказать по этой цене
+  </Btn>
+  <p class="mt-2 text-xs text-ink-2">Цена предварительная, финальную подтверждает менеджер в счёте.</p>
+</div>

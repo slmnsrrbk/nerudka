@@ -1,0 +1,145 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import PageHead from '../components/ui/PageHead.astro';
+import Block from '../components/ui/Block.astro';
+import Container from '../components/ui/Container.astro';
+import ImagePlaceholder from '../components/ui/ImagePlaceholder.astro';
+import DocumentsGrid from '../components/blocks/DocumentsGrid.astro';
+import CtaFinal from '../components/blocks/CtaFinal.astro';
+import PrototypeMap from '../components/pages/PrototypeMap.astro';
+import pagesData from '../data/pages.json';
+
+// Astro не маршрутизирует файлы с подчёркиванием, поэтому служебная карта
+// прототипа отдаётся через этот же динамический маршрут.
+const PROTOTYPE_SLUG = '_prototype';
+
+type PageData = (typeof pagesData)[number] & {
+  blocks?: Record<string, boolean>;
+  stats?: { value: string; label: string }[];
+  gallery?: string[];
+  cards?: { title: string; text: string }[];
+  heroPlaceholder?: string;
+  ctaTitle?: string;
+  ctaText?: string;
+  ctaForm?: string;
+};
+
+export function getStaticPaths() {
+  return [
+    ...pagesData.map((p) => ({ params: { page: p.slug }, props: { data: p as PageData | null } })),
+    { params: { page: '_prototype' }, props: { data: null } },
+  ];
+}
+const { data } = Astro.props as { data: PageData | null };
+const isPrototypeMap = Astro.params.page === PROTOTYPE_SLUG;
+const blocks = data?.blocks ?? {};
+const isText = data?.template === 'T19';
+---
+<BaseLayout
+  title={isPrototypeMap ? 'Карта прототипа' : `${data!.title}: ${data!.lead.slice(0, 80)}`}
+  description={isPrototypeMap ? 'Служебная страница: список шаблонов, всех URL и статистика прототипа.' : data!.lead}
+  template={isPrototypeMap ? 'T00' : data!.template}
+  templateName={isPrototypeMap ? 'Карта прототипа' : isText ? 'Текстовая страница' : 'Контентная страница'}
+  noindex
+>
+{isPrototypeMap ? <PrototypeMap /> : (
+<>
+  <Breadcrumbs items={[{ label: data.title }]} />
+  <PageHead id={isText ? 'TX-01' : 'T-01'} name="H1 и лид" h1={data.h1} lead={data.lead} />
+
+  {isText ? (
+    <Block id="TX-02" name="Текст с оглавлением">
+      <Container class="grid gap-8 py-12 lg:grid-cols-[260px_1fr]">
+        <nav class="hidden lg:block">
+          <p class="text-xs text-ink-2">Содержание</p>
+          <ul class="mt-3 grid gap-2 text-sm">
+            {data.sections.map((s, i) => (
+              <li><a href={`#s${i}`} class="text-ink-2 hover:text-accent">{s.h}</a></li>
+            ))}
+          </ul>
+        </nav>
+        <div class="max-w-3xl">
+          {data.sections.map((s, i) => (
+            <section id={`s${i}`} class="mb-8 scroll-mt-28">
+              <h2 class="text-lg font-semibold">{s.h}</h2>
+              {s.p.map((p) => <p class="mt-3 text-[15px] text-ink-2">{p}</p>)}
+            </section>
+          ))}
+        </div>
+      </Container>
+    </Block>
+  ) : (
+    <>
+      {blocks.hero && data.heroPlaceholder && (
+        <Block id="T-01b" name="Hero-изображение">
+          <Container class="py-8"><ImagePlaceholder label={data.heroPlaceholder} ratio="16:9" /></Container>
+        </Block>
+      )}
+
+      {blocks.stats && data.stats && (
+        <Block id="T-02" name="Цифры" tone="block">
+          <Container class="grid grid-cols-2 gap-3 py-10 md:grid-cols-4">
+            {data.stats.map((s) => (
+              <div class="rounded-md border border-line bg-white p-4">
+                <div class="text-xl font-semibold">{s.value}</div>
+                <div class="mt-1 text-xs text-ink-2">{s.label}</div>
+              </div>
+            ))}
+          </Container>
+        </Block>
+      )}
+
+      {blocks.text && (
+        <Block id="T-03" name="Текстовый блок">
+          <Container class="py-12">
+            <div class="grid max-w-3xl gap-8">
+              {data.sections.map((s) => (
+                <section>
+                  <h2 class="text-lg font-semibold">{s.h}</h2>
+                  {s.p.map((p) => <p class="mt-3 text-[15px] text-ink-2">{p}</p>)}
+                </section>
+              ))}
+            </div>
+          </Container>
+        </Block>
+      )}
+
+      {blocks.gallery && data.gallery && (
+        <Block id="T-04" name="Сетка фото" tone="block">
+          <Container class="py-12">
+            <div class="grid gap-3 md:grid-cols-3 lg:grid-cols-3">
+              {data.gallery.map((g) => <ImagePlaceholder label={g} ratio="4:3" />)}
+            </div>
+          </Container>
+        </Block>
+      )}
+
+      {blocks.cards && data.cards && (
+        <Block id="T-05" name="Карточки">
+          <Container class="py-12">
+            <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+              {data.cards.map((c) => (
+                <div class="rounded-md border border-line bg-white p-4">
+                  <div class="font-medium">{c.title}</div>
+                  <p class="mt-1 text-sm text-ink-2">{c.text}</p>
+                </div>
+              ))}
+            </div>
+          </Container>
+        </Block>
+      )}
+
+      {blocks.docs && <DocumentsGrid id="T-06" limit={4} tone="block" />}
+    </>
+  )}
+
+  <CtaFinal
+    id={isText ? 'TX-03' : 'T-07'}
+    title={data.ctaTitle ?? 'Рассчитаем бетон под ваш объект'}
+    text={data.ctaText ?? 'Оставьте телефон, менеджер уточнит детали и пришлёт расчёт.'}
+    variant={data.ctaForm === 'kp' ? 'kp' : 'default'}
+  />
+</>
+)}
+</BaseLayout>

@@ -1,0 +1,141 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import PageHead from '../../components/ui/PageHead.astro';
+import Block from '../../components/ui/Block.astro';
+import Container from '../../components/ui/Container.astro';
+import PriceTable from '../../components/ui/PriceTable.astro';
+import PriceCalc from '../../components/calc/PriceCalc.astro';
+import VolumeCalc from '../../components/calc/VolumeCalc.astro';
+import FaqBlock from '../../components/blocks/FaqBlock.astro';
+import SeoText from '../../components/blocks/SeoText.astro';
+import CtaFinal from '../../components/blocks/CtaFinal.astro';
+import {
+  activeGrades, activeClasses, purposes, gradeSlug, classSlug,
+  productsByGrade, productsByClass, productsByPurpose, GRADE_SCALE, minPrice,
+} from '../../lib/catalog';
+import { seo } from '../../lib/seo';
+import { formatPrice } from '../../lib/price';
+import type { Product, Purpose } from '../../lib/types';
+
+export function getStaticPaths() {
+  const byGrade = activeGrades().map((g) => ({
+    params: { slug: gradeSlug(g) },
+    props: { kind: 'grade' as const, value: g },
+  }));
+  const byClass = activeClasses().map((c) => ({
+    params: { slug: `klass-${classSlug(c)}` },
+    props: { kind: 'class' as const, value: c },
+  }));
+  const byPurpose = purposes.map((p) => ({
+    params: { slug: `dlya-${p.slug}` },
+    props: { kind: 'purpose' as const, value: p.slug },
+  }));
+  return [...byGrade, ...byClass, ...byPurpose];
+}
+
+type Props = { kind: 'grade' | 'class' | 'purpose'; value: string };
+const { kind, value } = Astro.props as Props;
+
+let items: Product[] = [];
+let meta = { h1: '', title: '', description: '' };
+let purpose: Purpose | undefined;
+let shortAnswer = '';
+
+if (kind === 'grade') {
+  items = productsByGrade(value);
+  meta = seo.grade(value);
+  shortAnswer = `Бетон ${value} соответствует классу ${items[0]?.class ?? ''}. В каталоге ${items.length} позиций этой марки, цена от ${formatPrice(minPrice(items))} ₽ за м³ на самовывозе.`;
+} else if (kind === 'class') {
+  items = productsByClass(value);
+  meta = seo.klass(value);
+  shortAnswer = `Классу ${value} соответствует марка ${items[0]?.grade ?? ''}. Подходящих позиций в каталоге: ${items.length}, цена от ${formatPrice(minPrice(items))} ₽ за м³.`;
+} else {
+  purpose = purposes.find((p) => p.slug === value);
+  items = productsByPurpose(value);
+  meta = seo.purpose(purpose!.name, purpose!.h1);
+  shortAnswer = purpose!.short;
+}
+
+const related =
+  kind === 'purpose'
+    ? purposes.filter((p) => p.slug !== value).slice(0, 6).map((p) => ({ href: `/beton/dlya-${p.slug}/`, label: p.h1 }))
+    : activeGrades().filter((g) => g !== value).slice(0, 6).map((g) => ({ href: `/beton/${gradeSlug(g)}/`, label: `Бетон ${g}` }));
+
+const currentGrade = kind === 'grade' ? value : kind === 'class' ? items[0]?.grade : purpose?.recommended;
+const crumbLabel = meta.h1;
+---
+<BaseLayout title={meta.title} description={meta.description} template="T05" templateName="SEO-посадка">
+  <Breadcrumbs items={[{ href: '/catalog/', label: 'Каталог' }, { label: crumbLabel }]} />
+  <PageHead id="S-01" name="H1 посадки" h1={meta.h1} lead={meta.description} />
+
+  <Block id="S-02" name="Короткий ответ">
+    <Container class="py-10">
+      <div class="grid gap-4 rounded-md border border-line bg-white p-6 md:grid-cols-[auto_1fr] md:items-center">
+        {purpose && (
+          <div class="rounded-md border border-accent px-5 py-4 text-center">
+            <div class="text-xs text-ink-2">рекомендуем</div>
+            <div class="text-2xl font-semibold text-accent">{purpose.recommended}</div>
+          </div>
+        )}
+        <div>
+          <p class="text-[15px]">{shortAnswer}</p>
+          {purpose && <p class="mt-2 text-sm text-ink-2">{purpose.tip}</p>}
+        </div>
+      </div>
+    </Container>
+  </Block>
+
+  <Block id="S-03" name="Таблица подходящих позиций" tone="block">
+    <Container class="py-12">
+      <h2 class="text-xl font-semibold tracking-tight">Подходящие позиции</h2>
+      <div class="mt-4"><PriceTable items={items} /></div>
+      <p class="mt-3 text-sm text-ink-2">Выборка собирается автоматически из каталога, новые позиции попадают сюда без правки страницы.</p>
+    </Container>
+  </Block>
+
+  {kind !== 'purpose' && (
+    <Block id="S-04" name="Шкала марок">
+      <Container class="py-12">
+        <h2 class="text-xl font-semibold tracking-tight">Шкала марок</h2>
+        <div class="mt-4 flex flex-wrap gap-2">
+          {GRADE_SCALE.map((g) => {
+            const exists = activeGrades().includes(g);
+            const active = g === currentGrade;
+            return exists ? (
+              <a
+                href={`/beton/${gradeSlug(g)}/`}
+                class:list={['rounded-md border px-3 py-2 text-sm', active ? 'border-accent text-accent' : 'border-line hover:border-ink-2']}
+              >{g}</a>
+            ) : (
+              <span class="rounded-md border border-dashed border-line px-3 py-2 text-sm text-ink-2">{g}</span>
+            );
+          })}
+        </div>
+        <p class="mt-3 text-sm text-ink-2">Пунктиром показаны марки, которых пока нет в демо-данных прототипа.</p>
+      </Container>
+    </Block>
+  )}
+
+  <Block id="S-05" name="Мини-калькулятор" tone="block">
+    <Container class="grid gap-4 py-12 lg:grid-cols-2">
+      <VolumeCalc defaultShape={purpose?.calcShape ?? 'slab'} />
+      <PriceCalc title="Стоимость с доставкой" defaultProduct={items[0]?.id} />
+    </Container>
+  </Block>
+
+  <Block id="S-06" name="Связанные посадки">
+    <Container class="py-12">
+      <h2 class="text-xl font-semibold tracking-tight">Смотрите также</h2>
+      <div class="mt-4 flex flex-wrap gap-2">
+        {related.map((r) => (
+          <a href={r.href} class="rounded-md border border-line bg-white px-3 py-2 text-sm hover:border-accent hover:text-accent">{r.label}</a>
+        ))}
+      </div>
+    </Container>
+  </Block>
+
+  <FaqBlock id="S-07" scope={kind === 'purpose' ? 'marks' : 'product'} title="Частые вопросы" limit={4} />
+  <SeoText id="S-08" topic={`${meta.h1.toLowerCase()}: характеристики, применение, цена`} />
+  <CtaFinal id="S-09" title={`Рассчитать ${meta.h1.toLowerCase()}`} />
+</BaseLayout>

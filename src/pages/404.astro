@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHead from '../components/ui/PageHead.astro';
+import Block from '../components/ui/Block.astro';
+import Container from '../components/ui/Container.astro';
+const links = [
+  { href: '/catalog/', label: 'Каталог' },
+  { href: '/price/', label: 'Прайс' },
+  { href: '/calculator/', label: 'Калькулятор' },
+  { href: '/dostavka/', label: 'Доставка' },
+  { href: '/kontakty/', label: 'Контакты' },
+];
+---
+<BaseLayout title="Страница не найдена" description="Такой страницы нет. Воспользуйтесь каталогом, прайсом или поиском по сайту." template="T20" templateName="404">
+  <PageHead h1="Страница не найдена" lead="Возможно, адрес изменился или в ссылке опечатка." />
+  <Block id="E-01" name="Поиск и ссылки">
+    <Container class="py-12">
+      <label class="grid max-w-lg gap-1.5">
+        <span class="text-xs text-ink-2">Поиск по сайту [заглушка]</span>
+        <input type="search" placeholder="например, бетон М300" class="w-full rounded-md border border-line bg-white px-3 py-2.5 text-[15px] outline-none focus:border-accent" />
+      </label>
+      <div class="mt-6 flex flex-wrap gap-2">
+        {links.map((l) => <a href={l.href} class="rounded-md border border-line bg-white px-3 py-2 text-sm hover:border-accent hover:text-accent">{l.label}</a>)}
+      </div>
+    </Container>
+  </Block>
+</BaseLayout>

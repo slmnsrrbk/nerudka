@@ -1,0 +1,91 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import PageHead from '../../components/ui/PageHead.astro';
+import Block from '../../components/ui/Block.astro';
+import Container from '../../components/ui/Container.astro';
+import Btn from '../../components/ui/Btn.astro';
+import ImagePlaceholder from '../../components/ui/ImagePlaceholder.astro';
+import FaqBlock from '../../components/blocks/FaqBlock.astro';
+import CtaFinal from '../../components/blocks/CtaFinal.astro';
+import servicesData from '../../data/services.json';
+import { formatPrice } from '../../lib/price';
+import type { Service } from '../../lib/types';
+
+export function getStaticPaths() {
+  return (servicesData as Service[]).map((s) => ({ params: { slug: s.slug }, props: { service: s } }));
+}
+const { service } = Astro.props as { service: Service };
+---
+<BaseLayout
+  title={`${service.name}: цена и условия в Москве и области`}
+  description={service.lead}
+  template="T06"
+  templateName="Услуга"
+>
+  <Breadcrumbs items={[{ href: '/uslugi/', label: 'Услуги' }, { label: service.name }]} />
+  <PageHead id="U-01" name="H1 услуги" h1={service.name} lead={service.lead}>
+    <div class="mt-5 flex flex-wrap items-center gap-3">
+      <span class="text-lg font-semibold">от {formatPrice(service.priceFrom)} ₽ за {service.priceUnit}</span>
+      <Btn variant="primary" data-modal-open="order" data-modal-title={`Заказ: ${service.name}`}>Заказать</Btn>
+    </div>
+  </PageHead>
+
+  <Block id="U-02" name="Что входит">
+    <Container class="py-12">
+      <h2 class="text-xl font-semibold tracking-tight">Что входит</h2>
+      <ul class="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+        {service.includes.map((i) => (
+          <li class="flex gap-3 rounded-md border border-line bg-white p-4">
+            <span class="ph size-9 shrink-0 rounded-md"></span>
+            <span class="text-sm">{i}</span>
+          </li>
+        ))}
+      </ul>
+    </Container>
+  </Block>
+
+  <Block id="U-03" name="Техника и тарифы" tone="block">
+    <Container class="py-12">
+      <h2 class="text-xl font-semibold tracking-tight">Техника и тарифы</h2>
+      <div class="table-scroll mt-4 rounded-md border border-line bg-white">
+        <table class="w-full min-w-[560px] text-sm">
+          <thead class="bg-block text-left text-xs text-ink-2">
+            <tr><th class="px-4 py-3 font-medium">Позиция</th><th class="px-4 py-3 font-medium">Параметр</th><th class="px-4 py-3 font-medium">Производительность</th><th class="px-4 py-3 font-medium">Цена</th></tr>
+          </thead>
+          <tbody class="divide-y divide-line">
+            {service.tech.map((t) => (
+              <tr>
+                <td class="px-4 py-3 font-medium">{t.boom}</td>
+                <td class="px-4 py-3 text-ink-2">{t.reach}</td>
+                <td class="px-4 py-3 text-ink-2">{t.perf}</td>
+                <td class="whitespace-nowrap px-4 py-3">{formatPrice(t.price)} ₽</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Container>
+  </Block>
+
+  <Block id="U-04" name="Условия">
+    <Container class="py-12">
+      <h2 class="text-xl font-semibold tracking-tight">Условия</h2>
+      <ul class="mt-4 grid gap-2 md:grid-cols-2">
+        {service.terms.map((t) => <li class="rounded-md border border-line bg-white p-3 text-sm">{t}</li>)}
+      </ul>
+    </Container>
+  </Block>
+
+  <Block id="U-05" name="Галерея" tone="block">
+    <Container class="py-12">
+      <h2 class="text-xl font-semibold tracking-tight">Как это выглядит на объекте</h2>
+      <div class="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+        {[1, 2, 3, 4].map((i) => <ImagePlaceholder label={`Фото ${i}: ${service.name.toLowerCase()} на объекте`} ratio="4:3" />)}
+      </div>
+    </Container>
+  </Block>
+
+  <FaqBlock id="U-06" scope={service.faqScope} title="Вопросы по услуге" limit={4} tone="page" />
+  <CtaFinal id="U-07" title={`Заказать ${service.name.toLowerCase()}`} />
+</BaseLayout>

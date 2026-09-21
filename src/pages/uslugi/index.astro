@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import PageHead from '../../components/ui/PageHead.astro';
+import Block from '../../components/ui/Block.astro';
+import Container from '../../components/ui/Container.astro';
+import ImagePlaceholder from '../../components/ui/ImagePlaceholder.astro';
+import PurposeCards from '../../components/blocks/PurposeCards.astro';
+import FaqBlock from '../../components/blocks/FaqBlock.astro';
+import SeoText from '../../components/blocks/SeoText.astro';
+import CtaFinal from '../../components/blocks/CtaFinal.astro';
+import servicesData from '../../data/services.json';
+import { formatPrice } from '../../lib/price';
+import type { Service } from '../../lib/types';
+const services = servicesData as Service[];
+---
+<BaseLayout
+  title="Услуги бетонного завода: доставка, насос, испытания, прогрев"
+  description="Доставка миксером, аренда автобетононасоса, лабораторные испытания и зимний прогрев бетона. Цены, условия, техника."
+  template="T02"
+  templateName="Хаб услуг"
+>
+  <Breadcrumbs items={[{ label: 'Услуги' }]} />
+  <PageHead h1="Услуги" lead="Всё, что нужно вокруг поставки смеси: доставка, подача, контроль качества и работы зимой." />
+
+  <Block id="X-02" name="Сетка услуг">
+    <Container class="py-12">
+      <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+        {services.map((s) => (
+          <a href={`/uslugi/${s.slug}/`} class="rounded-md border border-line bg-white p-4 transition-colors hover:border-accent">
+            <ImagePlaceholder label={`Фото: ${s.name.toLowerCase()}`} ratio="4:3" />
+            <div class="mt-3 font-medium">{s.name}</div>
+            <p class="mt-1 text-sm text-ink-2">{s.lead}</p>
+            <div class="mt-3 text-sm">от {formatPrice(s.priceFrom)} ₽ за {s.priceUnit}</div>
+          </a>
+        ))}
+      </div>
+    </Container>
+  </Block>
+
+  <PurposeCards id="X-03" title="Подобрать бетон по задаче" tone="block" />
+  <FaqBlock id="X-04" scope="pump" title="Вопросы по услугам" limit={4} tone="page" />
+  <SeoText id="X-05" topic="услуги бетонного завода: доставка, бетононасос, испытания, прогрев" />
+  <CtaFinal id="X-06" />
+</BaseLayout>

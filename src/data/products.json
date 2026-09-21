@@ -1,0 +1,606 @@
+[
+  {
+    "id": "m100-b7-5-gravij",
+    "category": "tovarnyj",
+    "name": "Бетон М100 В7,5 на гравии",
+    "grade": "М100",
+    "class": "B7,5",
+    "mobility": "П3",
+    "frost": "F50",
+    "water": "W2",
+    "filler": "гравий",
+    "fraction": "5-20",
+    "gost": "ГОСТ 7473-2010",
+    "price": 3900,
+    "badges": [],
+    "purposes": [
+      "otmostki",
+      "dorozhek"
+    ],
+    "note": "Подбетонка и основания без расчётной нагрузки.",
+    "faq": []
+  },
+  {
+    "id": "m200-b15-gravij",
+    "category": "tovarnyj",
+    "name": "Бетон М200 В15 на гравии",
+    "grade": "М200",
+    "class": "B15",
+    "mobility": "П4",
+    "frost": "F100",
+    "water": "W4",
+    "filler": "гравий",
+    "fraction": "5-20",
+    "gost": "ГОСТ 7473-2010",
+    "price": 4500,
+    "badges": [
+      "Хит"
+    ],
+    "purposes": [
+      "fundamenta",
+      "styazhki",
+      "dorozhek",
+      "otmostki",
+      "zabora"
+    ],
+    "note": "Самая ходовая марка в частном строительстве.",
+    "faq": []
+  },
+  {
+    "id": "m250-b20-gravij",
+    "category": "tovarnyj",
+    "name": "Бетон М250 В20 на гравии",
+    "grade": "М250",
+    "class": "B20",
+    "mobility": "П4",
+    "frost": "F150",
+    "water": "W4",
+    "filler": "гравий",
+    "fraction": "5-20",
+    "gost": "ГОСТ 7473-2010",
+    "price": 4750,
+    "badges": [],
+    "purposes": [
+      "fundamenta",
+      "perekrytij",
+      "pola"
+    ],
+    "note": "Фундаменты и перекрытия малоэтажных домов.",
+    "faq": []
+  },
+  {
+    "id": "m300-b22-5-gravij",
+    "category": "tovarnyj",
+    "name": "Бетон М300 В22,5 на гравии",
+    "grade": "М300",
+    "class": "B22,5",
+    "mobility": "П4",
+    "frost": "F200",
+    "water": "W6",
+    "filler": "гравий",
+    "fraction": "5-20",
+    "gost": "ГОСТ 7473-2010",
+    "price": 5000,
+    "badges": [
+      "Хит"
+    ],
+    "purposes": [
+      "fundamenta",
+      "perekrytij",
+      "pola",
+      "dorozhek"
+    ],
+    "note": "Универсальный конструкционный бетон.",
+    "faq": []
+  },
+  {
+    "id": "m350-b25-gravij",
+    "category": "tovarnyj",
+    "name": "Бетон М350 В25 на гравии",
+    "grade": "М350",
+    "class": "B25",
+    "mobility": "П4",
+    "frost": "F200",
+    "water": "W8",
+    "filler": "гравий",
+    "fraction": "5-20",
+    "gost": "ГОСТ 7473-2010",
+    "price": 5300,
+    "badges": [],
+    "purposes": [
+      "fundamenta",
+      "perekrytij",
+      "pola"
+    ],
+    "note": "Несущие конструкции и промышленные полы.",
+    "faq": []
+  },
+  {
+    "id": "m400-b30-gravij",
+    "category": "tovarnyj",
+    "name": "Бетон М400 В30 на гравии",
+    "grade": "М400",
+    "class": "B30",
+    "mobility": "П4",
+    "frost": "F300",
+    "water": "W10",
+    "filler": "гравий",
+    "fraction": "5-20",
+    "gost": "ГОСТ 7473-2010",
+    "price": 5800,
+    "badges": [],
+    "purposes": [
+      "perekrytij",
+      "pola"
+    ],
+    "note": "Высоконагруженные конструкции.",
+    "faq": []
+  },
+  {
+    "id": "m300-b22-5-granit",
+    "category": "tovarnyj",
+    "name": "Бетон М300 В22,5 на граните",
+    "grade": "М300",
+    "class": "B22,5",
+    "mobility": "П4",
+    "frost": "F200",
+    "water": "W6",
+    "filler": "гранит",
+    "fraction": "5-20",
+    "gost": "ГОСТ 7473-2010",
+    "price": 5200,
+    "badges": [
+      "Хит"
+    ],
+    "purposes": [
+      "fundamenta",
+      "perekrytij",
+      "pola"
+    ],
+    "note": "Гранитный щебень даёт более стабильную прочность.",
+    "faq": []
+  },
+  {
+    "id": "m350-b25-granit",
+    "category": "tovarnyj",
+    "name": "Бетон М350 В25 на граните",
+    "grade": "М350",
+    "class": "B25",
+    "mobility": "П4",
+    "frost": "F250",
+    "water": "W8",
+    "filler": "гранит",
+    "fraction": "5-20",
+    "gost": "ГОСТ 7473-2010",
+    "price": 5500,
+    "badges": [],
+    "purposes": [
+      "fundamenta",
+      "perekrytij",
+      "pola"
+    ],
+    "note": "Основная марка для монолитного каркаса.",
+    "faq": []
+  },
+  {
+    "id": "m400-b30-granit",
+    "category": "tovarnyj",
+    "name": "Бетон М400 В30 на граните",
+    "grade": "М400",
+    "class": "B30",
+    "mobility": "П4",
+    "frost": "F300",
+    "water": "W10",
+    "filler": "гранит",
+    "fraction": "5-20",
+    "gost": "ГОСТ 7473-2010",
+    "price": 6000,
+    "badges": [
+      "Под заказ"
+    ],
+    "purposes": [
+      "perekrytij",
+      "pola"
+    ],
+    "note": "Мосты, промышленные объекты, ЖБИ.",
+    "faq": []
+  },
+  {
+    "id": "toshchij-m100",
+    "category": "toshchij",
+    "name": "Тощий бетон М100 В7,5",
+    "grade": "М100",
+    "class": "B7,5",
+    "mobility": "П1",
+    "frost": "F50",
+    "water": "W2",
+    "filler": "гравий",
+    "fraction": "5-20",
+    "gost": "ГОСТ 7473-2010",
+    "price": 3500,
+    "badges": [],
+    "purposes": [
+      "dorozhek",
+      "otmostki"
+    ],
+    "note": "Нижний слой основания дорог и площадок.",
+    "faq": []
+  },
+  {
+    "id": "toshchij-m150",
+    "category": "toshchij",
+    "name": "Тощий бетон М150 В12,5",
+    "grade": "М150",
+    "class": "B12,5",
+    "mobility": "П1",
+    "frost": "F75",
+    "water": "W2",
+    "filler": "гравий",
+    "fraction": "5-20",
+    "gost": "ГОСТ 7473-2010",
+    "price": 3700,
+    "badges": [],
+    "purposes": [
+      "dorozhek"
+    ],
+    "note": "Основания под парковки и склады.",
+    "faq": []
+  },
+  {
+    "id": "toshchij-m200",
+    "category": "toshchij",
+    "name": "Тощий бетон М200 В15",
+    "grade": "М200",
+    "class": "B15",
+    "mobility": "П1",
+    "frost": "F100",
+    "water": "W2",
+    "filler": "гранит",
+    "fraction": "5-20",
+    "gost": "ГОСТ 7473-2010",
+    "price": 3900,
+    "badges": [],
+    "purposes": [
+      "dorozhek"
+    ],
+    "note": "Верхний слой дорожного основания.",
+    "faq": []
+  },
+  {
+    "id": "bsm-m200",
+    "category": "melkozernistyj",
+    "name": "Мелкозернистый бетон М200 В15",
+    "grade": "М200",
+    "class": "B15",
+    "mobility": "П4",
+    "frost": "F100",
+    "water": "W4",
+    "filler": "песок",
+    "fraction": "0-5",
+    "gost": "ГОСТ 7473-2010",
+    "price": 4600,
+    "badges": [],
+    "purposes": [
+      "styazhki",
+      "pola"
+    ],
+    "note": "Тонкие конструкции и подача насосом на высоту.",
+    "faq": []
+  },
+  {
+    "id": "bsm-m300",
+    "category": "melkozernistyj",
+    "name": "Мелкозернистый бетон М300 В22,5",
+    "grade": "М300",
+    "class": "B22,5",
+    "mobility": "П4",
+    "frost": "F150",
+    "water": "W6",
+    "filler": "песок",
+    "fraction": "0-5",
+    "gost": "ГОСТ 7473-2010",
+    "price": 5100,
+    "badges": [],
+    "purposes": [
+      "styazhki",
+      "pola",
+      "otmostki"
+    ],
+    "note": "Стяжки с нагрузкой, ремонтные работы.",
+    "faq": []
+  },
+  {
+    "id": "keramzit-m100",
+    "category": "keramzitobeton",
+    "name": "Керамзитобетон М100 В7,5",
+    "grade": "М100",
+    "class": "B7,5",
+    "mobility": "П3",
+    "frost": "F50",
+    "water": "W2",
+    "filler": "керамзит",
+    "fraction": "10-20",
+    "gost": "ГОСТ 7473-2010",
+    "price": 4800,
+    "badges": [],
+    "purposes": [
+      "styazhki",
+      "pola"
+    ],
+    "note": "Лёгкая стяжка по перекрытию, утепление.",
+    "faq": []
+  },
+  {
+    "id": "keramzit-m150",
+    "category": "keramzitobeton",
+    "name": "Керамзитобетон М150 В12,5",
+    "grade": "М150",
+    "class": "B12,5",
+    "mobility": "П3",
+    "frost": "F75",
+    "water": "W4",
+    "filler": "керамзит",
+    "fraction": "10-20",
+    "gost": "ГОСТ 7473-2010",
+    "price": 5000,
+    "badges": [],
+    "purposes": [
+      "styazhki",
+      "pola"
+    ],
+    "note": "Стяжка с нагрузкой и монолитные стены.",
+    "faq": []
+  },
+  {
+    "id": "fibrobeton-m300",
+    "category": "fibrobeton",
+    "name": "Фибробетон М300 В22,5 с полипропиленовой фиброй",
+    "grade": "М300",
+    "class": "B22,5",
+    "mobility": "П4",
+    "frost": "F200",
+    "water": "W6",
+    "filler": "гранит",
+    "fraction": "5-20",
+    "gost": "ГОСТ 7473-2010",
+    "price": 5600,
+    "badges": [
+      "Под заказ"
+    ],
+    "purposes": [
+      "pola",
+      "styazhki"
+    ],
+    "note": "Снижает усадочное трещинообразование в полах.",
+    "faq": []
+  },
+  {
+    "id": "gidro-m350-w10",
+    "category": "gidrotehnicheskij",
+    "name": "Гидротехнический бетон М350 В25 W10",
+    "grade": "М350",
+    "class": "B25",
+    "mobility": "П4",
+    "frost": "F300",
+    "water": "W10",
+    "filler": "гранит",
+    "fraction": "5-20",
+    "gost": "ГОСТ 7473-2010",
+    "price": 6100,
+    "badges": [],
+    "purposes": [
+      "fundamenta"
+    ],
+    "note": "Чаши бассейнов, подземные части, резервуары.",
+    "faq": []
+  },
+  {
+    "id": "dorozhnyj-m400",
+    "category": "dorozhnyj",
+    "name": "Дорожный бетон М400 В30 F300",
+    "grade": "М400",
+    "class": "B30",
+    "mobility": "П3",
+    "frost": "F300",
+    "water": "W8",
+    "filler": "гранит",
+    "fraction": "5-20",
+    "gost": "ГОСТ 7473-2010",
+    "price": 6200,
+    "badges": [],
+    "purposes": [
+      "dorozhek",
+      "pola"
+    ],
+    "note": "Покрытия дорог, площадок, мостовые конструкции.",
+    "faq": []
+  },
+  {
+    "id": "zimnij-m300-pmd",
+    "category": "zimnij",
+    "name": "Зимний бетон М300 В22,5 с ПМД",
+    "grade": "М300",
+    "class": "B22,5",
+    "mobility": "П4",
+    "frost": "F200",
+    "water": "W6",
+    "filler": "гранит",
+    "fraction": "5-20",
+    "gost": "ГОСТ 7473-2010",
+    "price": 5450,
+    "badges": [],
+    "purposes": [
+      "fundamenta",
+      "perekrytij"
+    ],
+    "note": "Работы при температуре до минус 25 градусов.",
+    "faq": []
+  },
+  {
+    "id": "cps-m150",
+    "category": "cps",
+    "name": "ЦПС М150",
+    "grade": "М150",
+    "class": "B12,5",
+    "mobility": "Пк3",
+    "frost": "F75",
+    "water": "",
+    "filler": "песок",
+    "fraction": "0-5",
+    "gost": "ГОСТ 28013-98",
+    "price": 3900,
+    "badges": [],
+    "purposes": [
+      "styazhki",
+      "pola"
+    ],
+    "note": "Стяжки и подливка под оборудование.",
+    "faq": []
+  },
+  {
+    "id": "cps-m200",
+    "category": "cps",
+    "name": "ЦПС М200",
+    "grade": "М200",
+    "class": "B15",
+    "mobility": "Пк3",
+    "frost": "F100",
+    "water": "",
+    "filler": "песок",
+    "fraction": "0-5",
+    "gost": "ГОСТ 28013-98",
+    "price": 4100,
+    "badges": [],
+    "purposes": [
+      "styazhki",
+      "pola"
+    ],
+    "note": "Стяжки с повышенной нагрузкой.",
+    "faq": []
+  },
+  {
+    "id": "cpr-m100",
+    "category": "cpr",
+    "name": "ЦПР М100",
+    "grade": "М100",
+    "class": "B7,5",
+    "mobility": "Пк2",
+    "frost": "F50",
+    "water": "",
+    "filler": "песок",
+    "fraction": "0-5",
+    "gost": "ГОСТ 28013-98",
+    "price": 3700,
+    "badges": [],
+    "purposes": [
+      "zabora"
+    ],
+    "note": "Штукатурные и общестроительные работы.",
+    "faq": []
+  },
+  {
+    "id": "cpr-m150",
+    "category": "cpr",
+    "name": "ЦПР М150",
+    "grade": "М150",
+    "class": "B12,5",
+    "mobility": "Пк2",
+    "frost": "F75",
+    "water": "",
+    "filler": "песок",
+    "fraction": "0-5",
+    "gost": "ГОСТ 28013-98",
+    "price": 3900,
+    "badges": [],
+    "purposes": [
+      "zabora"
+    ],
+    "note": "Раствор для кладки и монтажа.",
+    "faq": []
+  },
+  {
+    "id": "kladochnyj-m100",
+    "category": "kladochnyj",
+    "name": "Кладочный раствор М100",
+    "grade": "М100",
+    "class": "B7,5",
+    "mobility": "Пк3",
+    "frost": "F50",
+    "water": "",
+    "filler": "песок",
+    "fraction": "0-5",
+    "gost": "ГОСТ 28013-98",
+    "price": 3800,
+    "badges": [
+      "Хит"
+    ],
+    "purposes": [
+      "zabora"
+    ],
+    "note": "Кирпичная и блочная кладка.",
+    "faq": []
+  },
+  {
+    "id": "peskobeton-m200",
+    "category": "peskobeton",
+    "name": "Пескобетон М200 В15",
+    "grade": "М200",
+    "class": "B15",
+    "mobility": "П4",
+    "frost": "F100",
+    "water": "W4",
+    "filler": "песок",
+    "fraction": "0-5",
+    "gost": "ГОСТ 7473-2010",
+    "price": 4300,
+    "badges": [],
+    "purposes": [
+      "styazhki",
+      "pola"
+    ],
+    "note": "Черновые стяжки и подготовка оснований.",
+    "faq": []
+  },
+  {
+    "id": "peskobeton-m300",
+    "category": "peskobeton",
+    "name": "Пескобетон М300 В22,5",
+    "grade": "М300",
+    "class": "B22,5",
+    "mobility": "П4",
+    "frost": "F150",
+    "water": "W4",
+    "filler": "песок",
+    "fraction": "0-5",
+    "gost": "ГОСТ 7473-2010",
+    "price": 4700,
+    "badges": [
+      "Хит"
+    ],
+    "purposes": [
+      "styazhki",
+      "pola",
+      "otmostki"
+    ],
+    "note": "Стяжка от 30 мм, ремонт, подача насосом.",
+    "faq": []
+  },
+  {
+    "id": "cementnoe-molochko",
+    "category": "cementnoe-molochko",
+    "name": "Цементное молочко",
+    "grade": "М100",
+    "class": "B7,5",
+    "mobility": "П5",
+    "frost": "F50",
+    "water": "",
+    "filler": "цемент, вода",
+    "fraction": "",
+    "gost": "ГОСТ 28013-98",
+    "price": 3200,
+    "badges": [],
+    "purposes": [],
+    "note": "Промывка насоса, грунтование основания.",
+    "faq": []
+  }
+]

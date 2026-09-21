@@ -1,0 +1,56 @@
+---
+import Block from '../ui/Block.astro';
+import Container from '../ui/Container.astro';
+import Btn from '../ui/Btn.astro';
+import PriceTable from '../ui/PriceTable.astro';
+import { childCategories, productsOfCategory, categoryPath } from '../../lib/catalog';
+
+interface Props { id?: string; limit?: number }
+const { id = 'H-05', limit = 8 } = Astro.props;
+const tabs = [
+  { slug: 'tovarnyj', name: 'Товарный' },
+  { slug: 'toshchij', name: 'Тощий' },
+  { slug: 'keramzitobeton', name: 'Керамзитобетон' },
+  { slug: 'melkozernistyj', name: 'Мелкозернистый' },
+  { slug: 'rastvor', name: 'Растворы' },
+];
+const data = tabs.map((t) => ({
+  ...t,
+  items: productsOfCategory(t.slug).slice(0, limit),
+  href: t.slug === 'rastvor' ? '/catalog/rastvor/' : `/catalog/beton/${t.slug}/`,
+}));
+---
+<Block id={id} name="Прайс на главной" tone="block">
+  <Container class="py-12 md:py-20">
+    <div class="flex flex-wrap items-baseline justify-between gap-3">
+      <h2 class="text-xl md:text-2xl font-semibold tracking-tight">Цены на бетон и растворы</h2>
+      <Btn href="/price/" variant="secondary" size="sm">Весь прайс</Btn>
+    </div>
+
+    <div data-tabs-scope class="mt-6">
+      <div data-tabs role="tablist" class="flex flex-wrap gap-2">
+        {data.map((t, i) => (
+          <button
+            type="button"
+            role="tab"
+            data-tab={t.slug}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            class:list={[
+              'rounded-md border px-3 py-2 text-sm transition-colors',
+              i === 0 ? 'border-accent text-accent' : 'border-line hover:border-ink-2',
+            ]}
+          >{t.name}</button>
+        ))}
+      </div>
+
+      {data.map((t, i) => (
+        <div data-tab-panel={t.slug} class={i === 0 ? 'mt-4' : 'mt-4 hidden'}>
+          <PriceTable items={t.items} />
+          <p class="mt-3 text-sm text-ink-2">
+            Цена указана за м³ на условиях самовывоза. <a href={t.href} class="text-accent underline-offset-2 hover:underline">Все позиции раздела</a>
+          </p>
+        </div>
+      ))}
+    </div>
+  </Container>
+</Block>

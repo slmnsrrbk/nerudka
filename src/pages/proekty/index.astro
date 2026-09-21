@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import PageHead from '../../components/ui/PageHead.astro';
+import Block from '../../components/ui/Block.astro';
+import Container from '../../components/ui/Container.astro';
+import ImagePlaceholder from '../../components/ui/ImagePlaceholder.astro';
+import CtaFinal from '../../components/blocks/CtaFinal.astro';
+import projects from '../../data/projects.json';
+import { getGeo } from '../../lib/geo';
+
+const types = [
+  { id: 'all', name: 'Все' },
+  { id: 'izhs', name: 'ИЖС' },
+  { id: 'prom', name: 'Промышленные' },
+  { id: 'dorozhnyj', name: 'Дорожные' },
+  { id: 'zhk', name: 'Жилые комплексы' },
+];
+---
+<BaseLayout
+  title="Проекты: объекты, на которые поставляли бетон"
+  description="Реализованные поставки: жилые комплексы, промышленные объекты, дорожные работы и частные дома. Марка, объём, сроки и техника по каждому объекту."
+  template="T12"
+  templateName="Проекты, список"
+>
+  <Breadcrumbs items={[{ label: 'Проекты' }]} />
+  <PageHead id="PR-01" name="H1 проектов" h1="Проекты" lead="Показываем объекты с цифрами: какая марка, сколько кубов, за какой срок и какой техникой." />
+
+  <Block id="PR-02" name="Фильтр по типу объекта">
+    <Container class="py-8">
+      <div data-filter-group-name="projects" class="flex flex-wrap gap-2">
+        {types.map((t, i) => (
+          <button type="button" data-filter-value={t.id}
+            class:list={['rounded-md border px-3 py-2 text-sm', i === 0 ? 'border-accent text-accent' : 'border-line hover:border-ink-2']}>
+            {t.name}
+          </button>
+        ))}
+      </div>
+    </Container>
+  </Block>
+
+  <Block id="PR-03" name="Сетка проектов" tone="block">
+    <Container class="py-12">
+      <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+        {projects.map((p) => (
+          <a href={`/proekty/${p.slug}/`} data-filter-key={p.type} class="rounded-md border border-line bg-white p-4 hover:border-accent">
+            <ImagePlaceholder label={`Фото: ${p.name.toLowerCase()}`} ratio="4:3" />
+            <div class="mt-3 font-medium">{p.name}</div>
+            <dl class="mt-2 grid gap-1 text-sm text-ink-2">
+              <div class="flex justify-between gap-2"><dt>Марка</dt><dd class="text-ink">{p.grade}</dd></div>
+              <div class="flex justify-between gap-2"><dt>Объём</dt><dd class="text-ink">{p.volume} м³</dd></div>
+              <div class="flex justify-between gap-2"><dt>Город</dt><dd class="text-ink">{getGeo(p.geo)?.name ?? 'не указан'}</dd></div>
+            </dl>
+          </a>
+        ))}
+      </div>
+    </Container>
+  </Block>
+
+  <CtaFinal id="PR-04" title="Планируете объект?" text="Посчитаем объём, подберём марку и построим график подачи." />
+</BaseLayout>

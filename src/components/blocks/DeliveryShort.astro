@@ -1,0 +1,50 @@
+---
+import Block from '../ui/Block.astro';
+import Container from '../ui/Container.astro';
+import Btn from '../ui/Btn.astro';
+import { geoPoints, geoPath } from '../../lib/geo';
+import site from '../../data/site.json';
+---
+<Block id="H-07" name="Доставка">
+  <Container class="py-12 md:py-20">
+    <div class="flex flex-wrap items-baseline justify-between gap-3">
+      <h2 class="text-xl md:text-2xl font-semibold tracking-tight">Доставка по Москве и области</h2>
+      <Btn href="/dostavka/" variant="secondary" size="sm">Условия и все направления</Btn>
+    </div>
+
+    <div class="mt-6 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+      <div class="ph rounded-md" style="padding-top:56%">
+        <span class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center text-xs text-ink-2">
+          <span>Карта: зоны доставки от завода, четыре кольца · 16:9</span>
+          <span class="flex flex-wrap justify-center gap-2">
+            {site.deliveryZones.map((z) => (
+              <span class="rounded border border-line bg-white px-2 py-1">{z.name}: {z.pricePerM3} ₽ за м³</span>
+            ))}
+          </span>
+        </span>
+      </div>
+
+      <div>
+        <label class="grid gap-1.5">
+          <span class="text-xs text-ink-2">Найдите свой населённый пункт</span>
+          <input
+            type="search"
+            placeholder="например, Одинцово"
+            data-filter-input="[data-geo-item]"
+            class="w-full rounded-md border border-line bg-white px-3 py-2.5 text-[15px] outline-none focus:border-accent"
+          />
+        </label>
+        <ul class="mt-3 max-h-72 overflow-y-auto rounded-md border border-line bg-white">
+          {geoPoints.map((g) => (
+            <li data-geo-item data-search-text={`${g.name} ${g.namePrep}`.toLowerCase()} class="border-b border-line last:border-0">
+              <a href={geoPath(g.slug)} class="flex items-center justify-between gap-3 px-4 py-2.5 text-sm hover:bg-block">
+                <span>{g.name}</span>
+                <span class="text-xs text-ink-2">{g.distanceKm} км, {g.travelMin} мин</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </Container>
+</Block>

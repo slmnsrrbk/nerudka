@@ -1,0 +1,38 @@
+---
+import Block from '../ui/Block.astro';
+import Container from '../ui/Container.astro';
+import Btn from '../ui/Btn.astro';
+import PriceCalc from '../calc/PriceCalc.astro';
+import site from '../../data/site.json';
+const facts = [
+  `от ${site.minVolume} м³`,
+  'ГОСТ 7473-2010',
+  'отгрузка 24/7',
+];
+---
+<Block id="H-02" name="Hero с калькулятором">
+  <Container class="grid gap-8 py-10 md:py-16 lg:grid-cols-[1.1fr_0.9fr]">
+    <div>
+      <h1 class="text-3xl font-semibold tracking-tight md:text-5xl">
+        Бетон от завода с доставкой в день заказа
+      </h1>
+      <p class="mt-4 max-w-xl text-ink-2 md:text-lg">
+        Производим товарный бетон, растворы и специальные смеси на шести узлах в Москве и области.
+        Считаем цену вместе с доставкой сразу, без звонка и квиза на десять шагов.
+      </p>
+      <ul class="mt-5 flex flex-wrap gap-2">
+        {facts.map((f) => <li class="rounded-md border border-line bg-white px-3 py-1.5 text-sm">{f}</li>)}
+      </ul>
+      <div class="mt-6 flex flex-wrap gap-2">
+        <Btn variant="primary" data-modal-open="callback">Заказать звонок</Btn>
+        <Btn href="/price/" variant="secondary">Посмотреть прайс</Btn>
+      </div>
+      <div class="ph mt-8 rounded-md" style="padding-top:42%">
+        <span class="absolute inset-0 flex items-center justify-center text-center text-xs text-ink-2">
+          Фото: миксер выгружает бетон на объекте · 21:9
+        </span>
+      </div>
+    </div>
+    <PriceCalc title="Цена с доставкой за 30 секунд" class="self-start" />
+  </Container>
+</Block>

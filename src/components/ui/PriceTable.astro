@@ -1,0 +1,68 @@
+---
+import { productPath } from '../../lib/catalog';
+import { formatPrice } from '../../lib/price';
+import type { Product } from '../../lib/types';
+
+interface Props {
+  items: Product[];
+  withDelivery?: boolean;
+  class?: string;
+}
+const { items, withDelivery = false, class: cls = '' } = Astro.props;
+---
+<div class:list={['table-scroll rounded-md border border-line bg-white', cls]}>
+  <table class="w-full min-w-[720px] text-sm">
+    <thead class="bg-block text-left text-xs text-ink-2">
+      <tr>
+        <th class="px-4 py-3 font-medium">Марка</th>
+        <th class="px-3 py-3 font-medium">Класс</th>
+        <th class="px-3 py-3 font-medium">П</th>
+        <th class="px-3 py-3 font-medium">F</th>
+        <th class="px-3 py-3 font-medium">W</th>
+        <th class="px-3 py-3 font-medium">Наполнитель</th>
+        <th class="px-3 py-3 font-medium">Цена за м³</th>
+        <th class="px-4 py-3"></th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-line">
+      {items.map((p) => (
+        <tr
+          data-row-href={productPath(p)}
+          data-product-row
+          data-filler={p.filler}
+          data-class={p.class}
+          data-mobility={p.mobility}
+          data-frost={p.frost}
+          data-water={p.water}
+          class="cursor-pointer hover:bg-block"
+        >
+          <td class="px-4 py-3">
+            <a href={productPath(p)} class="font-medium hover:text-accent">{p.name}</a>
+            {p.badges.length > 0 && (
+              <span class="ml-2 rounded border border-line px-1.5 py-0.5 text-[11px] text-ink-2">{p.badges[0]}</span>
+            )}
+          </td>
+          <td class="px-3 py-3 text-ink-2">{p.class || 'нет'}</td>
+          <td class="px-3 py-3 text-ink-2">{p.mobility}</td>
+          <td class="px-3 py-3 text-ink-2">{p.frost}</td>
+          <td class="px-3 py-3 text-ink-2">{p.water || 'нет'}</td>
+          <td class="px-3 py-3 text-ink-2">{p.filler || 'нет'}</td>
+          <td class="whitespace-nowrap px-3 py-3 font-medium">
+            <span data-price-cell data-base-price={p.price} data-with-delivery={withDelivery ? 'on' : 'off'}>
+              {formatPrice(p.price)} ₽
+            </span>
+          </td>
+          <td class="px-4 py-3 text-right">
+            <button
+              type="button"
+              data-add-to-request
+              data-id={p.id}
+              data-volume="10"
+              class="rounded-md border border-line px-3 py-1.5 text-xs hover:border-accent hover:text-accent"
+            >В заявку</button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,109 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import PageHead from '../../components/ui/PageHead.astro';
+import Block from '../../components/ui/Block.astro';
+import Container from '../../components/ui/Container.astro';
+import Btn from '../../components/ui/Btn.astro';
+import PriceTable from '../../components/ui/PriceTable.astro';
+import CtaFinal from '../../components/blocks/CtaFinal.astro';
+import { childCategories, productsOfCategory } from '../../lib/catalog';
+import { formatPrice } from '../../lib/price';
+import servicesData from '../../data/services.json';
+import site from '../../data/site.json';
+import type { Service } from '../../lib/types';
+
+const services = servicesData as Service[];
+const groups = [...childCategories('beton'), ...childCategories('rastvor')]
+  .map((c) => ({ cat: c, items: productsOfCategory(c.slug) }))
+  .filter((g) => g.items.length > 0);
+const updated = '21 сентября 2026';
+---
+<BaseLayout
+  title="Прайс-лист на бетон и растворы: цены за м³"
+  description="Актуальный прайс завода: бетон всех видов, растворы, скидки от объёма и цены на услуги. Переключатель цены с доставкой в вашу зону."
+  template="T08"
+  templateName="Прайс"
+>
+  <Breadcrumbs items={[{ label: 'Прайс' }]} />
+  <PageHead id="R-01" name="H1 прайса" h1="Прайс-лист" lead={`Цены действуют с ${updated}. Указаны за кубометр на условиях самовывоза, доставку можно включить переключателем ниже.`}>
+    <div class="mt-5">
+      <Btn variant="secondary" data-modal-open="callback" data-modal-title="Прайс в PDF">Скачать прайс PDF [заглушка]</Btn>
+    </div>
+  </PageHead>
+
+  <Block id="R-02" name="Переключатель зоны">
+    <Container class="py-8">
+      <div class="grid gap-4 rounded-md border border-line bg-white p-5 md:grid-cols-[auto_1fr] md:items-center">
+        <label class="flex items-center gap-2 text-sm">
+          <input type="checkbox" data-zone-enable class="size-4 accent-[#2563EB]" />
+          <span>Показать цену с доставкой</span>
+        </label>
+        <label class="flex flex-wrap items-center gap-2 text-sm">
+          <span class="text-ink-2">Зона:</span>
+          <select data-zone-switch class="rounded-md border border-line bg-white px-3 py-2 text-sm outline-none focus:border-accent">
+            {site.deliveryZones.map((z) => <option value={z.id}>{z.name}, {formatPrice(z.pricePerM3)} ₽ за м³</option>)}
+          </select>
+          <span class="text-ink-2">цены пересчитываются во всех таблицах</span>
+        </label>
+      </div>
+
+      <nav class="mt-5 flex flex-wrap gap-2">
+        {groups.map((g) => (
+          <a href={`#${g.cat.slug}`} class="rounded-md border border-line bg-white px-3 py-1.5 text-sm hover:border-accent hover:text-accent">{g.cat.name}</a>
+        ))}
+        <a href="#uslugi" class="rounded-md border border-line bg-white px-3 py-1.5 text-sm hover:border-accent hover:text-accent">Услуги</a>
+      </nav>
+    </Container>
+  </Block>
+
+  <Block id="R-03" name="Таблицы прайса" tone="block">
+    <Container class="py-12">
+      {groups.map((g) => (
+        <section id={g.cat.slug} class="mb-10 scroll-mt-28">
+          <h2 class="text-xl font-semibold tracking-tight">{g.cat.name}</h2>
+          <p class="mt-1 text-sm text-ink-2">{g.cat.lead}</p>
+          <div class="mt-4"><PriceTable items={g.items} /></div>
+        </section>
+      ))}
+    </Container>
+  </Block>
+
+  <Block id="R-04" name="Скидки от объёма">
+    <Container class="py-12">
+      <h2 class="text-xl font-semibold tracking-tight">Скидки от объёма</h2>
+      <div class="mt-4 grid gap-3 md:grid-cols-3">
+        {site.volumeDiscounts.map((d) => (
+          <div class="rounded-md border border-line bg-white p-4">
+            <div class="text-lg font-semibold">скидка {d.percent}%</div>
+            <div class="mt-1 text-sm text-ink-2">при заказе от {d.from} м³</div>
+          </div>
+        ))}
+      </div>
+    </Container>
+  </Block>
+
+  <Block id="R-05" name="Цены на услуги" tone="block">
+    <Container class="py-12">
+      <h2 id="uslugi" class="scroll-mt-28 text-xl font-semibold tracking-tight">Услуги</h2>
+      <div class="table-scroll mt-4 rounded-md border border-line bg-white">
+        <table class="w-full min-w-[520px] text-sm">
+          <thead class="bg-block text-left text-xs text-ink-2">
+            <tr><th class="px-4 py-3 font-medium">Услуга</th><th class="px-4 py-3 font-medium">Что входит</th><th class="px-4 py-3 font-medium">Цена</th></tr>
+          </thead>
+          <tbody class="divide-y divide-line">
+            {services.map((s) => (
+              <tr>
+                <td class="px-4 py-3"><a href={`/uslugi/${s.slug}/`} class="font-medium hover:text-accent">{s.name}</a></td>
+                <td class="px-4 py-3 text-ink-2">{s.includes[0]}</td>
+                <td class="whitespace-nowrap px-4 py-3">от {formatPrice(s.priceFrom)} ₽ за {s.priceUnit}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Container>
+  </Block>
+
+  <CtaFinal id="R-06" title="Нужен прайс под ваш объём?" text="Пришлём коммерческое предложение с ценой под конкретный объект и график поставки." />
+</BaseLayout>

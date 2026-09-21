@@ -1,0 +1,35 @@
+---
+import Block from '../ui/Block.astro';
+import Container from '../ui/Container.astro';
+import ImagePlaceholder from '../ui/ImagePlaceholder.astro';
+const checks = [
+  { t: 'Весовой контроль на узле', d: 'Загрузка идёт по весу, распечатка прикладывается к накладной.' },
+  { t: 'ТТН с объёмом и временем', d: 'Сверьте цифры в накладной с заявкой до начала выгрузки.' },
+  { t: 'Паспорт качества на машину', d: 'Марка, класс, F, W и время загрузки указаны в документе.' },
+  { t: 'Отбор проб при вас', d: 'Лаборант приедет и отберёт серию кубов в вашем присутствии.' },
+  { t: 'Приезжайте на отгрузку', d: 'Пропуск на территорию оформляем по звонку, смотреть можно любому заказчику.' },
+];
+---
+<Block id="H-09" name="Честный объём" tone="block">
+  <Container class="grid gap-8 py-12 md:grid-cols-2 md:py-20">
+    <div>
+      <h2 class="text-xl md:text-2xl font-semibold tracking-tight">Как проверить, что привезли весь объём</h2>
+      <p class="mt-3 text-ink-2">
+        Вместо таблицы «завод против перекупщика» даём чек-лист, который работает с любым поставщиком.
+        Проверить объём можно за пять минут, не выходя с площадки.
+      </p>
+      <ul class="mt-5 grid gap-2">
+        {checks.map((c) => (
+          <li class="rounded-md border border-line bg-white p-3">
+            <div class="text-[15px] font-medium">{c.t}</div>
+            <div class="text-sm text-ink-2">{c.d}</div>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <div class="grid content-start gap-3">
+      <ImagePlaceholder label="Фото: весовой контроль, распечатка загрузки" ratio="4:3" />
+      <ImagePlaceholder label="Фото: паспорт качества и ТТН в руках прораба" ratio="4:3" />
+    </div>
+  </Container>
+</Block>

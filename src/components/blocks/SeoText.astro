@@ -1,0 +1,24 @@
+---
+import Block from '../ui/Block.astro';
+import Container from '../ui/Container.astro';
+interface Props { id?: string; topic: string; chars?: number }
+const { id = 'X-05', topic, chars = 3000 } = Astro.props;
+---
+<Block id={id} name="SEO-текст, свёрнутый">
+  <Container class="py-10 md:py-14">
+    <div class="rounded-md border border-dashed border-line bg-block p-5">
+      <p class="text-sm text-ink-2">
+        Здесь будет SEO-текст ~{chars} знаков. Тема: {topic}
+      </p>
+      <div data-collapse class="mt-3">
+        <div data-collapse-panel class="hidden text-sm leading-relaxed text-ink-2">
+          <p class="mb-2">Текст добавляется на этапе наполнения. Структура: определение, применение, отличия от смежных решений, как выбрать, частые ошибки, условия поставки.</p>
+          <p>Блок стоит один раз внизу страницы и не разрывает продающие блоки, это отличие от конкурентов, где текст размазан между секциями.</p>
+        </div>
+        <button type="button" data-collapse-trigger class="mt-1 text-sm font-medium text-accent underline-offset-2 hover:underline">
+          Читать полностью
+        </button>
+      </div>
+    </div>
+  </Container>
+</Block>

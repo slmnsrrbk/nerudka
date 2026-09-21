@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import PageHead from '../../components/ui/PageHead.astro';
+import Block from '../../components/ui/Block.astro';
+import Container from '../../components/ui/Container.astro';
+import Accordion from '../../components/ui/Accordion.astro';
+import LeadForm from '../../components/forms/LeadForm.astro';
+import { FAQ_GROUPS, faqByScope, faqItems } from '../../lib/faq';
+
+const groups = FAQ_GROUPS.map((g) => ({ ...g, items: faqByScope(g.scope) })).filter((g) => g.items.length > 0);
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqItems.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+<BaseLayout
+  title="Вопросы и ответы о заказе бетона"
+  description="Заказ и оплата, доставка, качество и документы, выбор марки, бетононасос. Ответы на частые вопросы."
+  template="T17"
+  templateName="Вопросы и ответы"
+  jsonLd={ld}
+>
+  <Breadcrumbs items={[{ label: 'Вопросы и ответы' }]} />
+  <PageHead id="F-01" name="H1 и поиск" h1="Вопросы и ответы" lead="Собрали то, что спрашивают чаще всего. Если ответа нет, задайте вопрос внизу страницы.">
+    <label class="mt-6 grid max-w-lg gap-1.5">
+      <span class="text-xs text-ink-2">Поиск по вопросам</span>
+      <input type="search" placeholder="например, простой миксера" data-filter-input="[data-accordion-item]"
+        class="w-full rounded-md border border-line bg-white px-3 py-2.5 text-[15px] outline-none focus:border-accent" />
+    </label>
+  </PageHead>
+
+  <Block id="F-02" name="Группы вопросов">
+    <Container class="py-12">
+      <div class="grid gap-8">
+        {groups.map((g) => (
+          <section data-filter-group>
+            <h2 class="text-lg font-semibold">{g.title}</h2>
+            <div class="mt-3"><Accordion items={g.items} /></div>
+          </section>
+        ))}
+      </div>
+    </Container>
+  </Block>
+
+  <Block id="F-03" name="Не нашли ответ" tone="block">
+    <Container class="grid gap-6 py-12 md:grid-cols-2">
+      <div>
+        <h2 class="text-xl font-semibold tracking-tight">Не нашли ответ?</h2>
+        <p class="mt-3 text-ink-2">Задайте вопрос, ответим в течение рабочего дня и добавим его в этот раздел, если он окажется частым.</p>
+      </div>
+      <LeadForm variant="question" title="Задать вопрос" />
+    </Container>
+  </Block>
+</BaseLayout>

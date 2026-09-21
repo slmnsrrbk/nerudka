@@ -1,0 +1,79 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import PageHead from '../../components/ui/PageHead.astro';
+import Block from '../../components/ui/Block.astro';
+import Container from '../../components/ui/Container.astro';
+import Btn from '../../components/ui/Btn.astro';
+import VolumeCalc from '../../components/calc/VolumeCalc.astro';
+import PriceCalc from '../../components/calc/PriceCalc.astro';
+import FaqBlock from '../../components/blocks/FaqBlock.astro';
+import { purposes } from '../../lib/catalog';
+---
+<BaseLayout
+  title="Калькулятор бетона: объём и стоимость с доставкой"
+  description="Посчитайте объём бетона по размерам конструкции и стоимость с доставкой в вашу зону. Расчёт можно отправить менеджеру."
+  template="T09"
+  templateName="Калькулятор"
+>
+  <Breadcrumbs items={[{ label: 'Калькулятор' }]} />
+  <PageHead id="K-01" name="H1 калькулятора" h1="Калькулятор бетона" lead="Сначала считаем кубометры по размерам конструкции, затем стоимость с доставкой. Оба расчёта используют одну и ту же логику цен, что и прайс." />
+
+  <Block id="K-02" name="Режимы калькулятора">
+    <Container class="py-12">
+      <div data-tabs-scope>
+        <div data-tabs role="tablist" class="flex flex-wrap gap-2">
+          <button type="button" role="tab" data-tab="volume" aria-selected="true" class="rounded-md border border-accent px-3 py-2 text-sm text-accent">Объём</button>
+          <button type="button" role="tab" data-tab="cost" aria-selected="false" class="rounded-md border border-line px-3 py-2 text-sm hover:border-ink-2">Стоимость</button>
+        </div>
+
+        <div data-tab-panel="volume" class="mt-5 grid gap-4 lg:grid-cols-2">
+          <VolumeCalc />
+          <div class="rounded-md border border-dashed border-line bg-block p-5 text-sm text-ink-2">
+            <p class="font-medium text-ink">Как считаем</p>
+            <p class="mt-2">Плита и стяжка: длина на ширину на толщину. Лента: периметр на ширину на высоту. Столбы: площадь круга на глубину и количество.</p>
+            <p class="mt-2">К результату добавляем запас 5 процентов: опалубка деформируется, часть смеси остаётся в лотках.</p>
+            <p class="mt-2">Кнопка «Подставить в расчёт стоимости» переносит объём во вкладку «Стоимость».</p>
+          </div>
+        </div>
+
+        <div data-tab-panel="cost" class="mt-5 hidden grid gap-4 lg:grid-cols-2">
+          <PriceCalc title="Стоимость заказа" />
+          <div class="rounded-md border border-dashed border-line bg-block p-5 text-sm text-ink-2">
+            <p class="font-medium text-ink">Что входит в расчёт</p>
+            <p class="mt-2">Цена смеси за м³, доставка по выбранной зоне, при необходимости смена автобетононасоса и скидка от объёма.</p>
+            <p class="mt-2">Результат предварительный: финальную цену подтверждает менеджер в счёте.</p>
+          </div>
+        </div>
+      </div>
+    </Container>
+  </Block>
+
+  <Block id="K-03" name="Итог и отправка расчёта" tone="block">
+    <Container class="py-10">
+      <div class="grid gap-4 rounded-md border border-line bg-white p-6 md:grid-cols-[1fr_auto] md:items-center">
+        <div>
+          <h2 class="text-lg font-semibold">Отправить расчёт менеджеру</h2>
+          <p class="mt-2 text-sm text-ink-2">Передадим расчёт в работу: проверим марку под конструкцию, уточним подъезд и пришлём счёт с фиксированной ценой.</p>
+        </div>
+        <Btn variant="primary" data-modal-open="order" data-modal-title="Расчёт из калькулятора">Отправить расчёт менеджеру</Btn>
+      </div>
+    </Container>
+  </Block>
+
+  <Block id="K-04" name="Подсказки по выбору марки" tone="block">
+    <Container class="py-12">
+      <h2 class="text-xl font-semibold tracking-tight">Какую марку выбрать</h2>
+      <div class="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+        {purposes.map((p) => (
+          <a href={`/beton/dlya-${p.slug}/`} class="rounded-md border border-line bg-white p-4 hover:border-accent">
+            <div class="font-medium">{p.h1}</div>
+            <div class="mt-1 text-sm text-ink-2">рекомендуем {p.recommended}</div>
+          </a>
+        ))}
+      </div>
+    </Container>
+  </Block>
+
+  <FaqBlock id="K-05" scope="order" title="Вопросы по расчёту и заказу" limit={4} tone="page" />
+</BaseLayout>

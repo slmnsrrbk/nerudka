@@ -1,0 +1,103 @@
+---
+import Container from '../ui/Container.astro';
+import Btn from '../ui/Btn.astro';
+import MegaMenu from './MegaMenu.astro';
+import { rootCategories, childCategories, categoryPath, activeGrades, gradeSlug, purposes } from '../../lib/catalog';
+import site from '../../data/site.json';
+
+const nav = [
+  { href: '/catalog/', label: 'Каталог', mega: true },
+  { href: '/price/', label: 'Прайс' },
+  { href: '/dostavka/', label: 'Доставка' },
+  { href: '/uslugi/', label: 'Услуги' },
+  { href: '/yurlicam/', label: 'Юрлицам' },
+  { href: '/o-zavode/', label: 'О заводе' },
+  { href: '/kontakty/', label: 'Контакты' },
+];
+const beton = childCategories('beton');
+const rastvor = childCategories('rastvor');
+const path = Astro.url.pathname;
+---
+<header data-block="H-01" data-block-name="Шапка" data-header class="sticky top-0 z-[70] border-b border-line bg-white">
+  <div class="border-b border-line bg-block" data-header-top>
+    <Container class="flex flex-wrap items-center justify-between gap-x-6 gap-y-1 py-2 text-xs text-ink-2">
+      <span>{site.address}</span>
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
+        <span>{site.workHours}</span>
+        <a href={`mailto:${site.email}`} class="hover:text-ink">{site.email}</a>
+        <label class="flex cursor-pointer items-center gap-1.5">
+          <input type="checkbox" data-annotate-toggle class="size-3.5 accent-[#2563EB]" />
+          <span>Показать разметку</span>
+        </label>
+      </div>
+    </Container>
+  </div>
+
+  <div class="relative" data-mega-root>
+    <Container class="flex items-center gap-4 py-3 transition-[padding] lg:gap-6" data-header-main>
+      <a href="/" class="flex shrink-0 items-center gap-2">
+        <span class="ph grid size-9 place-items-center rounded-md text-[10px] text-ink-2">лого</span>
+        <span class="text-base font-semibold tracking-tight">{site.name}</span>
+      </a>
+
+      <nav class="hidden flex-1 items-center gap-1 lg:flex" aria-label="Основное меню">
+        {nav.map((item) => (
+          <a
+            href={item.href}
+            data-mega-trigger={item.mega ? 'true' : undefined}
+            class:list={[
+              'rounded-md px-2.5 py-2 text-sm hover:bg-block',
+              path.startsWith(item.href) && item.href !== '/' ? 'text-accent' : '',
+            ]}
+          >{item.label}</a>
+        ))}
+      </nav>
+
+      <div class="ml-auto flex items-center gap-2 lg:ml-0">
+        <div class="hidden text-right md:block">
+          <a href={`tel:${site.phoneHref}`} class="block text-sm font-semibold">{site.phone}</a>
+          <span class="text-xs text-ink-2">отдел продаж, 24/7</span>
+        </div>
+        <div class="hidden items-center gap-1 lg:flex">
+          <a href={site.messengers.telegram} aria-label="Telegram" class="ph grid size-8 place-items-center rounded-md text-[9px] text-ink-2">tg</a>
+          <a href={site.messengers.whatsapp} aria-label="WhatsApp" class="ph grid size-8 place-items-center rounded-md text-[9px] text-ink-2">wa</a>
+          <a href={site.messengers.max} aria-label="MAX" class="ph grid size-8 place-items-center rounded-md text-[9px] text-ink-2">max</a>
+        </div>
+        <Btn href="/calculator/" variant="primary" size="sm" class="hidden md:inline-flex">Рассчитать</Btn>
+        <button type="button" data-menu-toggle aria-label="Меню" class="grid size-9 place-items-center rounded-md border border-line lg:hidden">
+          <span class="text-lg leading-none">≡</span>
+        </button>
+      </div>
+    </Container>
+    <MegaMenu />
+  </div>
+
+  <!-- Мобильное меню -->
+  <div data-mobile-menu class="hidden max-h-[calc(100vh-56px)] overflow-y-auto border-t border-line bg-white lg:hidden">
+    <Container class="py-2">
+      <div data-accordion class="divide-y divide-line">
+        <div data-accordion-item>
+          <button type="button" data-accordion-trigger aria-expanded="false" class="flex w-full items-center justify-between py-3 text-left font-medium">
+            Каталог <span data-accordion-icon class="text-ink-2">+</span>
+          </button>
+          <div data-accordion-panel class="hidden pb-3">
+            <p class="py-1 text-xs text-ink-2">Бетон</p>
+            {beton.map((c) => <a href={categoryPath(c)} class="block py-1.5 pl-3 text-sm">{c.name}</a>)}
+            <p class="py-1 text-xs text-ink-2">Растворы</p>
+            {rastvor.map((c) => <a href={categoryPath(c)} class="block py-1.5 pl-3 text-sm">{c.name}</a>)}
+            <p class="py-1 text-xs text-ink-2">По задаче</p>
+            {purposes.map((p) => <a href={`/beton/dlya-${p.slug}/`} class="block py-1.5 pl-3 text-sm">{p.h1}</a>)}
+            <p class="py-1 text-xs text-ink-2">По маркам</p>
+            <div class="flex flex-wrap gap-1.5 pl-3">
+              {activeGrades().map((g) => <a href={`/beton/${gradeSlug(g)}/`} class="rounded-md border border-line px-2 py-1 text-xs">{g}</a>)}
+            </div>
+          </div>
+        </div>
+        {nav.filter((n) => !n.mega).map((item) => (
+          <a href={item.href} class="block py-3 font-medium">{item.label}</a>
+        ))}
+        <a href="/_prototype/" class="block py-3 text-sm text-accent">Карта прототипа</a>
+      </div>
+    </Container>
+  </div>
+</header>

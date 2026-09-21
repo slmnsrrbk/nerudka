@@ -1,0 +1,215 @@
+---
+import Breadcrumbs from '../ui/Breadcrumbs.astro';
+import Block from '../ui/Block.astro';
+import Container from '../ui/Container.astro';
+import Btn from '../ui/Btn.astro';
+import ImagePlaceholder from '../ui/ImagePlaceholder.astro';
+import PriceCalc from '../calc/PriceCalc.astro';
+import FaqBlock from '../blocks/FaqBlock.astro';
+import SeoText from '../blocks/SeoText.astro';
+import CtaFinal from '../blocks/CtaFinal.astro';
+import {
+  categoryBreadcrumbs, getCategory, gradeNeighbors, similarProducts,
+  productPath, purposes, gradeSlug, classSlug,
+} from '../../lib/catalog';
+import { formatPrice, priceWithDelivery } from '../../lib/price';
+import site from '../../data/site.json';
+import type { Product } from '../../lib/types';
+
+interface Props { product: Product }
+const { product } = Astro.props;
+const category = getCategory(product.category)!;
+const crumbs = [...categoryBreadcrumbs(category), { label: product.name }];
+const { weaker, stronger } = gradeNeighbors(product.grade);
+const similar = similarProducts(product);
+const productPurposes = purposes.filter((p) => product.purposes.includes(p.slug));
+const specs = [
+  { k: 'Марка по прочности', v: product.grade },
+  { k: 'Класс прочности', v: product.class || 'не нормируется' },
+  { k: 'Подвижность', v: product.mobility },
+  { k: 'Морозостойкость', v: product.frost },
+  { k: 'Водонепроницаемость', v: product.water || 'не нормируется' },
+  { k: 'Наполнитель', v: product.filler || 'без крупного заполнителя' },
+  { k: 'Фракция', v: product.fraction || 'нет' },
+  { k: 'Нормативный документ', v: product.gost },
+];
+const docs = ['Паспорт качества', 'Декларация соответствия', 'Сертификат соответствия'];
+---
+<Breadcrumbs items={crumbs} />
+
+<Block id="P-02" name="Первый экран продукта">
+  <Container class="grid gap-8 py-8 lg:grid-cols-[1.1fr_0.9fr] md:py-12">
+    <div>
+      <h1 class="text-2xl font-semibold tracking-tight md:text-4xl">{product.name}</h1>
+      <div class="mt-3 flex flex-wrap gap-2">
+        <span class="rounded-md border border-line bg-white px-2.5 py-1 text-xs">{product.gost}</span>
+        {product.badges.map((b) => <span class="rounded-md border border-accent px-2.5 py-1 text-xs text-accent">{b}</span>)}
+        <span class="rounded-md border border-line bg-white px-2.5 py-1 text-xs">{category.name}</span>
+      </div>
+      <p class="mt-4 max-w-2xl text-ink-2">{product.note}</p>
+      <ImagePlaceholder label={`Фото: выгрузка смеси ${product.grade}`} ratio="16:9" class="mt-6" />
+    </div>
+
+    <div class="grid gap-3">
+      <div class="rounded-md border border-line bg-white p-5">
+        <div class="text-2xl font-semibold">{formatPrice(product.price)} ₽ <span class="text-base font-normal text-ink-2">за м³</span></div>
+        <p class="mt-1 text-sm text-ink-2">
+          С доставкой в первую зону: от {formatPrice(priceWithDelivery(product.price, site.deliveryZones[0]!.id))} ₽ за м³
+        </p>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <Btn variant="primary" data-modal-open="order" data-modal-title={`Заказ: ${product.name}`} data-product={product.id} data-volume="10">Заказать</Btn>
+          <Btn variant="secondary" data-add-to-request data-id={product.id} data-volume="10">В заявку</Btn>
+        </div>
+        <div class="mt-3 flex flex-wrap gap-2 text-sm">
+          <a href={site.messengers.telegram} class="text-accent underline-offset-2 hover:underline">Telegram</a>
+          <a href={site.messengers.whatsapp} class="text-accent underline-offset-2 hover:underline">WhatsApp</a>
+          <a href={site.messengers.max} class="text-accent underline-offset-2 hover:underline">MAX</a>
+        </div>
+      </div>
+      <PriceCalc title="Расчёт с доставкой" fixedProduct={product.id} compact={false} />
+    </div>
+  </Container>
+</Block>
+
+<Block id="P-03" name="Характеристики" tone="block">
+  <Container class="py-12">
+    <h2 class="text-xl font-semibold tracking-tight">Характеристики</h2>
+    <div class="table-scroll mt-4 rounded-md border border-line bg-white">
+      <table class="w-full min-w-[480px] text-sm">
+        <tbody class="divide-y divide-line">
+          {specs.map((s) => (
+            <tr>
+              <td class="w-1/2 px-4 py-3 text-ink-2">{s.k}</td>
+              <td class="px-4 py-3 font-medium">{s.v}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </Container>
+</Block>
+
+<Block id="P-04" name="Скидки от объёма">
+  <Container class="py-12">
+    <h2 class="text-xl font-semibold tracking-tight">Скидки от объёма</h2>
+    <div class="mt-4 grid gap-3 md:grid-cols-3">
+      {site.volumeDiscounts.map((d) => (
+        <div class="rounded-md border border-line bg-white p-4">
+          <div class="text-lg font-semibold">скидка {d.percent}%</div>
+          <div class="mt-1 text-sm text-ink-2">при заказе от {d.from} м³</div>
+          <div class="mt-3 text-sm">цена от {formatPrice(product.price * (1 - d.percent / 100))} ₽ за м³</div>
+        </div>
+      ))}
+    </div>
+  </Container>
+</Block>
+
+{productPurposes.length > 0 && (
+  <Block id="P-05" name="Применение" tone="block">
+    <Container class="py-12">
+      <h2 class="text-xl font-semibold tracking-tight">Для каких конструкций подходит</h2>
+      <div class="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+        {productPurposes.map((p) => (
+          <a href={`/beton/dlya-${p.slug}/`} class="rounded-md border border-line bg-white p-4 hover:border-accent">
+            <div class="font-medium">{p.h1}</div>
+            <p class="mt-1 text-sm text-ink-2">{p.tip}</p>
+          </a>
+        ))}
+      </div>
+    </Container>
+  </Block>
+)}
+
+<Block id="P-06" name="Сравнение с соседними марками">
+  <Container class="py-12">
+    <h2 class="text-xl font-semibold tracking-tight">Сравнение с соседними марками</h2>
+    <div class="mt-4 grid gap-3 md:grid-cols-3">
+      <div class="rounded-md border border-line bg-white p-4">
+        <div class="text-xs text-ink-2">слабее</div>
+        {weaker ? (
+          <>
+            <a href={productPath(weaker)} class="mt-1 block font-medium hover:text-accent">{weaker.name}</a>
+            <div class="mt-2 text-sm text-ink-2">{weaker.class}, {weaker.frost}, {formatPrice(weaker.price)} ₽ за м³</div>
+          </>
+        ) : <p class="mt-1 text-sm text-ink-2">Марки ниже в каталоге нет</p>}
+      </div>
+      <div class="rounded-md border border-accent bg-white p-4">
+        <div class="text-xs text-accent">эта марка</div>
+        <div class="mt-1 font-medium">{product.name}</div>
+        <div class="mt-2 text-sm text-ink-2">{product.class}, {product.frost}, {formatPrice(product.price)} ₽ за м³</div>
+      </div>
+      <div class="rounded-md border border-line bg-white p-4">
+        <div class="text-xs text-ink-2">прочнее</div>
+        {stronger ? (
+          <>
+            <a href={productPath(stronger)} class="mt-1 block font-medium hover:text-accent">{stronger.name}</a>
+            <div class="mt-2 text-sm text-ink-2">{stronger.class}, {stronger.frost}, {formatPrice(stronger.price)} ₽ за м³</div>
+          </>
+        ) : <p class="mt-1 text-sm text-ink-2">Марки выше в каталоге нет</p>}
+      </div>
+    </div>
+    <p class="mt-3 text-sm text-ink-2">
+      Посадка по марке: <a href={`/beton/${gradeSlug(product.grade)}/`} class="text-accent underline-offset-2 hover:underline">бетон {product.grade}</a>{product.class && <>, по классу: <a href={`/beton/klass-${classSlug(product.class)}/`} class="text-accent underline-offset-2 hover:underline">класс {product.class}</a></>}
+    </p>
+  </Container>
+</Block>
+
+<Block id="P-07" name="Документы" tone="block">
+  <Container class="py-12">
+    <h2 class="text-xl font-semibold tracking-tight">Документы на партию</h2>
+    <div class="mt-4 grid gap-3 md:grid-cols-3">
+      {docs.map((d) => (
+        <figure class="rounded-md border border-line bg-white p-3">
+          <ImagePlaceholder label="Скан документа" ratio="3:4" />
+          <figcaption class="mt-2 text-sm font-medium">{d}</figcaption>
+        </figure>
+      ))}
+    </div>
+  </Container>
+</Block>
+
+<Block id="P-08" name="Доставка и насос">
+  <Container class="py-12">
+    <h2 class="text-xl font-semibold tracking-tight">Доставка и подача</h2>
+    <div class="table-scroll mt-4 rounded-md border border-line bg-white">
+      <table class="w-full min-w-[520px] text-sm">
+        <thead class="bg-block text-left text-xs text-ink-2">
+          <tr><th class="px-4 py-3 font-medium">Зона</th><th class="px-4 py-3 font-medium">Доставка за м³</th><th class="px-4 py-3 font-medium">Цена смеси с доставкой</th></tr>
+        </thead>
+        <tbody class="divide-y divide-line">
+          {site.deliveryZones.map((z) => (
+            <tr>
+              <td class="px-4 py-3">{z.name}</td>
+              <td class="px-4 py-3 text-ink-2">{formatPrice(z.pricePerM3)} ₽</td>
+              <td class="px-4 py-3 font-medium">{formatPrice(product.price + z.pricePerM3)} ₽ за м³</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="mt-3 text-sm text-ink-2">
+      Если до точки заливки больше трёх метров от борта, нужен насос:
+      <a href="/uslugi/arenda-betononasosa/" class="text-accent underline-offset-2 hover:underline">аренда автобетононасоса</a>
+    </p>
+  </Container>
+</Block>
+
+<FaqBlock id="P-09" scope="product" title="Вопросы по смеси" limit={4} />
+
+<Block id="P-10" name="Похожие позиции">
+  <Container class="py-12">
+    <h2 class="text-xl font-semibold tracking-tight">Похожие позиции</h2>
+    <div class="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+      {similar.map((p) => (
+        <a href={productPath(p)} class="rounded-md border border-line bg-white p-4 hover:border-accent">
+          <div class="font-medium">{p.name}</div>
+          <div class="mt-1 text-sm text-ink-2">{p.class || 'нет'}, {p.frost}</div>
+          <div class="mt-3 text-sm">{formatPrice(p.price)} ₽ за м³</div>
+        </a>
+      ))}
+    </div>
+  </Container>
+</Block>
+
+<SeoText id="P-11" topic={`${product.name.toLowerCase()}: состав, применение, цена, доставка`} />
+<CtaFinal id="P-12" title={`Рассчитать ${product.name.toLowerCase()} под ваш объект`} />

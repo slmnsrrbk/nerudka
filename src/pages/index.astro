@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/blocks/Hero.astro';
+import TrustStrip from '../components/blocks/TrustStrip.astro';
+import PurposeCards from '../components/blocks/PurposeCards.astro';
+import PriceTabs from '../components/blocks/PriceTabs.astro';
+import HowItWorks from '../components/blocks/HowItWorks.astro';
+import DeliveryShort from '../components/blocks/DeliveryShort.astro';
+import PlantInside from '../components/blocks/PlantInside.astro';
+import HonestVolume from '../components/blocks/HonestVolume.astro';
+import ServicesGrid from '../components/blocks/ServicesGrid.astro';
+import ProjectsGrid from '../components/blocks/ProjectsGrid.astro';
+import B2BShort from '../components/blocks/B2BShort.astro';
+import ReviewsBlock from '../components/blocks/ReviewsBlock.astro';
+import DocumentsGrid from '../components/blocks/DocumentsGrid.astro';
+import FaqBlock from '../components/blocks/FaqBlock.astro';
+import SeoText from '../components/blocks/SeoText.astro';
+import CtaFinal from '../components/blocks/CtaFinal.astro';
+import site from '../data/site.json';
+
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: site.name,
+  telephone: site.phone,
+  email: site.email,
+  address: { '@type': 'PostalAddress', streetAddress: site.address },
+};
+---
+<BaseLayout
+  title={`Бетон с доставкой в Москве и области от производителя: ${site.name}`}
+  description="Товарный бетон, растворы и специальные смеси от завода. Цена с доставкой в калькуляторе, отгрузка круглосуточно от 1 м³, паспорт качества на каждую партию."
+  template="T01"
+  templateName="Главная"
+  jsonLd={ld}
+>
+  <Hero />
+  <TrustStrip />
+  <PurposeCards />
+  <PriceTabs />
+  <HowItWorks />
+  <DeliveryShort />
+  <PlantInside />
+  <HonestVolume />
+  <ServicesGrid />
+  <ProjectsGrid />
+  <B2BShort />
+  <ReviewsBlock />
+  <DocumentsGrid />
+  <FaqBlock id="H-15" scope="home" title="Частые вопросы" limit={6} />
+  <SeoText id="H-16" topic="бетон с доставкой в Москве и области, марки, цены, условия поставки" />
+  <CtaFinal id="H-17" hero />
+</BaseLayout>

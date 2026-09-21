@@ -1,0 +1,81 @@
+---
+import Container from '../ui/Container.astro';
+import { childCategories, categoryPath, activeGrades, gradeSlug } from '../../lib/catalog';
+import site from '../../data/site.json';
+const beton = childCategories('beton');
+const rastvor = childCategories('rastvor');
+---
+<footer data-block="H-18" data-block-name="Футер" class="mt-4 border-t border-line bg-white">
+  <Container class="grid gap-8 py-12 md:grid-cols-2 lg:grid-cols-4">
+    <div>
+      <p class="mb-3 text-xs text-ink-2">Бетон</p>
+      <ul class="grid gap-1.5 text-sm">
+        {beton.map((c) => <li><a href={categoryPath(c)} class="hover:text-accent">{c.name}</a></li>)}
+      </ul>
+      <div class="mt-4 flex flex-wrap gap-1.5">
+        {activeGrades().map((g) => <a href={`/beton/${gradeSlug(g)}/`} class="rounded-md border border-line px-2 py-1 text-xs hover:border-accent">{g}</a>)}
+      </div>
+    </div>
+    <div>
+      <p class="mb-3 text-xs text-ink-2">Растворы</p>
+      <ul class="grid gap-1.5 text-sm">
+        {rastvor.map((c) => <li><a href={categoryPath(c)} class="hover:text-accent">{c.name}</a></li>)}
+      </ul>
+    </div>
+    <div>
+      <p class="mb-3 text-xs text-ink-2">Компания</p>
+      <ul class="grid gap-1.5 text-sm">
+        <li><a href="/o-zavode/" class="hover:text-accent">О заводе</a></li>
+        <li><a href="/laboratoriya/" class="hover:text-accent">Лаборатория</a></li>
+        <li><a href="/avtopark/" class="hover:text-accent">Автопарк</a></li>
+        <li><a href="/sertifikaty/" class="hover:text-accent">Сертификаты и документы</a></li>
+        <li><a href="/proekty/" class="hover:text-accent">Проекты</a></li>
+        <li><a href="/otzyvy/" class="hover:text-accent">Отзывы</a></li>
+        <li><a href="/vakansii/" class="hover:text-accent">Вакансии</a></li>
+        <li><a href="/blog/" class="hover:text-accent">Блог</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="mb-3 text-xs text-ink-2">Клиентам</p>
+      <ul class="grid gap-1.5 text-sm">
+        <li><a href="/price/" class="hover:text-accent">Прайс</a></li>
+        <li><a href="/calculator/" class="hover:text-accent">Калькулятор</a></li>
+        <li><a href="/dostavka/" class="hover:text-accent">Доставка и зоны</a></li>
+        <li><a href="/uslugi/" class="hover:text-accent">Услуги</a></li>
+        <li><a href="/yurlicam/" class="hover:text-accent">Юрлицам и застройщикам</a></li>
+        <li><a href="/akcii/" class="hover:text-accent">Акции</a></li>
+        <li><a href="/faq/" class="hover:text-accent">Вопросы и ответы</a></li>
+        <li><a href="/kontakty/" class="hover:text-accent">Контакты</a></li>
+      </ul>
+    </div>
+  </Container>
+
+  <div class="border-t border-line">
+    <Container class="grid gap-6 py-8 md:grid-cols-3">
+      <div class="text-sm">
+        <a href={`tel:${site.phoneHref}`} class="block text-lg font-semibold">{site.phone}</a>
+        <a href={`mailto:${site.email}`} class="block text-ink-2 hover:text-ink">{site.email}</a>
+        <p class="mt-1 text-ink-2">{site.workHours}</p>
+        <div class="mt-3 flex gap-1.5">
+          <a href={site.messengers.telegram} class="ph grid size-8 place-items-center rounded-md text-[9px] text-ink-2">tg</a>
+          <a href={site.messengers.whatsapp} class="ph grid size-8 place-items-center rounded-md text-[9px] text-ink-2">wa</a>
+          <a href={site.messengers.max} class="ph grid size-8 place-items-center rounded-md text-[9px] text-ink-2">max</a>
+        </div>
+      </div>
+      <div class="text-sm text-ink-2">
+        <p>{site.legalName}</p>
+        <p>ИНН {site.requisites.inn}, ОГРН {site.requisites.ogrn}</p>
+        <p>{site.address}</p>
+      </div>
+      <div class="text-sm">
+        <ul class="grid gap-1.5">
+          <li><a href="/politika/" class="text-ink-2 hover:text-ink">Политика обработки ПДн</a></li>
+          <li><a href="/soglasie/" class="text-ink-2 hover:text-ink">Согласие на обработку ПДн</a></li>
+          <li><a href="/oferta/" class="text-ink-2 hover:text-ink">Оферта</a></li>
+          <li><a href="/_prototype/" class="text-accent underline-offset-2 hover:underline">Карта прототипа</a></li>
+        </ul>
+        <p class="mt-3 text-xs text-ink-2">Цены на сайте не являются публичной офертой. Данные условные, это прототип.</p>
+      </div>
+    </Container>
+  </div>
+</footer>

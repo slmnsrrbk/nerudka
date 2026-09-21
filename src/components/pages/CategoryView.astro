@@ -1,0 +1,156 @@
+---
+import Breadcrumbs from '../ui/Breadcrumbs.astro';
+import PageHead from '../ui/PageHead.astro';
+import Block from '../ui/Block.astro';
+import Container from '../ui/Container.astro';
+import Btn from '../ui/Btn.astro';
+import PriceTable from '../ui/PriceTable.astro';
+import ImagePlaceholder from '../ui/ImagePlaceholder.astro';
+import FaqBlock from '../blocks/FaqBlock.astro';
+import SeoText from '../blocks/SeoText.astro';
+import CtaFinal from '../blocks/CtaFinal.astro';
+import {
+  categoryBreadcrumbs, childCategories, categoryPath, productsOfCategory,
+  activeGrades, gradeSlug, purposes, productPath, minPrice,
+} from '../../lib/catalog';
+import { formatPrice } from '../../lib/price';
+import site from '../../data/site.json';
+import type { Category } from '../../lib/types';
+
+interface Props { category: Category }
+const { category } = Astro.props;
+const items = productsOfCategory(category.slug);
+const children = childCategories(category.slug);
+const uniq = (arr: string[]) => [...new Set(arr.filter(Boolean))];
+const fillers = uniq(items.map((p) => p.filler));
+const classes = uniq(items.map((p) => p.class));
+const mobilities = uniq(items.map((p) => p.mobility));
+const frosts = uniq(items.map((p) => p.frost));
+const waters = uniq(items.map((p) => p.water));
+const catPurposes = purposes.filter((pu) => items.some((p) => p.purposes.includes(pu.slug))).slice(0, 4);
+const selectCls = 'w-full rounded-md border border-line bg-white px-3 py-2 text-sm outline-none focus:border-accent';
+---
+<Breadcrumbs items={categoryBreadcrumbs(category)} />
+<PageHead id="C-01" name="H1 и лид категории" h1={category.name} lead={category.lead} />
+
+<Block id="C-02" name="Чипсы быстрых марок">
+  <Container class="py-6">
+    <div class="flex flex-wrap gap-2">
+      {activeGrades().map((g) => (
+        <a href={`/beton/${gradeSlug(g)}/`} class="rounded-md border border-line bg-white px-3 py-1.5 text-sm hover:border-accent hover:text-accent">
+          Бетон {g}
+        </a>
+      ))}
+    </div>
+  </Container>
+</Block>
+
+{children.length > 0 && (
+  <Block id="C-03" name="Подкатегории" tone="block">
+    <Container class="py-8">
+      <div class="grid gap-3 md:grid-cols-3 lg:grid-cols-4">
+        {children.map((c) => {
+          const list = productsOfCategory(c.slug);
+          return (
+            <a href={categoryPath(c)} class="rounded-md border border-line bg-white p-4 transition-colors hover:border-accent">
+              <div class="font-medium">{c.name}</div>
+              <p class="mt-1 text-sm text-ink-2">{c.lead}</p>
+              <div class="mt-3 text-sm text-ink-2">{list.length} позиций, от {formatPrice(minPrice(list))} ₽ за м³</div>
+            </a>
+          );
+        })}
+      </div>
+    </Container>
+  </Block>
+)}
+
+<Block id="C-04" name="Фильтры и вид листинга">
+  <Container class="py-8">
+    <div data-catalog-filters class="grid gap-3 md:grid-cols-3 lg:grid-cols-6">
+      <label class="grid gap-1"><span class="text-xs text-ink-2">Наполнитель</span>
+        <select data-filter-field="filler" class={selectCls}><option value="">любой</option>{fillers.map((v) => <option>{v}</option>)}</select>
+      </label>
+      <label class="grid gap-1"><span class="text-xs text-ink-2">Класс</span>
+        <select data-filter-field="class" class={selectCls}><option value="">любой</option>{classes.map((v) => <option>{v}</option>)}</select>
+      </label>
+      <label class="grid gap-1"><span class="text-xs text-ink-2">Подвижность</span>
+        <select data-filter-field="mobility" class={selectCls}><option value="">любая</option>{mobilities.map((v) => <option>{v}</option>)}</select>
+      </label>
+      <label class="grid gap-1"><span class="text-xs text-ink-2">Морозостойкость</span>
+        <select data-filter-field="frost" class={selectCls}><option value="">любая</option>{frosts.map((v) => <option>{v}</option>)}</select>
+      </label>
+      <label class="grid gap-1"><span class="text-xs text-ink-2">Водонепроницаемость</span>
+        <select data-filter-field="water" class={selectCls}><option value="">любая</option>{waters.map((v) => <option>{v}</option>)}</select>
+      </label>
+      <div class="grid gap-1">
+        <span class="text-xs text-ink-2">Вид</span>
+        <div class="flex gap-2">
+          <button type="button" data-view="table" class="flex-1 rounded-md border border-accent px-3 py-2 text-sm text-accent">Таблица</button>
+          <button type="button" data-view="cards" class="flex-1 rounded-md border border-line px-3 py-2 text-sm">Карточки</button>
+        </div>
+      </div>
+    </div>
+  </Container>
+</Block>
+
+<Block id="C-05" name="Листинг позиций">
+  <Container class="pb-12">
+    <div data-view-panel="table">
+      <PriceTable items={items} />
+    </div>
+    <div data-view-panel="cards" class="hidden grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+      {items.map((p) => (
+        <div
+          data-product-card
+          data-filler={p.filler} data-class={p.class} data-mobility={p.mobility}
+          data-frost={p.frost} data-water={p.water}
+          class="flex flex-col rounded-md border border-line bg-white p-4"
+        >
+          <ImagePlaceholder label={`Фото: ${p.name.toLowerCase()}`} ratio="4:3" />
+          <a href={productPath(p)} class="mt-3 font-medium hover:text-accent">{p.name}</a>
+          <p class="mt-1 text-sm text-ink-2">{p.note}</p>
+          <div class="mt-3 flex items-center justify-between">
+            <span class="font-medium">{formatPrice(p.price)} ₽ за м³</span>
+            <button type="button" data-add-to-request data-id={p.id} data-volume="10" class="rounded-md border border-line px-3 py-1.5 text-xs hover:border-accent hover:text-accent">В заявку</button>
+          </div>
+        </div>
+      ))}
+    </div>
+    <p class="mt-3 text-sm text-ink-2">Показано позиций: <span data-visible-count>{items.length}</span> из {items.length}</p>
+  </Container>
+</Block>
+
+{catPurposes.length > 0 && (
+  <Block id="C-06" name="Для чего подходит" tone="block">
+    <Container class="py-12">
+      <h2 class="text-xl font-semibold tracking-tight">Для чего подходит</h2>
+      <div class="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+        {catPurposes.map((pu) => (
+          <a href={`/beton/dlya-${pu.slug}/`} class="rounded-md border border-line bg-white p-4 hover:border-accent">
+            <div class="font-medium">{pu.h1}</div>
+            <p class="mt-1 text-sm text-ink-2">{pu.short}</p>
+          </a>
+        ))}
+      </div>
+    </Container>
+  </Block>
+)}
+
+<Block id="C-07" name="Доставка кратко">
+  <Container class="py-12">
+    <div class="grid gap-4 rounded-md border border-line bg-white p-6 md:grid-cols-[1fr_auto] md:items-center">
+      <div>
+        <h2 class="text-lg font-semibold">Доставка</h2>
+        <p class="mt-2 text-sm text-ink-2">
+          Отгрузка от {site.minVolume} м³ круглосуточно. Заявка до {site.orderDeadline} обычно уходит в рейс в тот же день.
+          Стоимость доставки: {site.deliveryZones.map((z) => `${z.name} ${z.pricePerM3} ₽ за м³`).join(', ')}.
+        </p>
+      </div>
+      <Btn href="/dostavka/" variant="secondary">Условия доставки</Btn>
+    </div>
+  </Container>
+</Block>
+
+<FaqBlock id="C-08" scope="category" title="Вопросы по разделу" limit={5} />
+<SeoText id="C-09" topic={`${category.name.toLowerCase()}: применение, марки, цены, доставка`} />
+<CtaFinal id="C-10" />

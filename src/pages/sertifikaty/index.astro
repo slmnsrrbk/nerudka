@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import PageHead from '../../components/ui/PageHead.astro';
+import DocumentsGrid from '../../components/blocks/DocumentsGrid.astro';
+import CtaFinal from '../../components/blocks/CtaFinal.astro';
+---
+<BaseLayout
+  title="Сертификаты и документы на бетон"
+  description="Сертификаты соответствия, декларации, протоколы испытаний, паспорта качества и договоры. Документы выдаются на каждую партию."
+  template="T11"
+  templateName="Сертификаты и документы"
+>
+  <Breadcrumbs items={[{ label: 'Сертификаты и документы' }]} />
+  <PageHead id="DOC-01" name="H1 документов" h1="Сертификаты и документы" lead="Паспорт качества выдаётся на каждую отгруженную машину. Остальные документы присылаем по запросу в течение рабочего дня." />
+  <DocumentsGrid id="DOC-03" limit={8} showFilter tone="page" />
+  <CtaFinal id="DOC-04" title="Нужен комплект документов на объект?" text="Соберём паспорта, протоколы и декларации за период поставки." />
+</BaseLayout>

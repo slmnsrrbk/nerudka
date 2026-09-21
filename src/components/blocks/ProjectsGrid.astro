@@ -1,0 +1,34 @@
+---
+import Block from '../ui/Block.astro';
+import Container from '../ui/Container.astro';
+import Btn from '../ui/Btn.astro';
+import ImagePlaceholder from '../ui/ImagePlaceholder.astro';
+import projects from '../../data/projects.json';
+import { getGeo } from '../../lib/geo';
+
+interface Props { id?: string; limit?: number; exclude?: string; title?: string }
+const { id = 'H-11', limit = 4, exclude, title = 'Проекты' } = Astro.props;
+const items = projects.filter((p) => p.slug !== exclude).slice(0, limit);
+---
+<Block id={id} name="Проекты">
+  <Container class="py-12 md:py-20">
+    <div class="flex flex-wrap items-baseline justify-between gap-3">
+      <h2 class="text-xl md:text-2xl font-semibold tracking-tight">{title}</h2>
+      <Btn href="/proekty/" variant="secondary" size="sm">Все проекты</Btn>
+    </div>
+    <div class="mt-6 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+      {items.map((p) => (
+        <a href={`/proekty/${p.slug}/`} class="rounded-md border border-line bg-white p-4 transition-colors hover:border-accent">
+          <ImagePlaceholder label={`Фото: ${p.name.toLowerCase()}`} ratio="4:3" />
+          <div class="mt-3 font-medium">{p.name}</div>
+          <dl class="mt-2 grid gap-1 text-sm text-ink-2">
+            <div class="flex justify-between gap-2"><dt>Марка</dt><dd class="text-ink">{p.grade}</dd></div>
+            <div class="flex justify-between gap-2"><dt>Объём</dt><dd class="text-ink">{p.volume} м³</dd></div>
+            <div class="flex justify-between gap-2"><dt>Сроки</dt><dd class="text-ink">{p.period}</dd></div>
+            <div class="flex justify-between gap-2"><dt>Город</dt><dd class="text-ink">{getGeo(p.geo)?.name ?? 'не указан'}</dd></div>
+          </dl>
+        </a>
+      ))}
+    </div>
+  </Container>
+</Block>

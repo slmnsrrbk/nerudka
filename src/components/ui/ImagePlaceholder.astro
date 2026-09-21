@@ -1,0 +1,12 @@
+---
+// Единственный способ показать «фото» в прототипе.
+interface Props { label: string; ratio?: string; class?: string }
+const { label, ratio = '16:9', class: cls = '' } = Astro.props;
+const [w, h] = ratio.split(':').map(Number);
+const pad = w && h ? (h / w) * 100 : 56.25;
+---
+<div class:list={['ph rounded-md', cls]} style={`padding-top:${pad}%`} role="img" aria-label={label}>
+  <span class="absolute inset-0 flex items-center justify-center p-3 text-center text-xs leading-snug text-ink-2">
+    {label} · {ratio}
+  </span>
+</div>

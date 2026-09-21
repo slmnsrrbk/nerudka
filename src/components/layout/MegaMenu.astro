@@ -1,0 +1,38 @@
+---
+import { rootCategories, childCategories, categoryPath, activeGrades, gradeSlug, purposes } from '../../lib/catalog';
+const beton = childCategories('beton');
+const rastvor = childCategories('rastvor');
+const grades = activeGrades();
+---
+<div data-mega class="invisible absolute left-0 right-0 top-full z-50 opacity-0 transition-opacity">
+  <div class="mx-auto max-w-[1280px] px-4 md:px-6">
+    <div class="grid gap-6 rounded-b-md border border-t-0 border-line bg-white p-6 shadow-lg lg:grid-cols-4">
+      <div>
+        <p class="mb-3 text-xs text-ink-2">Бетон по видам</p>
+        <ul class="grid gap-1.5 text-sm">
+          {beton.map((c) => <li><a href={categoryPath(c)} class="hover:text-accent">{c.name}</a></li>)}
+          <li><a href="/catalog/beton/" class="font-medium text-accent">Все виды бетона</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="mb-3 text-xs text-ink-2">Бетон по маркам</p>
+        <ul class="grid grid-cols-2 gap-1.5 text-sm">
+          {grades.map((g) => <li><a href={`/beton/${gradeSlug(g)}/`} class="hover:text-accent">Бетон {g}</a></li>)}
+        </ul>
+      </div>
+      <div>
+        <p class="mb-3 text-xs text-ink-2">По задаче</p>
+        <ul class="grid gap-1.5 text-sm">
+          {purposes.map((p) => <li><a href={`/beton/dlya-${p.slug}/`} class="hover:text-accent">{p.h1}</a></li>)}
+        </ul>
+      </div>
+      <div>
+        <p class="mb-3 text-xs text-ink-2">Растворы</p>
+        <ul class="grid gap-1.5 text-sm">
+          {rastvor.map((c) => <li><a href={categoryPath(c)} class="hover:text-accent">{c.name}</a></li>)}
+          <li><a href="/catalog/rastvor/" class="font-medium text-accent">Все растворы</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

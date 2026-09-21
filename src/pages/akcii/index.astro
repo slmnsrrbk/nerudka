@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import PageHead from '../../components/ui/PageHead.astro';
+import Block from '../../components/ui/Block.astro';
+import Container from '../../components/ui/Container.astro';
+import Btn from '../../components/ui/Btn.astro';
+import ImagePlaceholder from '../../components/ui/ImagePlaceholder.astro';
+import promos from '../../data/promos.json';
+const current = promos.find((p) => p.current) ?? promos[0]!;
+const rest = promos.filter((p) => p.slug !== current.slug);
+---
+<BaseLayout
+  title="Акции и скидки на бетон"
+  description="Действующие акции завода: скидка на автобетононасос, ночная отгрузка без наценки, лабораторная серия в подарок."
+  template="T15"
+  templateName="Список публикаций"
+>
+  <Breadcrumbs items={[{ label: 'Акции' }]} />
+  <PageHead id="B-01" name="H1 акций" h1="Акции" lead="Условия действуют на объём и сроки, указанные в карточке акции." />
+
+  <Block id="B-02" name="Текущая акция">
+    <Container class="py-10">
+      <a href={`/akcii/${current.slug}/`} class="grid gap-6 rounded-md border border-accent bg-white p-6 md:grid-cols-[1fr_320px] md:items-center">
+        <div>
+          <span class="rounded-md border border-accent px-2.5 py-1 text-xs text-accent">действует сейчас</span>
+          <h2 class="mt-3 text-xl font-semibold tracking-tight md:text-2xl">{current.title}</h2>
+          <p class="mt-2 text-ink-2">{current.excerpt}</p>
+          <p class="mt-3 text-sm text-ink-2">до {current.until}</p>
+        </div>
+        <ImagePlaceholder label="Баннер акции" ratio="4:3" />
+      </a>
+    </Container>
+  </Block>
+
+  <Block id="B-03" name="Сетка акций" tone="block">
+    <Container class="py-12">
+      <div class="grid gap-3 md:grid-cols-3">
+        {rest.map((p) => (
+          <a href={`/akcii/${p.slug}/`} class="rounded-md border border-line bg-white p-4 hover:border-accent">
+            <ImagePlaceholder label="Баннер акции" ratio="16:9" />
+            <div class="mt-3 text-xs text-ink-2">до {p.until}</div>
+            <div class="mt-1 font-medium">{p.title}</div>
+            <p class="mt-1 text-sm text-ink-2">{p.excerpt}</p>
+          </a>
+        ))}
+      </div>
+    </Container>
+  </Block>
+
+  <Block id="B-04" name="Пагинация">
+    <Container class="py-8">
+      <div class="flex gap-2">
+        <span class="rounded-md border border-accent px-3 py-2 text-sm text-accent">1</span>
+        <span class="rounded-md border border-line px-3 py-2 text-sm text-ink-2">2</span>
+        <span class="rounded-md border border-line px-3 py-2 text-sm text-ink-2">вперёд</span>
+      </div>
+      <p class="mt-2 text-xs text-ink-2">Пагинация показана визуально, в прототипе все записи на одной странице.</p>
+    </Container>
+  </Block>
+</BaseLayout>

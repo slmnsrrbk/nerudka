@@ -1,0 +1,63 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import PageHead from '../../components/ui/PageHead.astro';
+import Block from '../../components/ui/Block.astro';
+import Container from '../../components/ui/Container.astro';
+import ImagePlaceholder from '../../components/ui/ImagePlaceholder.astro';
+import PurposeCards from '../../components/blocks/PurposeCards.astro';
+import FaqBlock from '../../components/blocks/FaqBlock.astro';
+import SeoText from '../../components/blocks/SeoText.astro';
+import CtaFinal from '../../components/blocks/CtaFinal.astro';
+import { rootCategories, childCategories, categoryPath, productsOfCategory, minPrice } from '../../lib/catalog';
+import { formatPrice } from '../../lib/price';
+---
+<BaseLayout
+  title="Каталог бетона и растворов: цены за м³ с доставкой"
+  description="Каталог завода: товарный, тощий, мелкозернистый бетон, керамзитобетон, фибробетон, растворы и пескобетон. Цены за м³, характеристики, доставка по Москве и области."
+  template="T02"
+  templateName="Хаб каталога"
+>
+  <Breadcrumbs items={[{ label: 'Каталог' }]} />
+  <PageHead
+    h1="Каталог бетона и растворов"
+    lead="Два входа в каталог: по виду смеси и по задаче. Все позиции производятся на собственных узлах, цена указана за кубометр на самовывозе."
+  />
+
+  <Block id="X-02" name="Сетка разделов">
+    <Container class="py-12">
+      {rootCategories().map((root) => {
+        const children = childCategories(root.slug);
+        return (
+          <div class="mb-10">
+            <div class="flex flex-wrap items-baseline justify-between gap-3">
+              <h2 class="text-xl font-semibold tracking-tight">{root.name}</h2>
+              <a href={categoryPath(root)} class="text-sm text-accent underline-offset-2 hover:underline">Все позиции раздела</a>
+            </div>
+            <div class="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+              {children.map((c) => {
+                const items = productsOfCategory(c.slug);
+                return (
+                  <a href={categoryPath(c)} class="rounded-md border border-line bg-white p-4 transition-colors hover:border-accent">
+                    <ImagePlaceholder label={`Фото: ${c.name.toLowerCase()}`} ratio="4:3" />
+                    <div class="mt-3 font-medium">{c.name}</div>
+                    <p class="mt-1 text-sm text-ink-2">{c.lead}</p>
+                    <div class="mt-3 text-sm">
+                      от {formatPrice(minPrice(items))} ₽ за м³
+                      <span class="text-ink-2">, {items.length} позиций</span>
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+    </Container>
+  </Block>
+
+  <PurposeCards id="X-03" title="Подобрать по задаче" tone="block" />
+  <FaqBlock id="X-04" scope="category" title="Вопросы по каталогу" limit={5} tone="page" />
+  <SeoText id="X-05" topic="каталог бетона и растворов, отличия марок, как выбрать смесь" />
+  <CtaFinal id="X-06" />
+</BaseLayout>

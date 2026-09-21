@@ -1,0 +1,37 @@
+---
+import Block from '../ui/Block.astro';
+import Container from '../ui/Container.astro';
+import Accordion from '../ui/Accordion.astro';
+import { faqByScope } from '../../lib/faq';
+
+interface Props {
+  id?: string;
+  scope: string;
+  title?: string;
+  limit?: number;
+  replace?: Record<string, string>;
+  tone?: 'page' | 'block';
+}
+const { id = 'X-04', scope, title = 'Вопросы и ответы', limit = 6, replace = {}, tone = 'block' } = Astro.props;
+const apply = (text: string) =>
+  Object.entries(replace).reduce((acc, [k, v]) => acc.split(`{${k}}`).join(v), text);
+const items = faqByScope(scope, limit).map((f) => ({ q: apply(f.q), a: apply(f.a) }));
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: items.map((i) => ({
+    '@type': 'Question',
+    name: i.q,
+    acceptedAnswer: { '@type': 'Answer', text: i.a },
+  })),
+};
+---
+{items.length > 0 && (
+  <Block id={id} name="FAQ" tone={tone}>
+    <Container class="py-12 md:py-20">
+      <h2 class="text-xl md:text-2xl font-semibold tracking-tight">{title}</h2>
+      <div class="mt-6 max-w-3xl"><Accordion items={items} /></div>
+    </Container>
+    <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+  </Block>
+)}

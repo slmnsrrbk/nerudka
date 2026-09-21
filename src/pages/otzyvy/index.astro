@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import PageHead from '../../components/ui/PageHead.astro';
+import Block from '../../components/ui/Block.astro';
+import Container from '../../components/ui/Container.astro';
+import Btn from '../../components/ui/Btn.astro';
+import LeadForm from '../../components/forms/LeadForm.astro';
+import CtaFinal from '../../components/blocks/CtaFinal.astro';
+import reviews from '../../data/reviews.json';
+---
+<BaseLayout
+  title="Отзывы о работе бетонного завода"
+  description="Отзывы прорабов, снабженцев и частных заказчиков: соблюдение графика, документы, качество смеси."
+  template="T14"
+  templateName="Отзывы"
+>
+  <Breadcrumbs items={[{ label: 'Отзывы' }]} />
+  <PageHead id="RV-01" name="H1 отзывов" h1="Отзывы" lead="Собираем обратную связь после каждой крупной поставки. Ниже отзывы с объектов, публикуем без правок.">
+    <div class="ph mt-6 grid max-w-md place-items-center rounded-md p-5 text-center text-xs text-ink-2" style="min-height:110px">
+      Виджет: рейтинг компании на Яндекс Картах
+    </div>
+  </PageHead>
+
+  <Block id="RV-02" name="Список отзывов">
+    <Container class="py-12">
+      <div class="grid gap-3 md:grid-cols-2">
+        {reviews.map((r) => (
+          <figure class="rounded-md border border-line bg-white p-5">
+            <div class="flex flex-wrap items-baseline justify-between gap-2">
+              <b class="text-[15px]">{r.name}</b>
+              <span class="text-xs text-ink-2">{r.date}</span>
+            </div>
+            <div class="mt-1 text-xs text-ink-2">{r.object}, {r.grade}</div>
+            <blockquote class="mt-3 text-sm">{r.text}</blockquote>
+          </figure>
+        ))}
+      </div>
+    </Container>
+  </Block>
+
+  <Block id="RV-03" name="Оставить отзыв" tone="block">
+    <Container class="grid gap-6 py-12 md:grid-cols-2">
+      <div>
+        <h2 class="text-xl font-semibold tracking-tight">Оставить отзыв</h2>
+        <p class="mt-3 text-ink-2">Расскажите, как прошла поставка: что понравилось и что стоит улучшить. Публикуем после проверки заказа в системе.</p>
+        <div class="mt-5"><Btn variant="secondary" data-modal-open="callback" data-modal-title="Оставить отзыв">Позвонить и рассказать</Btn></div>
+      </div>
+      <LeadForm variant="review" title="Форма отзыва" />
+    </Container>
+  </Block>
+
+  <CtaFinal id="RV-04" />
+</BaseLayout>

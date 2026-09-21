@@ -1,0 +1,33 @@
+---
+import Block from '../ui/Block.astro';
+import Container from '../ui/Container.astro';
+import ImagePlaceholder from '../ui/ImagePlaceholder.astro';
+const cards = [
+  { href: '/o-zavode/', title: 'Производство', text: 'Шесть узлов, автоматическое дозирование, 2 500 м³ в сутки.' },
+  { href: '/laboratoriya/', title: 'Лаборатория', text: 'Входной контроль сырья, испытания каждой партии, протоколы.' },
+  { href: '/avtopark/', title: 'Автопарк', text: '28 миксеров и 8 насосов, интервал подачи от 20 минут.' },
+];
+---
+<Block id="H-08" name="Завод изнутри">
+  <Container class="py-12 md:py-20">
+    <h2 class="text-xl md:text-2xl font-semibold tracking-tight">Завод изнутри</h2>
+    <div class="mt-6 grid gap-6 lg:grid-cols-2">
+      <div class="ph rounded-md" style="padding-top:56.25%">
+        <span class="absolute inset-0 flex items-center justify-center text-center text-xs text-ink-2">
+          Видео: обзорная экскурсия по узлу, 60 секунд · 16:9
+        </span>
+      </div>
+      <div class="grid gap-3">
+        {cards.map((c) => (
+          <a href={c.href} class="flex gap-4 rounded-md border border-line bg-white p-4 transition-colors hover:border-accent">
+            <ImagePlaceholder label="Фото" ratio="1:1" class="w-20 shrink-0" />
+            <span class="min-w-0">
+              <span class="block font-medium">{c.title}</span>
+              <span class="mt-1 block text-sm text-ink-2">{c.text}</span>
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </Container>
+</Block>

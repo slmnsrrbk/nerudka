@@ -1,0 +1,101 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import PageHead from '../../components/ui/PageHead.astro';
+import Block from '../../components/ui/Block.astro';
+import Container from '../../components/ui/Container.astro';
+import LeadForm from '../../components/forms/LeadForm.astro';
+import site from '../../data/site.json';
+
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: site.name,
+  telephone: site.phone,
+  email: site.email,
+  address: { '@type': 'PostalAddress', streetAddress: site.address },
+  openingHours: 'Mo-Su 00:00-24:00',
+};
+const cards = [
+  { t: 'Адрес завода', v: site.address, note: 'самовывоз по пропуску' },
+  { t: 'Отдел продаж', v: site.phone, note: 'приём заявок круглосуточно', href: `tel:${site.phoneHref}` },
+  { t: 'Диспетчер', v: site.dispatcherPhone, note: 'график подачи и статус машины', href: `tel:${site.dispatcherPhoneHref}` },
+  { t: 'Почта', v: site.email, note: 'спецификации, документы, КП', href: `mailto:${site.email}` },
+  { t: 'Мессенджеры', v: 'Telegram, WhatsApp, MAX', note: 'отвечаем в рабочее время' },
+  { t: 'Режим работы', v: site.workHours, note: site.officeHours },
+];
+---
+<BaseLayout
+  title="Контакты бетонного завода"
+  description="Телефон отдела продаж и диспетчера, адрес завода, почта, мессенджеры и реквизиты."
+  template="T18"
+  templateName="Контакты"
+  jsonLd={ld}
+>
+  <Breadcrumbs items={[{ label: 'Контакты' }]} />
+  <PageHead id="CT-01" name="H1 контактов" h1="Контакты" lead="Заявки принимаем круглосуточно. Для самовывоза нужен пропуск, оформляем по звонку." />
+
+  <Block id="CT-02" name="Карточки контактов">
+    <Container class="py-10">
+      <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+        {cards.map((c) => (
+          <div class="rounded-md border border-line bg-white p-4">
+            <div class="text-xs text-ink-2">{c.t}</div>
+            {c.href
+              ? <a href={c.href} class="mt-1 block text-[15px] font-medium hover:text-accent">{c.v}</a>
+              : <div class="mt-1 text-[15px] font-medium">{c.v}</div>}
+            <div class="mt-1 text-sm text-ink-2">{c.note}</div>
+          </div>
+        ))}
+      </div>
+    </Container>
+  </Block>
+
+  <Block id="CT-03" name="Карта" tone="block">
+    <Container class="py-12">
+      <div class="ph rounded-md" style="padding-top:42%">
+        <span class="absolute inset-0 grid place-items-center text-center text-xs text-ink-2">Карта: расположение завода и офиса · 21:9</span>
+      </div>
+    </Container>
+  </Block>
+
+  <Block id="CT-04" name="Как проехать">
+    <Container class="py-12">
+      <h2 class="text-xl font-semibold tracking-tight">Как проехать на самовывоз</h2>
+      <ol class="mt-4 grid max-w-3xl gap-2">
+        <li class="rounded-md border border-line bg-white p-3 text-sm">1. Позвоните диспетчеру и назовите марку, объём и номер машины.</li>
+        <li class="rounded-md border border-line bg-white p-3 text-sm">2. Оплатите счёт или внесите оплату на месте, после этого оформляется пропуск.</li>
+        <li class="rounded-md border border-line bg-white p-3 text-sm">3. На въезде покажите пропуск, встаньте на весовой контроль, затем под загрузку.</li>
+        <li class="rounded-md border border-line bg-white p-3 text-sm">4. Получите ТТН и паспорт качества, после повторного взвешивания выезжайте.</li>
+      </ol>
+    </Container>
+  </Block>
+
+  <Block id="CT-05" name="Реквизиты" tone="block">
+    <Container class="py-12">
+      <h2 class="text-xl font-semibold tracking-tight">Реквизиты</h2>
+      <div class="table-scroll mt-4 max-w-3xl rounded-md border border-line bg-white">
+        <table class="w-full min-w-[420px] text-sm">
+          <tbody class="divide-y divide-line">
+            <tr><td class="w-1/3 px-4 py-3 text-ink-2">Наименование</td><td class="px-4 py-3">{site.legalName}</td></tr>
+            <tr><td class="px-4 py-3 text-ink-2">ИНН и КПП</td><td class="px-4 py-3">{site.requisites.inn}, {site.requisites.kpp}</td></tr>
+            <tr><td class="px-4 py-3 text-ink-2">ОГРН</td><td class="px-4 py-3">{site.requisites.ogrn}</td></tr>
+            <tr><td class="px-4 py-3 text-ink-2">Банк</td><td class="px-4 py-3">{site.requisites.bank}</td></tr>
+            <tr><td class="px-4 py-3 text-ink-2">Расчётный счёт</td><td class="px-4 py-3">{site.requisites.account}</td></tr>
+            <tr><td class="px-4 py-3 text-ink-2">Корр. счёт и БИК</td><td class="px-4 py-3">{site.requisites.korr}, {site.requisites.bik}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </Container>
+  </Block>
+
+  <Block id="CT-06" name="Форма обратной связи">
+    <Container class="grid gap-6 py-12 md:grid-cols-2">
+      <div>
+        <h2 class="text-xl font-semibold tracking-tight">Написать нам</h2>
+        <p class="mt-3 text-ink-2">Опишите задачу: конструкция, объём, адрес и желаемая дата. Ответим с расчётом и графиком подачи.</p>
+      </div>
+      <LeadForm variant="default" title="Обратная связь" />
+    </Container>
+  </Block>
+</BaseLayout>

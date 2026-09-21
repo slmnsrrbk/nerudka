@@ -1,0 +1,99 @@
+---
+import Btn from '../ui/Btn.astro';
+import { products } from '../../lib/catalog';
+import site from '../../data/site.json';
+
+interface Props {
+  variant?: 'default' | 'kp' | 'question' | 'review' | 'compact';
+  title?: string;
+  submitLabel?: string;
+  class?: string;
+}
+const { variant = 'default', title, submitLabel, class: cls = '' } = Astro.props;
+const labels: Record<string, string> = {
+  default: 'Отправить заявку',
+  kp: 'Запросить КП',
+  question: 'Отправить вопрос',
+  review: 'Отправить отзыв',
+  compact: 'Жду звонка',
+};
+const inputCls = 'w-full rounded-md border border-line bg-white px-3 py-2.5 text-[15px] outline-none focus:border-accent';
+---
+<form data-form class:list={['rounded-md border border-line bg-white p-5', cls]}>
+  {title && <h3 class="mb-4 text-lg font-semibold">{title}</h3>}
+  <div class="grid gap-3">
+    <label class="grid gap-1.5">
+      <span class="text-xs text-ink-2">Имя</span>
+      <input type="text" name="name" placeholder="Как к вам обращаться" class={inputCls} required />
+    </label>
+    <label class="grid gap-1.5">
+      <span class="text-xs text-ink-2">Телефон</span>
+      <input type="tel" name="phone" placeholder="+7 (___) ___-__-__" class={inputCls} required />
+    </label>
+
+    {variant === 'kp' && (
+      <>
+        <label class="grid gap-1.5">
+          <span class="text-xs text-ink-2">ИНН компании</span>
+          <input type="text" name="inn" placeholder="10 или 12 цифр" class={inputCls} />
+        </label>
+        <div class="grid gap-3 md:grid-cols-2">
+          <label class="grid gap-1.5">
+            <span class="text-xs text-ink-2">Объём, м³</span>
+            <input type="number" name="volume" min={site.minVolume} placeholder="например, 300" class={inputCls} />
+          </label>
+          <label class="grid gap-1.5">
+            <span class="text-xs text-ink-2">Объект</span>
+            <input type="text" name="object" placeholder="адрес или название" class={inputCls} />
+          </label>
+        </div>
+      </>
+    )}
+
+    {variant === 'default' && (
+      <div class="grid gap-3 md:grid-cols-2">
+        <label class="grid gap-1.5">
+          <span class="text-xs text-ink-2">Марка</span>
+          <select name="product" class={inputCls}>
+            <option value="">Не знаю, нужна консультация</option>
+            {products.map((p) => <option value={p.id}>{p.name}</option>)}
+          </select>
+        </label>
+        <label class="grid gap-1.5">
+          <span class="text-xs text-ink-2">Объём, м³</span>
+          <input type="number" name="volume" min={site.minVolume} value="10" class={inputCls} />
+        </label>
+      </div>
+    )}
+
+    {variant === 'question' && (
+      <label class="grid gap-1.5">
+        <span class="text-xs text-ink-2">Вопрос</span>
+        <textarea name="question" rows="3" placeholder="Что хотите уточнить" class={inputCls}></textarea>
+      </label>
+    )}
+
+    {variant === 'review' && (
+      <>
+        <label class="grid gap-1.5">
+          <span class="text-xs text-ink-2">Объект и марка</span>
+          <input type="text" name="object" placeholder="например, плита 40 м³, М300" class={inputCls} />
+        </label>
+        <label class="grid gap-1.5">
+          <span class="text-xs text-ink-2">Отзыв</span>
+          <textarea name="review" rows="4" placeholder="Как прошла поставка" class={inputCls}></textarea>
+        </label>
+      </>
+    )}
+  </div>
+
+  <label class="mt-4 flex items-start gap-2 text-xs text-ink-2">
+    <input type="checkbox" data-consent class="mt-0.5 size-4 shrink-0 accent-[#2563EB]" />
+    <span>Согласен на обработку персональных данных, <a href="/soglasie/" class="text-accent underline-offset-2 hover:underline">текст согласия</a></span>
+  </label>
+
+  <Btn type="submit" variant="primary" class="mt-4 w-full" data-submit disabled>
+    {submitLabel ?? labels[variant]}
+  </Btn>
+  <p class="mt-2 text-xs text-ink-2">Прототип: форма не отправляется, показывается уведомление.</p>
+</form>

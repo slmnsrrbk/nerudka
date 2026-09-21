@@ -1,0 +1,55 @@
+---
+import '../styles/global.css';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import MobileBar from '../components/layout/MobileBar.astro';
+import Modals from '../components/ui/Modals.astro';
+import site from '../data/site.json';
+
+interface Props {
+  title: string;
+  description: string;
+  template?: string;
+  templateName?: string;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  noindex?: boolean;
+}
+const { title, description, template = '', templateName = '', jsonLd, noindex = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://beton-prototype.local').href;
+const lds = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+---
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content={noindex ? 'noindex, nofollow' : 'noindex, nofollow'} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    {lds.map((ld) => <script type="application/ld+json" set:html={JSON.stringify(ld)} />)}
+  </head>
+  <body class="min-h-screen pb-16 md:pb-0">
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+    <MobileBar />
+    <Modals />
+    {template && (
+      <div data-template-badge class="pointer-events-none fixed bottom-20 left-4 z-[95] rounded-md bg-accent px-2 py-1 text-xs text-accent-ink md:bottom-4">
+        {template} · {templateName}
+      </div>
+    )}
+    <script>
+      import '../scripts/app';
+    </script>
+  </body>
+</html>

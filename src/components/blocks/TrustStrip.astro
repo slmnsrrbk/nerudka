@@ -1,0 +1,15 @@
+---
+import Block from '../ui/Block.astro';
+import Container from '../ui/Container.astro';
+import site from '../../data/site.json';
+---
+<Block id="H-03" name="Лента доверия" tone="block">
+  <Container class="grid grid-cols-2 gap-4 py-8 md:grid-cols-5">
+    {site.stats.map((s) => (
+      <div class="rounded-md border border-line bg-white p-4">
+        <div class="text-xl font-semibold">{s.value}</div>
+        <div class="mt-1 text-xs text-ink-2">{s.label}</div>
+      </div>
+    ))}
+  </Container>
+</Block>

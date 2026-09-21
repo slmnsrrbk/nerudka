@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CategoryView from '../../components/pages/CategoryView.astro';
+import ProductView from '../../components/pages/ProductView.astro';
+import { categories, products, categoryPath, productPath } from '../../lib/catalog';
+import { seo } from '../../lib/seo';
+import type { Category, Product } from '../../lib/types';
+
+export function getStaticPaths() {
+  const catPaths = categories.map((c) => ({
+    params: { slug: categoryPath(c).replace('/catalog/', '').replace(/\/$/, '') },
+    props: { kind: 'category' as const, category: c },
+  }));
+  const productPaths = products.map((p) => ({
+    params: { slug: productPath(p).replace('/catalog/', '').replace(/\/$/, '') },
+    props: { kind: 'product' as const, product: p },
+  }));
+  return [...catPaths, ...productPaths];
+}
+
+type Props =
+  | { kind: 'category'; category: Category }
+  | { kind: 'product'; product: Product };
+
+const props = Astro.props as Props;
+const meta =
+  props.kind === 'category'
+    ? seo.category(props.category.name, props.category.lead)
+    : seo.product(props.product.name);
+
+const jsonLd =
+  props.kind === 'product'
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: props.product.name,
+        description: props.product.note,
+        offers: {
+          '@type': 'Offer',
+          price: props.product.price,
+          priceCurrency: 'RUB',
+          availability: 'https://schema.org/InStock',
+        },
+      }
+    : undefined;
+---
+<BaseLayout
+  title={meta.title}
+  description={meta.description}
+  template={props.kind === 'category' ? 'T03' : 'T04'}
+  templateName={props.kind === 'category' ? 'Категория каталога' : 'Карточка продукта'}
+  jsonLd={jsonLd}
+>
+  {props.kind === 'category' ? <CategoryView category={props.category} /> : <ProductView product={props.product} />}
+</BaseLayout>
