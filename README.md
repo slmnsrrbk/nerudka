@@ -31,6 +31,36 @@ npm run check:ui       # сценарии: калькулятор, соглас�
 
 `check:mobile` и `check:ui` работают по адресу `http://localhost:4321`, запустите `npm run preview` в соседнем терминале.
 
+## Публикация для клиента
+
+### Вариант 1: Cloudflare Pages, подключение репозитория (рекомендую)
+
+Секреты и workflow не нужны, каждый пуш деплоится сам.
+
+1. Cloudflare Dashboard → Workers & Pages → Create → Pages → Connect to Git
+2. Выбрать репозиторий и ветку
+3. Параметры сборки:
+   - Framework preset: `Astro`
+   - Build command: `npm run build`
+   - Build output directory: `dist`
+   - Node version: `22` (переменная окружения `NODE_VERSION=22`)
+4. Save and Deploy
+
+Адрес будет вида `https://<имя-проекта>.pages.dev`. Canonical подставляется автоматически
+из `CF_PAGES_URL`, вручную адрес можно задать переменной `SITE_URL`.
+
+### Вариант 2: GitHub Actions и прямая загрузка
+
+Если проект в Cloudflare уже создан как Direct Upload, добавьте секреты репозитория
+`CLOUDFLARE_API_TOKEN` (права Cloudflare Pages: Edit) и `CLOUDFLARE_ACCOUNT_ID`.
+Workflow `.github/workflows/deploy-cloudflare.yml` соберёт прототип, проверит ссылки
+и задеплоит в проект `beton-prototype`. Без секретов деплой пропускается, сборка всё равно проверяется.
+
+### Индексация
+
+`public/robots.txt` содержит `Disallow: /`, а `public/_headers` отдаёт `X-Robots-Tag: noindex`.
+Прототип открывается по ссылке, но в поиск не попадает. Перед запуском боевого сайта оба файла нужно поправить.
+
 ## Стек
 
 Astro (static) + Tailwind CSS v4. Бэкенда нет: формы показывают тост, список заявки лежит в `localStorage`.

@@ -1,0 +1,44 @@
+# Сборка прототипа и деплой на Cloudflare Pages прямой загрузкой.
+# Нужен, только если проект в Cloudflare НЕ подключён к репозиторию напрямую.
+# Секреты репозитория: CLOUDFLARE_API_TOKEN и CLOUDFLARE_ACCOUNT_ID.
+# Без них workflow просто собирает прототип и проверяет ссылки.
+name: Build and deploy to Cloudflare Pages
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, claude/stoic-wright-vbhx6x]
+
+concurrency:
+  group: cloudflare-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      # Контекст secrets доступен в env, но не в if, поэтому флаг считаем здесь.
+      HAS_CLOUDFLARE: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+      - run: npm run check:links
+
+      - name: Publish to Cloudflare Pages
+        if: env.HAS_CLOUDFLARE == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=beton-prototype
+
+      - name: Подсказка, если секреты не заданы
+        if: env.HAS_CLOUDFLARE != 'true'
+        run: echo "Секреты CLOUDFLARE_API_TOKEN и CLOUDFLARE_ACCOUNT_ID не заданы, деплой пропущен."

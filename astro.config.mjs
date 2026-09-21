@@ -3,9 +3,12 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
-// Прототип. Домен условный, меняется вместе с данными в src/data/site.json.
+// Прототип. Адрес берётся из окружения сборки:
+// CF_PAGES_URL подставляет Cloudflare Pages, SITE_URL можно задать вручную.
+const site = process.env.SITE_URL || process.env.CF_PAGES_URL || 'https://beton-prototype.pages.dev';
+
 export default defineConfig({
-  site: 'https://beton-prototype.local',
+  site,
   output: 'static',
   trailingSlash: 'always',
   integrations: [
