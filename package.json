@@ -10,7 +10,8 @@
     "check:links": "node scripts/check-links.mjs",
     "check:mobile": "node scripts/check-mobile.mjs",
     "check:ui": "node scripts/check-ui.mjs",
-    "portable": "astro build && node scripts/relativize.mjs"
+    "portable": "astro build && node scripts/relativize.mjs",
+    "offline": "npm run portable && node scripts/inline-js.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
