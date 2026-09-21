@@ -27,20 +27,62 @@ document.addEventListener('click', (e) => {
 });
 
 /* ---------- Мегаменю ---------- */
+// Между пунктом «Каталог» и панелью есть зазор от вертикальных отступов шапки.
+// Курсор проходит его за несколько кадров, поэтому закрываем не сразу, а с паузой,
+// и отменяем закрытие, если курсор успел дойти до панели.
 const megaRoot = document.querySelector<HTMLElement>('[data-mega-root]');
 if (megaRoot) {
   const mega = megaRoot.querySelector<HTMLElement>('[data-mega]');
+  const trigger = megaRoot.querySelector<HTMLElement>('[data-mega-trigger]');
+  const CLOSE_DELAY = 220;
+  let closeTimer: number | undefined;
+
   const show = (on: boolean) => {
     if (!mega) return;
     mega.classList.toggle('invisible', !on);
     mega.classList.toggle('opacity-0', !on);
+    trigger?.setAttribute('aria-expanded', String(on));
   };
-  megaRoot.addEventListener('mouseover', (e) => {
-    const t = e.target as HTMLElement;
-    if (t.closest('[data-mega-trigger]') || t.closest('[data-mega]')) show(true);
-    else show(false);
+  const openNow = () => {
+    window.clearTimeout(closeTimer);
+    show(true);
+  };
+  const closeSoon = (delay = CLOSE_DELAY) => {
+    window.clearTimeout(closeTimer);
+    closeTimer = window.setTimeout(() => show(false), delay);
+  };
+
+  trigger?.setAttribute('aria-haspopup', 'true');
+  trigger?.setAttribute('aria-expanded', 'false');
+
+  trigger?.addEventListener('mouseenter', openNow);
+  trigger?.addEventListener('mouseleave', () => closeSoon());
+  mega?.addEventListener('mouseenter', openNow);
+  mega?.addEventListener('mouseleave', () => closeSoon());
+
+  // Курсор ушёл из шапки совсем: закрываем без ожидания.
+  megaRoot.addEventListener('mouseleave', () => closeSoon(0));
+
+  // Наведение на соседний пункт меню закрывает панель сразу,
+  // иначе она перекрывает страницу.
+  megaRoot.querySelectorAll<HTMLElement>('nav a').forEach((link) => {
+    if (link.hasAttribute('data-mega-trigger')) return;
+    link.addEventListener('mouseenter', () => closeSoon(0));
   });
-  megaRoot.addEventListener('mouseleave', () => show(false));
+
+  // Клавиатура: открываем по фокусу, закрываем когда фокус ушёл из меню.
+  trigger?.addEventListener('focus', openNow);
+  megaRoot.addEventListener('focusin', (e) => {
+    const t = e.target as HTMLElement;
+    if (t.closest('[data-mega]') || t.closest('[data-mega-trigger]')) openNow();
+  });
+  megaRoot.addEventListener('focusout', (e) => {
+    const next = (e as FocusEvent).relatedTarget as HTMLElement | null;
+    if (!next || !megaRoot.contains(next)) closeSoon(0);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeSoon(0);
+  });
 }
 
 /* ---------- Шапка: уменьшение при скролле ---------- */

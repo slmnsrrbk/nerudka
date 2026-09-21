@@ -35,6 +35,7 @@ npm run offline    # portable + встраивание скрипта в каж�
 npm run check:links    # битые внутренние ссылки в dist/
 npm run check:mobile   # горизонтальный скролл на 375px и ошибки JS (нужен запущенный preview)
 npm run check:ui       # сценарии: калькулятор, согласие ПДн, список заявки, фильтры, аннотации
+npm run check:megamenu # мегаменю: открытие, зазор, уход курсора, клавиатура
 ```
 
 `check:mobile` и `check:ui` работают по адресу `http://localhost:4321`, запустите `npm run preview` в соседнем терминале.
