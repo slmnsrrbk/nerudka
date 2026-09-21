@@ -64,6 +64,27 @@ npm run check:ui       # сценарии: калькулятор, соглас�
 Workflow `.github/workflows/deploy-cloudflare.yml` соберёт прототип, проверит ссылки
 и задеплоит в проект `beton-prototype`. Без секретов деплой пропускается, сборка всё равно проверяется.
 
+### Вариант 3: свой сервер по SSH
+
+Разовая настройка сервера (выполнить на сервере, файлы из папки `deploy`):
+
+```bash
+bash setup-server.sh        # ставит nginx, создаёт /var/www/beton-prototype, включает конфиг
+```
+
+Деплой со своего компьютера:
+
+```bash
+HOST=адрес-сервера bash deploy/deploy.sh
+```
+
+Автодеплой на каждый пуш: workflow `.github/workflows/deploy-jino.yml`.
+Секреты репозитория `SSH_HOST`, `SSH_USER`, `SSH_KEY` (приватный ключ целиком),
+переменная `SSH_TARGET` при нестандартном каталоге.
+
+Заливается содержимое `dist`, потому что сайт отдаётся с корня домена.
+Если прототип живёт в подпапке, заливайте `dist-portable` после `npm run portable`.
+
 ### Индексация
 
 `public/robots.txt` содержит `Disallow: /`, а `public/_headers` отдаёт `X-Robots-Tag: noindex`.

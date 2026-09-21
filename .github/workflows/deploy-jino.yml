@@ -1,0 +1,59 @@
+# Автодеплой прототипа на сервер по SSH.
+# Секреты репозитория: SSH_HOST, SSH_USER, SSH_KEY (приватный ключ целиком).
+# Переменная репозитория (Variables): SSH_TARGET, по умолчанию /var/www/beton-prototype.
+# Без секретов workflow просто собирает прототип и проверяет ссылки.
+name: Build and deploy to server
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, claude/stoic-wright-vbhx6x]
+
+concurrency:
+  group: server-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      # Контекст secrets доступен в env, но не в if, поэтому флаг считаем здесь.
+      HAS_SSH: ${{ secrets.SSH_HOST != '' && secrets.SSH_USER != '' && secrets.SSH_KEY != '' }}
+      TARGET: ${{ vars.SSH_TARGET || '/var/www/beton-prototype' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+      - run: npm run check:links
+
+      - name: Подготовить ключ
+        if: env.HAS_SSH == 'true'
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Залить сайт
+        if: env.HAS_SSH == 'true'
+        run: |
+          rsync -az --delete \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes" \
+            dist/ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:$TARGET/"
+
+      - name: Перезагрузить nginx
+        if: env.HAS_SSH == 'true'
+        run: |
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
+            "nginx -t && systemctl reload nginx"
+
+      - name: Подсказка, если секреты не заданы
+        if: env.HAS_SSH != 'true'
+        run: echo "Секреты SSH_HOST, SSH_USER и SSH_KEY не заданы, деплой пропущен."
