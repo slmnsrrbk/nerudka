@@ -1,6 +1,16 @@
-# Автодеплой прототипа на сервер по SSH.
-# Секреты репозитория: SSH_HOST, SSH_USER, SSH_KEY (приватный ключ целиком).
-# Переменная репозитория (Variables): SSH_TARGET, по умолчанию /var/www/beton-prototype.
+# Автодеплой прототипа на сервер: сборка, настройка nginx и заливка сайта.
+# Раннер GitHub подключается к серверу по SSH, поэтому руками в терминал лезть не нужно.
+#
+# Секреты репозитория (Settings -> Secrets and variables -> Actions):
+#   SSH_HOST      адрес сервера, например 83.217.202.235
+#   SSH_USER      пользователь, обычно root
+# и ОДНО из двух:
+#   SSH_KEY       приватный ключ целиком (безопаснее)
+#   SSH_PASSWORD  пароль пользователя (проще, но пароль живёт в секретах)
+#
+# Переменная SSH_TARGET (Variables) меняет каталог сайта,
+# по умолчанию /var/www/beton-prototype.
+#
 # Без секретов workflow просто собирает прототип и проверяет ссылки.
 name: Build and deploy to server
 
@@ -17,8 +27,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      # Контекст secrets доступен в env, но не в if, поэтому флаг считаем здесь.
-      HAS_SSH: ${{ secrets.SSH_HOST != '' && secrets.SSH_USER != '' && secrets.SSH_KEY != '' }}
+      # Контекст secrets доступен в env, но не в if, поэтому флаги считаем здесь.
+      HAS_HOST: ${{ secrets.SSH_HOST != '' && secrets.SSH_USER != '' }}
+      HAS_KEY: ${{ secrets.SSH_KEY != '' }}
+      HAS_PASSWORD: ${{ secrets.SSH_PASSWORD != '' }}
       TARGET: ${{ vars.SSH_TARGET || '/var/www/beton-prototype' }}
     steps:
       - uses: actions/checkout@v4
@@ -32,28 +44,83 @@ jobs:
       - run: npm run build
       - run: npm run check:links
 
-      - name: Подготовить ключ
-        if: env.HAS_SSH == 'true'
+      - name: Подготовить доступ к серверу
+        if: env.HAS_HOST == 'true'
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
         run: |
           mkdir -p ~/.ssh
-          printf '%s\n' "${{ secrets.SSH_KEY }}" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          if [ -n "$SSH_KEY" ]; then
+            printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
+            chmod 600 ~/.ssh/deploy_key
+            echo 'SSH_CMD=ssh -i ~/.ssh/deploy_key' >> "$GITHUB_ENV"
+          else
+            sudo apt-get update -qq && sudo apt-get install -y -qq sshpass
+            echo 'SSH_CMD=sshpass -e ssh' >> "$GITHUB_ENV"
+          fi
+
+      - name: Настроить nginx на сервере
+        if: env.HAS_HOST == 'true' && (env.HAS_KEY == 'true' || env.HAS_PASSWORD == 'true')
+        env:
+          SSHPASS: ${{ secrets.SSH_PASSWORD }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+        run: |
+          # Шаг идемпотентный: повторный запуск ничего не ломает.
+          $SSH_CMD "$SSH_USER@$SSH_HOST" bash -s <<REMOTE
+          set -euo pipefail
+          export DEBIAN_FRONTEND=noninteractive
+          command -v nginx >/dev/null 2>&1 || { apt-get update -y -qq; apt-get install -y -qq nginx; }
+          command -v rsync >/dev/null 2>&1 || apt-get install -y -qq rsync
+          mkdir -p "$TARGET"
+          REMOTE
+
+      - name: Залить конфиг nginx
+        if: env.HAS_HOST == 'true' && (env.HAS_KEY == 'true' || env.HAS_PASSWORD == 'true')
+        env:
+          SSHPASS: ${{ secrets.SSH_PASSWORD }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+        run: |
+          sed "s#/var/www/beton-prototype#$TARGET#" deploy/nginx-beton-prototype.conf > /tmp/site.conf
+          rsync -az -e "$SSH_CMD" /tmp/site.conf "$SSH_USER@$SSH_HOST:/etc/nginx/sites-available/beton-prototype"
+          $SSH_CMD "$SSH_USER@$SSH_HOST" bash -s <<'REMOTE'
+          set -euo pipefail
+          ln -sf /etc/nginx/sites-available/beton-prototype /etc/nginx/sites-enabled/beton-prototype
+          rm -f /etc/nginx/sites-enabled/default
+          nginx -t
+          REMOTE
 
       - name: Залить сайт
-        if: env.HAS_SSH == 'true'
+        if: env.HAS_HOST == 'true' && (env.HAS_KEY == 'true' || env.HAS_PASSWORD == 'true')
+        env:
+          SSHPASS: ${{ secrets.SSH_PASSWORD }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
         run: |
-          rsync -az --delete \
-            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes" \
-            dist/ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:$TARGET/"
+          # --delete чистит только каталог прототипа, соседние сайты не трогает.
+          rsync -az --delete -e "$SSH_CMD" dist/ "$SSH_USER@$SSH_HOST:$TARGET/"
+          $SSH_CMD "$SSH_USER@$SSH_HOST" "systemctl reload nginx"
 
-      - name: Перезагрузить nginx
-        if: env.HAS_SSH == 'true'
+      - name: Проверить, что сайт отвечает
+        if: env.HAS_HOST == 'true' && (env.HAS_KEY == 'true' || env.HAS_PASSWORD == 'true')
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
         run: |
-          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes \
-            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
-            "nginx -t && systemctl reload nginx"
+          code=$(curl -s -o /dev/null -w '%{http_code}' "http://$SSH_HOST/")
+          echo "Главная отвечает: $code"
+          test "$code" = "200"
+          for path in /catalog/ /price/ /calculator/ /dostavka/odincovo/; do
+            c=$(curl -s -o /dev/null -w '%{http_code}' "http://$SSH_HOST$path")
+            echo "$path -> $c"
+            test "$c" = "200"
+          done
+          echo "Сайт доступен: http://$SSH_HOST/"
 
       - name: Подсказка, если секреты не заданы
-        if: env.HAS_SSH != 'true'
-        run: echo "Секреты SSH_HOST, SSH_USER и SSH_KEY не заданы, деплой пропущен."
+        if: env.HAS_HOST != 'true' || (env.HAS_KEY != 'true' && env.HAS_PASSWORD != 'true')
+        run: |
+          echo "Деплой пропущен: нет секретов."
+          echo "Нужны SSH_HOST, SSH_USER и один из SSH_KEY или SSH_PASSWORD."
