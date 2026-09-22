@@ -503,44 +503,206 @@ document.addEventListener('click', (e) => {
 });
 renderRequest();
 
-/* ---------- Фильтры каталога и переключатель вида ---------- */
-const filtersRoot = document.querySelector<HTMLElement>('[data-catalog-filters]');
-if (filtersRoot) {
-  const selects = Array.from(filtersRoot.querySelectorAll<HTMLSelectElement>('[data-filter-field]'));
-  const countOut = document.querySelector<HTMLElement>('[data-visible-count]');
+/* ---------- Каталог с фасетным фильтром ---------- */
+// Фильтры внутри одной группы работают как «или», между группами как «и».
+// Состояние пишется в адресную строку, чтобы подборкой можно было поделиться.
+const FACET_KEYS = ['kind', 'purpose', 'grade', 'class', 'density', 'filler', 'mobility', 'frost', 'water'];
 
-  const applyFilters = () => {
-    const conditions = selects
-      .map((s) => ({ field: s.getAttribute('data-filter-field') || '', value: s.value }))
-      .filter((c) => c.value);
-    let visible = 0;
-    document.querySelectorAll<HTMLElement>('[data-product-row], [data-product-card]').forEach((item) => {
-      const ok = conditions.every((c) => item.getAttribute(`data-${c.field}`) === c.value);
-      item.classList.toggle('hidden', !ok);
-      if (ok && item.hasAttribute('data-product-row')) visible += 1;
-    });
-    if (countOut) countOut.textContent = String(visible);
+function initCatalog(root: HTMLElement) {
+  const products = Array.from(root.querySelectorAll<HTMLElement>('[data-product]'));
+  const rowsBox = root.querySelector<HTMLElement>('[data-catalog-rows]');
+  const cardsBox = root.querySelector<HTMLElement>('[data-catalog-cards]');
+  const countOut = root.querySelector<HTMLElement>('[data-catalog-count]');
+  const chipsBox = root.querySelector<HTMLElement>('[data-catalog-chips]');
+  const emptyBox = root.querySelector<HTMLElement>('[data-catalog-empty]');
+  const searchInput = root.querySelector<HTMLInputElement>('[data-catalog-search]');
+  const sortSelect = root.querySelector<HTMLSelectElement>('[data-catalog-sort]');
+  const minInput = root.querySelector<HTMLInputElement>('[data-facet-min]');
+  const maxInput = root.querySelector<HTMLInputElement>('[data-facet-max]');
+  const badge = root.querySelector<HTMLElement>('[data-facets-badge]');
+  const panel = root.querySelector<HTMLElement>('[data-facets]');
+  const boxes = Array.from(root.querySelectorAll<HTMLInputElement>('[data-facet]'));
+
+  // Запоминаем исходный порядок, он же «сначала популярные».
+  products.forEach((el, i) => el.setAttribute('data-order', String(i)));
+
+  const gradeNum = (el: HTMLElement) => {
+    const raw = (el.getAttribute('data-grade') || el.getAttribute('data-density') || '').replace(/[^\d]/g, '');
+    return raw ? Number(raw) : Number.MAX_SAFE_INTEGER;
   };
-  selects.forEach((s) => s.addEventListener('change', applyFilters));
 
-  filtersRoot.querySelectorAll<HTMLElement>('[data-view]').forEach((btn) => {
+  const selected = () => {
+    const map: Record<string, string[]> = {};
+    for (const key of FACET_KEYS) {
+      map[key] = boxes.filter((b) => b.getAttribute('data-facet') === key && b.checked).map((b) => b.value);
+    }
+    return map;
+  };
+
+  const matches = (el: HTMLElement, chosen: Record<string, string[]>, skip?: string) => {
+    for (const key of FACET_KEYS) {
+      if (key === skip) continue;
+      const values = chosen[key];
+      if (!values || values.length === 0) continue;
+      const own = (el.getAttribute(`data-${key}`) || '').split(',').map((v) => v.trim());
+      if (!values.some((v) => own.includes(v))) return false;
+    }
+    const price = Number(el.getAttribute('data-price') || 0);
+    const min = Number(minInput?.value || 0);
+    const max = Number(maxInput?.value || 0);
+    if (min && price < min) return false;
+    if (max && price > max) return false;
+    const q = (searchInput?.value || '').trim().toLowerCase();
+    if (q && !(el.getAttribute('data-name') || '').includes(q)) return false;
+    return true;
+  };
+
+  const labelFor = (key: string, value: string) => {
+    const option = root.querySelector<HTMLElement>(`[data-facet-option="${key}:${value}"]`);
+    const text = option?.textContent?.trim().replace(/\s+/g, ' ') || value;
+    return text.replace(/\s\d+$/, '');
+  };
+
+  const syncUrl = (chosen: Record<string, string[]>) => {
+    const params = new URLSearchParams();
+    for (const key of FACET_KEYS) if (chosen[key]!.length) params.set(key, chosen[key]!.join(','));
+    if (minInput?.value) params.set('min', minInput.value);
+    if (maxInput?.value) params.set('max', maxInput.value);
+    if (searchInput?.value) params.set('q', searchInput.value);
+    if (sortSelect && sortSelect.value !== 'popular') params.set('sort', sortSelect.value);
+    const qs = params.toString();
+    history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
+  };
+
+  const apply = () => {
+    const chosen = selected();
+    let visible = 0;
+    products.forEach((el) => {
+      const ok = matches(el, chosen);
+      el.classList.toggle('hidden', !ok);
+      if (ok && el.tagName === 'TR') visible += 1;
+      else if (ok && el.tagName !== 'TR' && !rowsBox) visible += 1;
+    });
+    if (!rowsBox) visible = products.filter((el) => !el.classList.contains('hidden')).length;
+    if (countOut) countOut.textContent = String(visible);
+    emptyBox?.classList.toggle('hidden', visible > 0);
+
+    // Счётчики у вариантов: сколько найдётся, если добавить этот вариант.
+    for (const key of FACET_KEYS) {
+      boxes.filter((b) => b.getAttribute('data-facet') === key).forEach((b) => {
+        const rest = { ...chosen, [key]: [b.value] };
+        const n = products.filter((el) => el.tagName === 'TR' || !rowsBox).filter((el) => matches(el, rest, undefined)).length;
+        const holder = b.closest('[data-facet-option]')?.querySelector('[data-facet-count]');
+        if (holder) holder.textContent = n ? ` ${n}` : ' 0';
+        const option = b.closest('[data-facet-option]') as HTMLElement | null;
+        option?.classList.toggle('opacity-40', n === 0 && !b.checked);
+      });
+    }
+
+    // Чипсы активных фильтров.
+    if (chipsBox) {
+      const chips: string[] = [];
+      for (const key of FACET_KEYS) {
+        for (const value of chosen[key]!) {
+          chips.push(`<button type="button" data-chip-remove data-key="${key}" data-value="${value}" class="inline-flex items-center gap-1 rounded-md border border-accent px-2 py-1 text-xs text-accent">${labelFor(key, value)} <span aria-hidden="true">×</span></button>`);
+        }
+      }
+      if (minInput?.value || maxInput?.value) {
+        chips.push(`<button type="button" data-chip-remove data-key="price" data-value="" class="inline-flex items-center gap-1 rounded-md border border-accent px-2 py-1 text-xs text-accent">цена ${minInput?.value || '0'} : ${maxInput?.value || '∞'} <span aria-hidden="true">×</span></button>`);
+      }
+      chipsBox.innerHTML = chips.join('');
+    }
+
+    const total = Object.values(chosen).reduce((acc, v) => acc + v.length, 0);
+    if (badge) {
+      badge.textContent = String(total);
+      badge.classList.toggle('hidden', total === 0);
+    }
+    syncUrl(chosen);
+  };
+
+  const sortProducts = () => {
+    const mode = sortSelect?.value || 'popular';
+    const sorter = (a: HTMLElement, b: HTMLElement) => {
+      if (mode === 'price-asc') return Number(a.dataset.price) - Number(b.dataset.price);
+      if (mode === 'price-desc') return Number(b.dataset.price) - Number(a.dataset.price);
+      if (mode === 'grade-asc') return gradeNum(a) - gradeNum(b);
+      if (mode === 'name') return (a.dataset.name || '').localeCompare(b.dataset.name || '', 'ru');
+      return Number(a.dataset.order) - Number(b.dataset.order);
+    };
+    [rowsBox, cardsBox].forEach((box) => {
+      if (!box) return;
+      Array.from(box.children as HTMLCollectionOf<HTMLElement>)
+        .sort(sorter)
+        .forEach((el) => box.appendChild(el));
+    });
+  };
+
+  boxes.forEach((b) => b.addEventListener('change', apply));
+  [minInput, maxInput, searchInput].forEach((el) => el?.addEventListener('input', apply));
+  sortSelect?.addEventListener('change', () => { sortProducts(); apply(); });
+
+  root.addEventListener('click', (e) => {
+    const chip = (e.target as HTMLElement).closest?.('[data-chip-remove]') as HTMLElement | null;
+    if (chip) {
+      const key = chip.getAttribute('data-key');
+      if (key === 'price') {
+        if (minInput) minInput.value = '';
+        if (maxInput) maxInput.value = '';
+      } else {
+        boxes.filter((b) => b.getAttribute('data-facet') === key && b.value === chip.getAttribute('data-value'))
+          .forEach((b) => (b.checked = false));
+      }
+      apply();
+      return;
+    }
+    if ((e.target as HTMLElement).closest?.('[data-facets-reset]')) {
+      boxes.forEach((b) => (b.checked = false));
+      if (minInput) minInput.value = '';
+      if (maxInput) maxInput.value = '';
+      if (searchInput) searchInput.value = '';
+      apply();
+      return;
+    }
+    if ((e.target as HTMLElement).closest?.('[data-facets-open]')) {
+      panel?.classList.toggle('hidden');
+      panel?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  });
+
+  // Переключатель вида списка.
+  root.querySelectorAll<HTMLElement>('[data-view]').forEach((btn) => {
     btn.addEventListener('click', () => {
       const view = btn.getAttribute('data-view');
-      filtersRoot.querySelectorAll<HTMLElement>('[data-view]').forEach((b) => {
+      root.querySelectorAll<HTMLElement>('[data-view]').forEach((b) => {
         const active = b === btn;
         b.classList.toggle('border-accent', active);
         b.classList.toggle('text-accent', active);
         b.classList.toggle('border-line', !active);
       });
-      document.querySelectorAll<HTMLElement>('[data-view-panel]').forEach((panel) => {
-        const on = panel.getAttribute('data-view-panel') === view;
-        panel.classList.toggle('hidden', !on);
-        if (on && view === 'cards') panel.classList.add('grid');
+      root.querySelectorAll<HTMLElement>('[data-view-panel]').forEach((p) => {
+        p.classList.toggle('hidden', p.getAttribute('data-view-panel') !== view);
       });
     });
   });
-  applyFilters();
+
+  // Стартовое состояние из адресной строки.
+  const params = new URLSearchParams(location.search);
+  FACET_KEYS.forEach((key) => {
+    const raw = params.get(key);
+    if (!raw) return;
+    const values = raw.split(',');
+    boxes.filter((b) => b.getAttribute('data-facet') === key && values.includes(b.value))
+      .forEach((b) => (b.checked = true));
+  });
+  if (minInput && params.get('min')) minInput.value = params.get('min')!;
+  if (maxInput && params.get('max')) maxInput.value = params.get('max')!;
+  if (searchInput && params.get('q')) searchInput.value = params.get('q')!;
+  if (sortSelect && params.get('sort')) sortSelect.value = params.get('sort')!;
+  sortProducts();
+  apply();
 }
+document.querySelectorAll<HTMLElement>('[data-catalog]').forEach(initCatalog);
 
 /* ---------- Кликабельные строки таблиц ---------- */
 document.addEventListener('click', (e) => {

@@ -77,3 +77,8 @@ body {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
+
+/* Группы фильтра: плюс у свёрнутой, минус у раскрытой */
+details[open] > summary .facet-caret::before { content: "−"; }
+details:not([open]) > summary .facet-caret::before { content: "+"; }
+.facet-caret { font-size: 14px; line-height: 1; }

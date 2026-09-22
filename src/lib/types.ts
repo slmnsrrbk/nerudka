@@ -7,6 +7,7 @@ export type Product = {
   mobility: string;
   frost: string;
   water: string;
+  density: string;
   filler: string;
   fraction: string;
   gost: string;

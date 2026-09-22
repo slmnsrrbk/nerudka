@@ -4,7 +4,7 @@ import PageHead from '../ui/PageHead.astro';
 import Block from '../ui/Block.astro';
 import Container from '../ui/Container.astro';
 import Btn from '../ui/Btn.astro';
-import PriceTable from '../ui/PriceTable.astro';
+import CatalogBrowser from '../catalog/CatalogBrowser.astro';
 import ImagePlaceholder from '../ui/ImagePlaceholder.astro';
 import FaqBlock from '../blocks/FaqBlock.astro';
 import SeoText from '../blocks/SeoText.astro';
@@ -21,14 +21,7 @@ interface Props { category: Category }
 const { category } = Astro.props;
 const items = productsOfCategory(category.slug);
 const children = childCategories(category.slug);
-const uniq = (arr: string[]) => [...new Set(arr.filter(Boolean))];
-const fillers = uniq(items.map((p) => p.filler));
-const classes = uniq(items.map((p) => p.class));
-const mobilities = uniq(items.map((p) => p.mobility));
-const frosts = uniq(items.map((p) => p.frost));
-const waters = uniq(items.map((p) => p.water));
 const catPurposes = purposes.filter((pu) => items.some((p) => p.purposes.includes(pu.slug))).slice(0, 4);
-const selectCls = 'w-full rounded-md border border-line bg-white px-3 py-2 text-sm outline-none focus:border-accent';
 ---
 <Breadcrumbs items={categoryBreadcrumbs(category)} />
 <PageHead id="C-01" name="H1 и лид категории" h1={category.name} lead={category.lead} />
@@ -36,9 +29,9 @@ const selectCls = 'w-full rounded-md border border-line bg-white px-3 py-2 text-
 <Block id="C-02" name="Чипсы быстрых марок">
   <Container class="py-6">
     <div class="flex flex-wrap gap-2">
-      {activeGrades().map((g) => (
+      {activeGrades().filter((g) => items.some((p) => p.grade === g)).map((g) => (
         <a href={`/beton/${gradeSlug(g)}/`} class="rounded-md border border-line bg-white px-3 py-1.5 text-sm hover:border-accent hover:text-accent">
-          Бетон {g}
+          {g}
         </a>
       ))}
     </div>
@@ -64,61 +57,7 @@ const selectCls = 'w-full rounded-md border border-line bg-white px-3 py-2 text-
   </Block>
 )}
 
-<Block id="C-04" name="Фильтры и вид листинга">
-  <Container class="py-8">
-    <div data-catalog-filters class="grid gap-3 md:grid-cols-3 lg:grid-cols-6">
-      <label class="grid gap-1"><span class="text-xs text-ink-2">Наполнитель</span>
-        <select data-filter-field="filler" class={selectCls}><option value="">любой</option>{fillers.map((v) => <option>{v}</option>)}</select>
-      </label>
-      <label class="grid gap-1"><span class="text-xs text-ink-2">Класс</span>
-        <select data-filter-field="class" class={selectCls}><option value="">любой</option>{classes.map((v) => <option>{v}</option>)}</select>
-      </label>
-      <label class="grid gap-1"><span class="text-xs text-ink-2">Подвижность</span>
-        <select data-filter-field="mobility" class={selectCls}><option value="">любая</option>{mobilities.map((v) => <option>{v}</option>)}</select>
-      </label>
-      <label class="grid gap-1"><span class="text-xs text-ink-2">Морозостойкость</span>
-        <select data-filter-field="frost" class={selectCls}><option value="">любая</option>{frosts.map((v) => <option>{v}</option>)}</select>
-      </label>
-      <label class="grid gap-1"><span class="text-xs text-ink-2">Водонепроницаемость</span>
-        <select data-filter-field="water" class={selectCls}><option value="">любая</option>{waters.map((v) => <option>{v}</option>)}</select>
-      </label>
-      <div class="grid gap-1">
-        <span class="text-xs text-ink-2">Вид</span>
-        <div class="flex gap-2">
-          <button type="button" data-view="table" class="flex-1 rounded-md border border-accent px-3 py-2 text-sm text-accent">Таблица</button>
-          <button type="button" data-view="cards" class="flex-1 rounded-md border border-line px-3 py-2 text-sm">Карточки</button>
-        </div>
-      </div>
-    </div>
-  </Container>
-</Block>
-
-<Block id="C-05" name="Листинг позиций">
-  <Container class="pb-12">
-    <div data-view-panel="table">
-      <PriceTable items={items} />
-    </div>
-    <div data-view-panel="cards" class="hidden grid gap-3 md:grid-cols-2 lg:grid-cols-4">
-      {items.map((p) => (
-        <div
-          data-product-card
-          data-filler={p.filler} data-class={p.class} data-mobility={p.mobility}
-          data-frost={p.frost} data-water={p.water}
-          class="flex flex-col rounded-md border border-line bg-white p-4"
-        >
-          <ImagePlaceholder label={`Фото: ${p.name.toLowerCase()}`} ratio="4:3" />
-          <a href={productPath(p)} class="mt-3 font-medium hover:text-accent">{p.name}</a>
-          <p class="mt-1 text-sm text-ink-2">{p.note}</p>
-          <div class="mt-3 flex items-center justify-between">
-            <span class="font-medium">{formatPrice(p.price)} ₽ за м³</span>
-            <button type="button" data-add-to-request data-id={p.id} data-volume="10" class="rounded-md border border-line px-3 py-1.5 text-xs hover:border-accent hover:text-accent">В заявку</button>
-          </div>
-        </div>
-      ))}
-    </div>
-    <p class="mt-3 text-sm text-ink-2">Показано позиций: <span data-visible-count>{items.length}</span> из {items.length}</p>
-  </Container>
-</Block>
+<CatalogBrowser items={items} id="C-05" showKindFacet={children.length > 0} />
 
 {catPurposes.length > 0 && (
   <Block id="C-06" name="Для чего подходит" tone="block">

@@ -1,8 +1,10 @@
 ---
-import { rootCategories, childCategories, categoryPath, activeGrades, gradeSlug, purposes } from '../../lib/catalog';
+import { childCategories, categoryPath, activeGrades, activeClasses, gradeSlug, classSlug, purposes, productsOfCategory } from '../../lib/catalog';
 const beton = childCategories('beton');
 const rastvor = childCategories('rastvor');
 const grades = activeGrades();
+const classes = activeClasses();
+const count = (slug: string) => productsOfCategory(slug).length;
 ---
 <div data-mega class="invisible absolute left-0 right-0 top-full z-50 opacity-0 transition-opacity">
   <div class="mx-auto max-w-[1280px] px-4 md:px-6">
@@ -10,26 +12,54 @@ const grades = activeGrades();
       <div>
         <p class="mb-3 text-xs text-ink-2">Бетон по видам</p>
         <ul class="grid gap-1.5 text-sm">
-          {beton.map((c) => <li><a href={categoryPath(c)} class="hover:text-accent">{c.name}</a></li>)}
+          {beton.slice(0, 9).map((c) => (
+            <li class="flex items-center justify-between gap-2">
+              <a href={categoryPath(c)} class="hover:text-accent">{c.name}</a>
+              <span class="text-xs text-ink-2">{count(c.slug)}</span>
+            </li>
+          ))}
           <li><a href="/catalog/beton/" class="font-medium text-accent">Все виды бетона</a></li>
         </ul>
       </div>
+
       <div>
         <p class="mb-3 text-xs text-ink-2">Бетон по маркам</p>
-        <ul class="grid grid-cols-2 gap-1.5 text-sm">
-          {grades.map((g) => <li><a href={`/beton/${gradeSlug(g)}/`} class="hover:text-accent">Бетон {g}</a></li>)}
-        </ul>
+        <div class="flex flex-wrap gap-1.5">
+          {grades.map((g) => (
+            <a href={`/beton/${gradeSlug(g)}/`} class="rounded-md border border-line px-2 py-1 text-xs hover:border-accent hover:text-accent">{g}</a>
+          ))}
+        </div>
+        <p class="mb-3 mt-5 text-xs text-ink-2">Бетон по классу</p>
+        <div class="flex flex-wrap gap-1.5">
+          {classes.map((c) => (
+            <a href={`/beton/klass-${classSlug(c)}/`} class="rounded-md border border-line px-2 py-1 text-xs hover:border-accent hover:text-accent">{c}</a>
+          ))}
+        </div>
       </div>
+
       <div>
         <p class="mb-3 text-xs text-ink-2">По задаче</p>
         <ul class="grid gap-1.5 text-sm">
           {purposes.map((p) => <li><a href={`/beton/dlya-${p.slug}/`} class="hover:text-accent">{p.h1}</a></li>)}
         </ul>
-      </div>
-      <div>
-        <p class="mb-3 text-xs text-ink-2">Растворы</p>
+        <p class="mb-3 mt-5 text-xs text-ink-2">По заполнителю</p>
         <ul class="grid gap-1.5 text-sm">
-          {rastvor.map((c) => <li><a href={categoryPath(c)} class="hover:text-accent">{c.name}</a></li>)}
+          <li><a href="/catalog/?filler=гранит" class="hover:text-accent">Бетон на граните</a></li>
+          <li><a href="/catalog/?filler=гравий" class="hover:text-accent">Бетон на гравии</a></li>
+          <li><a href="/catalog/?filler=керамзит" class="hover:text-accent">На керамзите</a></li>
+          <li><a href="/catalog/?filler=песок" class="hover:text-accent">Мелкозернистые</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="mb-3 text-xs text-ink-2">Растворы и смеси</p>
+        <ul class="grid gap-1.5 text-sm">
+          {rastvor.map((c) => (
+            <li class="flex items-center justify-between gap-2">
+              <a href={categoryPath(c)} class="hover:text-accent">{c.name}</a>
+              <span class="text-xs text-ink-2">{count(c.slug)}</span>
+            </li>
+          ))}
           <li><a href="/catalog/rastvor/" class="font-medium text-accent">Все растворы</a></li>
         </ul>
       </div>

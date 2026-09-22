@@ -11,7 +11,7 @@ interface Props {
   class?: string;
   compact?: boolean;
 }
-const { title = 'Расчёт стоимости', defaultProduct = 'm300-b22-5-granit', fixedProduct, class: cls = '', compact = false } = Astro.props;
+const { title = 'Расчёт стоимости', defaultProduct = 'beton-m300-granit', fixedProduct, class: cls = '', compact = false } = Astro.props;
 const current = products.find((p) => p.id === (fixedProduct ?? defaultProduct)) ?? products[0]!;
 const zones = site.deliveryZones;
 const initial = calc({ price: current.price, volume: 10, zoneId: zones[0]!.id });

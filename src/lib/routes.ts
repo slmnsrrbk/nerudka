@@ -15,7 +15,7 @@ export const TEMPLATES: { id: string; name: string; example: string }[] = [
   { id: 'T01', name: 'Главная', example: '/' },
   { id: 'T02', name: 'Хаб (каталог, услуги)', example: '/catalog/' },
   { id: 'T03', name: 'Категория каталога', example: '/catalog/beton/tovarnyj/' },
-  { id: 'T04', name: 'Карточка продукта', example: '/catalog/beton/tovarnyj/m300-b22-5-granit/' },
+  { id: 'T04', name: 'Карточка продукта', example: '/catalog/beton/tovarnyj/beton-m300-granit/' },
   { id: 'T05', name: 'SEO-посадка', example: '/beton/m300/' },
   { id: 'T06', name: 'Услуга', example: '/uslugi/arenda-betononasosa/' },
   { id: 'T07a', name: 'Доставка', example: '/dostavka/' },

@@ -1,6 +1,6 @@
 import { chromium } from 'playwright';
-const pages = ['/', '/catalog/', '/catalog/beton/tovarnyj/', '/catalog/beton/tovarnyj/m300-b22-5-granit/',
-  '/beton/m300/', '/beton/dlya-fundamenta/', '/uslugi/arenda-betononasosa/', '/dostavka/', '/dostavka/odincovo/',
+const pages = ['/', '/catalog/', '/catalog/beton/tovarnyj/', '/catalog/beton/tovarnyj/beton-m300-granit/',
+  '/beton/m300/', '/beton/dlya-fundament/', '/uslugi/arenda-betononasosa/', '/dostavka/', '/dostavka/odincovo/',
   '/price/', '/calculator/', '/o-zavode/', '/yurlicam/', '/sertifikaty/', '/proekty/', '/proekty/chastnyj-dom-420/',
   '/otzyvy/', '/akcii/', '/blog/', '/blog/priemka-betona/', '/faq/', '/kontakty/', '/politika/', '/_prototype/', '/404.html'];
 const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });

@@ -24,7 +24,8 @@ const { weaker, stronger } = gradeNeighbors(product.grade);
 const similar = similarProducts(product);
 const productPurposes = purposes.filter((p) => product.purposes.includes(p.slug));
 const specs = [
-  { k: 'Марка по прочности', v: product.grade },
+  ...(product.grade ? [{ k: 'Марка по прочности', v: product.grade }] : []),
+  ...(product.density ? [{ k: 'Марка по плотности', v: product.density }] : []),
   { k: 'Класс прочности', v: product.class || 'не нормируется' },
   { k: 'Подвижность', v: product.mobility },
   { k: 'Морозостойкость', v: product.frost },
@@ -148,9 +149,13 @@ const docs = ['Паспорт качества', 'Декларация соот�
         ) : <p class="mt-1 text-sm text-ink-2">Марки выше в каталоге нет</p>}
       </div>
     </div>
-    <p class="mt-3 text-sm text-ink-2">
-      Посадка по марке: <a href={`/beton/${gradeSlug(product.grade)}/`} class="text-accent underline-offset-2 hover:underline">бетон {product.grade}</a>{product.class && <>, по классу: <a href={`/beton/klass-${classSlug(product.class)}/`} class="text-accent underline-offset-2 hover:underline">класс {product.class}</a></>}
-    </p>
+    {(product.grade || product.class) && (
+      <p class="mt-3 text-sm text-ink-2">
+        {product.grade && <>Посадка по марке: <a href={`/beton/${gradeSlug(product.grade)}/`} class="text-accent underline-offset-2 hover:underline">бетон {product.grade}</a></>}
+        {product.grade && product.class && ', '}
+        {product.class && <>по классу: <a href={`/beton/klass-${classSlug(product.class)}/`} class="text-accent underline-offset-2 hover:underline">класс {product.class}</a></>}
+      </p>
+    )}
   </Container>
 </Block>
 

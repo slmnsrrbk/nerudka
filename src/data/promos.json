@@ -13,8 +13,8 @@
       "Действует до 30 ноября 2026"
     ],
     "products": [
-      "m300-b22-5-granit",
-      "m350-b25-granit"
+      "beton-m300-granit",
+      "beton-m350-granit"
     ]
   },
   {
@@ -30,8 +30,8 @@
       "Действует по Москве и в радиусе 30 км"
     ],
     "products": [
-      "m250-b20-gravij",
-      "m300-b22-5-gravij"
+      "beton-m250-gravij",
+      "beton-m300-gravij"
     ]
   },
   {
@@ -47,7 +47,7 @@
       "Одна серия на договор"
     ],
     "products": [
-      "m200-b15-gravij"
+      "beton-m200-gravij"
     ]
   }
 ]

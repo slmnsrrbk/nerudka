@@ -43,11 +43,13 @@ log.push('итог в панели: ' + (await p.textContent('[data-request-tota
 await p.click('[data-request-close]');
 
 // 5. Фильтры каталога
-await p.selectOption('[data-filter-field="filler"]', 'гранит');
-await p.waitForTimeout(150);
-log.push('видно позиций после фильтра «гранит»: ' + (await p.textContent('[data-visible-count]')));
+await p.locator('[data-facet-option="filler:гранит"] input').check();
+await p.waitForTimeout(200);
+log.push('видно позиций после фильтра «гранит»: ' + (await p.textContent('[data-catalog-count]')));
 
-// 6. Режим аннотаций
+// 6. Режим аннотаций (переключатель в верхней строке шапки, она скрывается при скролле)
+await p.evaluate(() => window.scrollTo(0, 0));
+await p.waitForTimeout(300);
 await p.check('[data-annotate-toggle]');
 await p.waitForTimeout(150);
 log.push('режим аннотаций: ' + (await p.getAttribute('html', 'data-annotate')) + ', бейдж шаблона виден: ' + (await p.isVisible('[data-template-badge]')));

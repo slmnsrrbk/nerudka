@@ -42,7 +42,7 @@ const total = groups.reduce((acc, g) => acc + g.routes.length, 0);
               <tr>
                 <td class="px-4 py-3 font-medium">{t.id}</td>
                 <td class="px-4 py-3">{t.name}</td>
-                <td class="px-4 py-3"><a href={t.example} class="text-accent underline-offset-2 hover:underline">{t.example}</a></td>
+                <td class="px-4 py-3 break-words"><a href={t.example} class="break-all text-accent underline-offset-2 hover:underline">{t.example}</a></td>
               </tr>
             ))}
           </tbody>
@@ -63,8 +63,8 @@ const total = groups.reduce((acc, g) => acc + g.routes.length, 0);
             </div>
             <ul class="mt-3 grid gap-1 md:grid-cols-2">
               {g.routes.map((r) => (
-                <li class="text-sm">
-                  <a href={r.href} class="text-accent underline-offset-2 hover:underline">{r.href}</a>
+                <li class="text-sm break-words">
+                  <a href={r.href} class="break-all text-accent underline-offset-2 hover:underline">{r.href}</a>
                   <span class="text-ink-2"> {r.label}</span>
                 </li>
               ))}

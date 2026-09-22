@@ -9,7 +9,7 @@ export const products = productsData as Product[];
 export const purposes = purposesData as Purpose[];
 
 /** Порядок марок для шкалы S-04. */
-export const GRADE_SCALE = ['М100', 'М150', 'М200', 'М250', 'М300', 'М350', 'М400', 'М450', 'М500', 'М550', 'М600'];
+export const GRADE_SCALE = ['М25', 'М35', 'М50', 'М75', 'М100', 'М150', 'М200', 'М250', 'М300', 'М350', 'М400', 'М450', 'М500', 'М550', 'М600', 'М700', 'М800', 'М1000'];
 
 export function rootCategories(): Category[] {
   return categories.filter((c) => c.parent === null);

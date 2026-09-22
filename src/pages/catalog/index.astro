@@ -4,60 +4,87 @@ import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
 import PageHead from '../../components/ui/PageHead.astro';
 import Block from '../../components/ui/Block.astro';
 import Container from '../../components/ui/Container.astro';
-import ImagePlaceholder from '../../components/ui/ImagePlaceholder.astro';
-import PurposeCards from '../../components/blocks/PurposeCards.astro';
+import CatalogBrowser from '../../components/catalog/CatalogBrowser.astro';
 import FaqBlock from '../../components/blocks/FaqBlock.astro';
 import SeoText from '../../components/blocks/SeoText.astro';
 import CtaFinal from '../../components/blocks/CtaFinal.astro';
-import { rootCategories, childCategories, categoryPath, productsOfCategory, minPrice } from '../../lib/catalog';
+import {
+  products, rootCategories, childCategories, categoryPath, productsOfCategory,
+  minPrice, activeGrades, activeClasses, gradeSlug, classSlug, purposes,
+} from '../../lib/catalog';
 import { formatPrice } from '../../lib/price';
 ---
 <BaseLayout
   title="Каталог бетона и растворов: цены за м³ с доставкой"
-  description="Каталог завода: товарный, тощий, мелкозернистый бетон, керамзитобетон, фибробетон, растворы и пескобетон. Цены за м³, характеристики, доставка по Москве и области."
+  description="Каталог завода: бетон по марке, классу, заполнителю, виду и назначению, растворы и смеси. Фильтр по характеристикам, цены за м³, доставка по Москве и области."
   template="T02"
-  templateName="Хаб каталога"
+  templateName="Каталог с фильтром"
 >
   <Breadcrumbs items={[{ label: 'Каталог' }]} />
   <PageHead
     h1="Каталог бетона и растворов"
-    lead="Два входа в каталог: по виду смеси и по задаче. Все позиции производятся на собственных узлах, цена указана за кубометр на самовывозе."
+    lead={`${products.length} позиций в ${rootCategories().length} разделах. Фильтр подбирает смесь по марке, классу, заполнителю и задаче, ссылку с подборкой можно отправить коллеге.`}
   />
 
-  <Block id="X-02" name="Сетка разделов">
-    <Container class="py-12">
-      {rootCategories().map((root) => {
-        const children = childCategories(root.slug);
-        return (
-          <div class="mb-10">
-            <div class="flex flex-wrap items-baseline justify-between gap-3">
-              <h2 class="text-xl font-semibold tracking-tight">{root.name}</h2>
-              <a href={categoryPath(root)} class="text-sm text-accent underline-offset-2 hover:underline">Все позиции раздела</a>
+  <Block id="X-02" name="Разделы каталога" tone="block">
+    <Container class="py-10">
+      <div class="grid gap-6 lg:grid-cols-2">
+        {rootCategories().map((root) => (
+          <div class="rounded-md border border-line bg-white p-5">
+            <div class="flex flex-wrap items-baseline justify-between gap-2">
+              <h2 class="text-lg font-semibold">{root.name}</h2>
+              <a href={categoryPath(root)} class="text-sm text-accent underline-offset-2 hover:underline">Открыть раздел</a>
             </div>
-            <div class="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
-              {children.map((c) => {
-                const items = productsOfCategory(c.slug);
+            <p class="mt-1 text-sm text-ink-2">{root.lead}</p>
+            <div class="mt-4 grid gap-1.5 sm:grid-cols-2">
+              {childCategories(root.slug).map((c) => {
+                const list = productsOfCategory(c.slug);
                 return (
-                  <a href={categoryPath(c)} class="rounded-md border border-line bg-white p-4 transition-colors hover:border-accent">
-                    <ImagePlaceholder label={`Фото: ${c.name.toLowerCase()}`} ratio="4:3" />
-                    <div class="mt-3 font-medium">{c.name}</div>
-                    <p class="mt-1 text-sm text-ink-2">{c.lead}</p>
-                    <div class="mt-3 text-sm">
-                      от {formatPrice(minPrice(items))} ₽ за м³
-                      <span class="text-ink-2">, {items.length} позиций</span>
-                    </div>
+                  <a href={categoryPath(c)} class="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0.5 rounded-md border border-line px-3 py-2 text-sm hover:border-accent">
+                    <span class="min-w-0">{c.name}</span>
+                    <span class="text-xs text-ink-2">{list.length} шт, от {formatPrice(minPrice(list))} ₽</span>
                   </a>
                 );
               })}
             </div>
           </div>
-        );
-      })}
+        ))}
+      </div>
     </Container>
   </Block>
 
-  <PurposeCards id="X-03" title="Подобрать по задаче" tone="block" />
-  <FaqBlock id="X-04" scope="category" title="Вопросы по каталогу" limit={5} tone="page" />
-  <SeoText id="X-05" topic="каталог бетона и растворов, отличия марок, как выбрать смесь" />
-  <CtaFinal id="X-06" />
+  <Block id="X-03" name="Быстрые входы: марка, класс, задача">
+    <Container class="grid gap-6 py-10 lg:grid-cols-3">
+      <div>
+        <p class="text-sm font-medium">По марке</p>
+        <div class="mt-3 flex flex-wrap gap-1.5">
+          {activeGrades().map((g) => (
+            <a href={`/beton/${gradeSlug(g)}/`} class="rounded-md border border-line px-2.5 py-1.5 text-sm hover:border-accent hover:text-accent">{g}</a>
+          ))}
+        </div>
+      </div>
+      <div>
+        <p class="text-sm font-medium">По классу прочности</p>
+        <div class="mt-3 flex flex-wrap gap-1.5">
+          {activeClasses().map((c) => (
+            <a href={`/beton/klass-${classSlug(c)}/`} class="rounded-md border border-line px-2.5 py-1.5 text-sm hover:border-accent hover:text-accent">{c}</a>
+          ))}
+        </div>
+      </div>
+      <div>
+        <p class="text-sm font-medium">По задаче</p>
+        <div class="mt-3 grid gap-1.5">
+          {purposes.map((p) => (
+            <a href={`/beton/dlya-${p.slug}/`} class="rounded-md border border-line px-3 py-2 text-sm hover:border-accent hover:text-accent">{p.h1}</a>
+          ))}
+        </div>
+      </div>
+    </Container>
+  </Block>
+
+  <CatalogBrowser items={products} id="X-04" />
+
+  <FaqBlock id="X-05" scope="category" title="Вопросы по каталогу" limit={5} tone="block" />
+  <SeoText id="X-06" topic="каталог бетона и растворов: марки, классы, заполнители, назначение" />
+  <CtaFinal id="X-07" />
 </BaseLayout>
