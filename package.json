@@ -13,7 +13,8 @@
     "portable": "astro build && node scripts/relativize.mjs",
     "offline": "npm run portable && node scripts/inline-js.mjs",
     "check:megamenu": "node scripts/check-megamenu.mjs",
-    "check:catalog": "node scripts/check-catalog.mjs"
+    "check:catalog": "node scripts/check-catalog.mjs",
+    "check:concepts": "node scripts/check-concepts.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

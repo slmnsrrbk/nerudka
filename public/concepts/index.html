@@ -1,0 +1,883 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Четыре концепта первого экрана · БетонЗавод</title>
+<meta name="description" content="Концепты главного экрана и второго блока для сайта бетонного завода: диспетчерская, строка заказа, разрез объекта, прайс вместо баннера.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Unbounded:wght@400;600;800&family=Golos+Text:wght@400;500;600;700&family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#0b0c0e;color:#e9eaec;font-family:'IBM Plex Sans',sans-serif;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:inherit}
+.wrap{max-width:1320px;margin:0 auto;padding:0 24px}
+
+/* ========== обложка ========== */
+.cover{position:relative;padding:96px 0 72px;overflow:hidden;border-bottom:1px solid #1e2126}
+.cover::before{content:"";position:absolute;inset:0;
+  background-image:linear-gradient(#15181d 1px,transparent 1px),linear-gradient(90deg,#15181d 1px,transparent 1px);
+  background-size:48px 48px;mask-image:radial-gradient(120% 90% at 70% 0%,#000 30%,transparent 75%)}
+.cover__in{position:relative}
+.kicker{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.22em;color:#f0a83c;margin:0 0 20px}
+.cover h1{font-family:'Unbounded',sans-serif;font-weight:800;font-size:clamp(34px,5.4vw,68px);line-height:1.02;letter-spacing:-.03em;margin:0 0 22px;max-width:16ch}
+.cover h1 span{color:#f0a83c}
+.cover p{max-width:62ch;color:#9aa1ab;font-size:17px;line-height:1.6;margin:0 0 34px}
+.nav-concepts{display:grid;gap:12px;grid-template-columns:repeat(4,1fr);margin-top:44px}
+.nav-concepts a{display:block;padding:18px;border:1px solid #23272e;border-radius:12px;background:#101216;text-decoration:none;transition:.2s}
+.nav-concepts a:hover{border-color:#f0a83c;transform:translateY(-3px)}
+.nav-concepts b{display:block;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#f0a83c;letter-spacing:.14em;margin-bottom:10px}
+.nav-concepts span{font-size:15px;font-weight:600;line-height:1.35;display:block}
+.nav-concepts em{display:block;font-style:normal;font-size:13px;color:#7c848f;margin-top:6px;line-height:1.4}
+
+.baseline{margin-top:56px;border:1px solid #23272e;border-radius:14px;padding:26px;background:#0e1014}
+.baseline h2{font-size:15px;margin:0 0 14px;font-weight:600;letter-spacing:.01em}
+.baseline ul{margin:0;padding-left:18px;color:#9aa1ab;font-size:14.5px;line-height:1.75}
+.baseline ul b{color:#e9eaec;font-weight:600}
+
+/* ========== рамка концепта ========== */
+.concept{padding:80px 0 0;border-top:1px solid #1e2126}
+.concept__head{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:start;margin-bottom:38px}
+.concept__num{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;color:#f0a83c;margin:0 0 14px}
+.concept__head h2{font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(26px,3.2vw,40px);letter-spacing:-.02em;margin:0 0 16px;line-height:1.1}
+.concept__head p{color:#9aa1ab;font-size:16px;line-height:1.65;margin:0}
+.facts{display:grid;gap:10px}
+.fact{display:grid;grid-template-columns:96px 1fr;gap:14px;padding:12px 0;border-top:1px solid #1e2126;font-size:14px;line-height:1.5}
+.fact b{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;color:#7c848f;font-weight:400;padding-top:2px}
+.shot{border:1px solid #23272e;border-radius:16px;overflow:hidden;margin-bottom:18px;background:#fff}
+.shot__bar{display:flex;align-items:center;gap:8px;padding:10px 14px;background:#15181d;border-bottom:1px solid #23272e}
+.shot__bar i{width:9px;height:9px;border-radius:50%;background:#2b3038;display:block}
+.shot__bar span{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6d767f;margin-left:8px}
+.shot-label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;color:#7c848f;margin:0 0 12px}
+
+/* ================================================================
+   КОНЦЕПТ 1. ДИСПЕТЧЕРСКАЯ
+   ================================================================ */
+.c1{--bg:#0d1117;--line:#1f262f;--ink:#e7ecf2;--dim:#7d8896;--live:#2fd07a;--warn:#f0a83c;
+  background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans',sans-serif;padding:0}
+.c1 .hero{display:grid;grid-template-columns:.85fr 1.15fr;min-height:640px}
+.c1 .hero__left{padding:56px 44px;border-right:1px solid var(--line);display:flex;flex-direction:column}
+.c1 .live{display:inline-flex;align-items:center;gap:9px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;color:var(--live)}
+.c1 .live i{width:8px;height:8px;border-radius:50%;background:var(--live);animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(47,208,122,.45)}50%{opacity:.6;box-shadow:0 0 0 7px rgba(47,208,122,0)}}
+.c1 h3{font-size:clamp(30px,3.2vw,46px);line-height:1.05;letter-spacing:-.025em;margin:26px 0 18px;font-weight:600}
+.c1 .lead{color:var(--dim);font-size:16px;line-height:1.6;margin:0 0 30px;max-width:38ch}
+.c1 .metrics{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:28px}
+.c1 .metric{background:var(--bg);padding:16px 18px}
+.c1 .metric b{display:block;font-family:'IBM Plex Mono',monospace;font-size:26px;font-weight:500;letter-spacing:-.02em}
+.c1 .metric span{display:block;font-size:12px;color:var(--dim);margin-top:4px}
+.c1 .slots{margin-top:auto}
+.c1 .slots p{font-size:13px;color:var(--dim);margin:0 0 12px}
+.c1 .slot-row{display:flex;gap:8px;flex-wrap:wrap}
+.c1 .slot{font-family:'IBM Plex Mono',monospace;font-size:14px;padding:11px 15px;border:1px solid var(--line);background:#111820;cursor:pointer;transition:.16s;border-radius:6px}
+.c1 .slot:hover{border-color:var(--warn);color:var(--warn)}
+.c1 .slot.is-taken{opacity:.32;cursor:not-allowed;text-decoration:line-through}
+.c1 .slot.is-active{background:var(--warn);color:#0d1117;border-color:var(--warn);font-weight:600}
+.c1 .cta{margin-top:20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.c1 .btn{background:var(--warn);color:#0d1117;border:0;padding:15px 26px;font-size:15px;font-weight:600;border-radius:7px;cursor:pointer;font-family:inherit}
+.c1 .btn--ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.c1 .board{padding:24px 30px 30px;overflow:hidden}
+.c1 .board__top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px}
+.c1 .board__top b{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--dim);font-weight:400}
+.c1 .board__clock{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--warn)}
+.c1 table{width:100%;border-collapse:collapse;font-family:'IBM Plex Mono',monospace;font-size:13.5px}
+.c1 thead th{text-align:left;font-weight:400;font-size:11px;letter-spacing:.1em;color:var(--dim);padding:0 10px 12px;border-bottom:1px solid var(--line)}
+.c1 tbody td{padding:13px 10px;border-bottom:1px solid #161c24}
+.c1 tbody tr{animation:rowin .5s both}
+.c1 .st{display:inline-flex;align-items:center;gap:7px;font-size:12px}
+.c1 .st i{width:7px;height:7px;border-radius:50%}
+.c1 .st--load i{background:var(--warn)}
+.c1 .st--go i{background:#4f9cf0}
+.c1 .st--out i{background:var(--live)}
+.c1 .st--done i{background:#3c4652}
+@keyframes rowin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.c1 .second{border-top:1px solid var(--line);padding:46px 44px 56px}
+.c1 .second h4{font-size:24px;margin:0 0 6px;font-weight:600;letter-spacing:-.02em}
+.c1 .second p.sub{color:var(--dim);font-size:15px;margin:0 0 26px}
+.c1 .heat{display:grid;grid-template-columns:64px repeat(12,1fr);gap:4px;align-items:center}
+.c1 .heat__h{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--dim);text-align:center}
+.c1 .heat__d{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--dim)}
+.c1 .cell{height:34px;border-radius:4px;cursor:pointer;transition:.15s;border:1px solid transparent}
+.c1 .cell:hover{border-color:var(--warn);transform:scale(1.08)}
+.c1 .l0{background:#141b23}.c1 .l1{background:#1d3a2c}.c1 .l2{background:#245a3c}.c1 .l3{background:#2a7d4c}.c1 .l4{background:#8a5a1c}.c1 .l5{background:#a33b2c}
+.c1 .legend{display:flex;gap:18px;align-items:center;margin-top:20px;font-size:12.5px;color:var(--dim);flex-wrap:wrap}
+.c1 .legend span{display:inline-flex;align-items:center;gap:7px}
+.c1 .legend i{width:14px;height:14px;border-radius:3px;display:block}
+.c1 .heat-tip{margin-top:18px;border:1px solid var(--line);border-radius:8px;padding:16px 18px;font-size:14px;background:#111820;min-height:56px}
+.c1 .heat-tip b{color:var(--warn);font-family:'IBM Plex Mono',monospace}
+</style>
+</head>
+<body>
+
+<header class="cover">
+  <div class="wrap cover__in">
+    <p class="kicker">БЕТОНЗАВОД · КОНЦЕПТЫ ГЛАВНОЙ</p>
+    <h1>Четыре первых экрана, <span>которых нет</span> у конкурентов</h1>
+    <p>Все четырнадцать сайтов из выдачи устроены одинаково: фотография миксера, заголовок «бетон с доставкой от производителя», телефон и бейджи, ниже таблица цен. Ниже четыре концепта, которые отличаются не оформлением, а тем, что вынесено в первый экран и какое действие оно предлагает.</p>
+
+    <div class="nav-concepts">
+      <a href="#c1"><b>01</b><span>Диспетчерская</span><em>Живое табло отгрузок и свободные слоты</em></a>
+      <a href="#c2"><b>02</b><span>Строка заказа</span><em>Заказ как одно предложение с полями</em></a>
+      <a href="#c3"><b>03</b><span>Разрез объекта</span><em>Выбор марки по конструкции, а не по списку</em></a>
+      <a href="#c4"><b>04</b><span>Прайс вместо баннера</span><em>Сразу цены, ноль маркетинга</em></a>
+    </div>
+
+    <div class="baseline">
+      <h2>Что делают все конкуренты, от чего мы уходим</h2>
+      <ul>
+        <li><b>Фото миксера на всю ширину.</b> Не несёт информации, одинаково у всех, занимает лучший экран.</li>
+        <li><b>Заголовок-описание деятельности.</b> «Производство и доставка бетона» не отвечает ни на один вопрос покупателя.</li>
+        <li><b>Квиз на пять шагов.</b> Прораб уходит, не дойдя до цены.</li>
+        <li><b>Сетка преимуществ.</b> Одни и те же шесть иконок: качество, опыт, цена, сроки.</li>
+        <li><b>Цена спрятана.</b> Прайс ниже второго экрана или за формой.</li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<!-- ============================ КОНЦЕПТ 1 ============================ -->
+<section class="concept" id="c1">
+  <div class="wrap">
+    <div class="concept__head">
+      <div>
+        <p class="concept__num">КОНЦЕПТ 01</p>
+        <h2>Диспетчерская</h2>
+        <p>Первый экран это не реклама, а рабочий борт завода: какие машины грузятся прямо сейчас, куда едут, и какие слоты на сегодня ещё свободны. Сайт показывает, что производство живое и справится с вашим объёмом, вместо того чтобы это утверждать словами.</p>
+      </div>
+      <div class="facts">
+        <div class="fact"><b>ИДЕЯ</b><span>Продаём не бетон, а уверенность в графике подачи</span></div>
+        <div class="fact"><b>ДЕЙСТВИЕ</b><span>Занять свободный слот, а не «оставить заявку»</span></div>
+        <div class="fact"><b>КОМУ</b><span>Прорабы и снабженцы, у которых горит график</span></div>
+        <div class="fact"><b>РИСК</b><span>Нужны живые данные или честная имитация по расписанию</span></div>
+      </div>
+    </div>
+
+    <p class="shot-label">ПЕРВЫЙ ЭКРАН И ВТОРОЙ БЛОК</p>
+    <div class="shot">
+      <div class="shot__bar"><i></i><i></i><i></i><span>концепт 01 · диспетчерская</span></div>
+      <div class="c1">
+
+        <div class="hero">
+          <div class="hero__left">
+            <span class="live"><i></i>ЗАВОД РАБОТАЕТ · СМЕНА ИДЁТ</span>
+            <h3>Сегодня отгружено 47 машин. Осталось 6 слотов.</h3>
+            <p class="lead">Мы показываем загрузку узла в реальном времени. Выберите свободное окно, и бетон будет у вас в этот час, а не «в течение дня».</p>
+            <div class="metrics">
+              <div class="metric"><b id="c1-vol">412 м³</b><span>отгружено с начала смены</span></div>
+              <div class="metric"><b>18 / 28</b><span>миксеров в рейсе сейчас</span></div>
+              <div class="metric"><b>24 мин</b><span>средний интервал подачи</span></div>
+              <div class="metric"><b id="c1-free">6</b><span>свободных окон на сегодня</span></div>
+            </div>
+            <div class="slots">
+              <p>Свободные окна на сегодня, нажмите нужное:</p>
+              <div class="slot-row">
+                <button class="slot is-taken">09:00</button>
+                <button class="slot is-taken">11:30</button>
+                <button class="slot" data-slot="14:00">14:00</button>
+                <button class="slot" data-slot="15:30">15:30</button>
+                <button class="slot" data-slot="17:00">17:00</button>
+                <button class="slot" data-slot="19:30">19:30</button>
+                <button class="slot" data-slot="22:00">22:00</button>
+              </div>
+              <div class="cta">
+                <button class="btn" id="c1-btn">Занять окно</button>
+                <button class="btn btn--ghost">Показать завтра</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="board">
+            <div class="board__top">
+              <b>БОРТ ОТГРУЗОК · РБУ ЮЖНЫЙ</b>
+              <span class="board__clock" id="c1-clock">14:07:22</span>
+            </div>
+            <table>
+              <thead><tr><th>БОРТ</th><th>МАРКА</th><th>ОБЪЁМ</th><th>НАПРАВЛЕНИЕ</th><th>ПОДАЧА</th><th>СТАТУС</th></tr></thead>
+              <tbody id="c1-rows"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="second">
+          <h4>Загрузка завода на неделю</h4>
+          <p class="sub">Тепловая карта по часам. Тёмное это свободно, красное это пик. Наведите на клетку, чтобы увидеть свободный объём и цену часа.</p>
+          <div class="heat" id="c1-heat"></div>
+          <div class="legend">
+            <span><i class="l0"></i>свободно</span>
+            <span><i class="l2"></i>есть запас</span>
+            <span><i class="l3"></i>половина занята</span>
+            <span><i class="l4"></i>плотно</span>
+            <span><i class="l5"></i>пик, лучше перенести</span>
+          </div>
+          <div class="heat-tip" id="c1-tip">Наведите курсор на клетку графика.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+/* ================================================================
+   КОНЦЕПТ 2. СТРОКА ЗАКАЗА
+   ================================================================ */
+.c2{--paper:#f4f1ea;--ink:#16130f;--dim:#6f6659;--accent:#d8442c;--line:#ddd6c9;
+  background:var(--paper);color:var(--ink);font-family:'Golos Text',sans-serif}
+.c2 .hero{display:grid;grid-template-columns:1.25fr .75fr;min-height:620px}
+.c2 .hero__left{padding:58px 48px;display:flex;flex-direction:column;justify-content:center}
+.c2 .top{font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.2em;color:var(--accent);margin:0 0 30px}
+.c2 .sentence{font-family:'Unbounded',sans-serif;font-weight:400;font-size:clamp(24px,2.9vw,40px);line-height:1.42;letter-spacing:-.02em;margin:0}
+.c2 .pick{position:relative;display:inline-block}
+.c2 .pick select{appearance:none;font:inherit;font-weight:600;color:var(--accent);background:transparent;border:0;border-bottom:3px solid var(--accent);padding:0 26px 2px 4px;cursor:pointer;outline:none;letter-spacing:-.02em}
+.c2 .pick::after{content:"";position:absolute;right:7px;top:52%;width:8px;height:8px;border-right:2.5px solid var(--accent);border-bottom:2.5px solid var(--accent);transform:translateY(-60%) rotate(45deg);pointer-events:none}
+.c2 .pick input{font:inherit;font-weight:600;color:var(--accent);background:transparent;border:0;border-bottom:3px solid var(--accent);width:3.2ch;text-align:center;outline:none;padding:0 2px 2px}
+.c2 .hint{margin:38px 0 0;color:var(--dim);font-size:15.5px;line-height:1.6;max-width:52ch}
+.c2 .hint b{color:var(--ink);font-weight:600}
+.c2 .check{border-left:1px solid var(--line);padding:46px 40px;display:flex;flex-direction:column;background:#fbf9f5}
+.c2 .check__t{font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.18em;color:var(--dim);margin:0 0 22px}
+.c2 .line{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:13px 0;border-bottom:1px dashed var(--line);font-size:15px}
+.c2 .line span{color:var(--dim)}
+.c2 .line b{font-family:'IBM Plex Mono',monospace;font-weight:500;white-space:nowrap}
+.c2 .line--off b{color:#1f8a4c}
+.c2 .total{margin-top:22px;padding-top:20px;border-top:2px solid var(--ink)}
+.c2 .total span{display:block;font-size:13px;color:var(--dim);margin-bottom:6px}
+.c2 .total b{font-family:'Unbounded',sans-serif;font-size:clamp(30px,3.4vw,44px);font-weight:800;letter-spacing:-.03em;display:block;line-height:1}
+.c2 .total em{font-style:normal;display:block;font-size:13.5px;color:var(--dim);margin-top:8px;font-family:'IBM Plex Mono',monospace}
+.c2 .btn{margin-top:auto;background:var(--accent);color:#fff;border:0;padding:17px;font:600 16px 'Golos Text',sans-serif;border-radius:2px;cursor:pointer;width:100%}
+.c2 .btn:hover{background:#b93721}
+.c2 .note{font-size:12.5px;color:var(--dim);margin:12px 0 0;line-height:1.5}
+.c2 .second{border-top:1px solid var(--line);padding:50px 48px 58px}
+.c2 .second h4{font-family:'Unbounded',sans-serif;font-weight:600;font-size:26px;margin:0 0 8px;letter-spacing:-.02em}
+.c2 .second .sub{color:var(--dim);font-size:15.5px;margin:0 0 28px;max-width:70ch}
+.c2 .alts{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.c2 .alt{border:1px solid var(--line);background:#fbf9f5;padding:24px;display:flex;flex-direction:column;gap:10px;transition:.18s;cursor:pointer}
+.c2 .alt:hover{border-color:var(--accent);transform:translateY(-3px)}
+.c2 .alt__q{font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:var(--dim)}
+.c2 .alt__h{font-family:'Unbounded',sans-serif;font-size:19px;font-weight:600;letter-spacing:-.02em;line-height:1.25}
+.c2 .alt__d{font-size:14.5px;color:var(--dim);line-height:1.55;flex:1}
+.c2 .alt__p{font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:500}
+.c2 .alt__p.minus{color:#1f8a4c}
+.c2 .alt__p.plus{color:var(--accent)}
+
+/* ================================================================
+   КОНЦЕПТ 3. РАЗРЕЗ ОБЪЕКТА
+   ================================================================ */
+.c3{--paper:#eceae4;--ink:#1c1c1a;--dim:#6b6b66;--accent:#c8402f;--blue:#2f5d8c;--line:#cfcdc5;
+  background:var(--paper);color:var(--ink);font-family:'Golos Text',sans-serif;
+  background-image:linear-gradient(rgba(120,120,110,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(120,120,110,.07) 1px,transparent 1px);
+  background-size:28px 28px}
+.c3 .hero{display:grid;grid-template-columns:.78fr 1.22fr;min-height:620px}
+.c3 .hero__left{padding:54px 44px;display:flex;flex-direction:column;border-right:1px solid var(--line)}
+.c3 .stamp{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;color:var(--dim);border:1px solid var(--line);display:inline-block;padding:7px 12px;margin-bottom:26px;align-self:flex-start}
+.c3 h3{font-size:clamp(27px,3vw,40px);line-height:1.12;letter-spacing:-.025em;margin:0 0 16px;font-weight:700}
+.c3 .lead{color:var(--dim);font-size:16px;line-height:1.6;margin:0 0 28px}
+.c3 .picked{border:1px solid var(--ink);background:#fbfaf7;padding:22px;margin-top:auto}
+.c3 .picked__l{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--dim);margin:0 0 10px}
+.c3 .picked__n{font-size:23px;font-weight:700;letter-spacing:-.02em;margin:0 0 4px}
+.c3 .picked__d{font-size:14.5px;color:var(--dim);line-height:1.55;margin:0 0 16px}
+.c3 .picked__row{display:flex;justify-content:space-between;font-size:14px;padding:9px 0;border-top:1px dashed var(--line)}
+.c3 .picked__row b{font-family:'IBM Plex Mono',monospace;font-weight:500}
+.c3 .picked__btn{margin-top:16px;width:100%;background:var(--accent);color:#fff;border:0;padding:14px;font:600 15px 'Golos Text',sans-serif;cursor:pointer}
+.c3 .draw{padding:34px 40px;display:flex;flex-direction:column}
+.c3 .draw__t{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--dim);margin:0 0 6px}
+.c3 .draw__h{font-size:15px;color:var(--dim);margin:0 0 18px}
+.c3 svg{width:100%;height:auto}
+.c3 .zone{cursor:pointer;transition:.15s}
+.c3 .hit{fill:#fff;fill-opacity:0}
+.c3 .zlab{pointer-events:none}
+.c3 .zone:hover .zfill,.c3 .zone.is-on .zfill{fill:var(--accent);fill-opacity:.9}
+.c3 .zone:hover .zlab,.c3 .zone.is-on .zlab{fill:var(--accent);font-weight:700}
+.c3 .zfill{fill:#b9b6ad;fill-opacity:.85;transition:.15s}
+.c3 .zlab{font-family:'IBM Plex Mono',monospace;font-size:11px;fill:var(--dim);transition:.15s}
+.c3 .dim-line{stroke:var(--blue);stroke-width:1;stroke-dasharray:4 3}
+.c3 .second{border-top:1px solid var(--line);padding:46px 44px 56px;display:grid;grid-template-columns:1.1fr .9fr;gap:40px}
+.c3 .second h4{font-size:25px;margin:0 0 8px;font-weight:700;letter-spacing:-.02em}
+.c3 .second .sub{color:var(--dim);font-size:15px;margin:0 0 24px}
+.c3 .fields{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.c3 .field label{display:block;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;color:var(--dim);margin-bottom:7px}
+.c3 .field input{width:100%;font:500 17px 'IBM Plex Mono',monospace;padding:12px;border:1px solid var(--line);background:#fbfaf7;outline:none}
+.c3 .field input:focus{border-color:var(--accent)}
+.c3 .result{border:1px solid var(--ink);padding:24px;background:#fbfaf7;align-self:start}
+.c3 .result__l{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--dim);margin:0 0 12px}
+.c3 .result__v{font-size:40px;font-weight:700;letter-spacing:-.03em;margin:0;line-height:1}
+.c3 .result__s{font-size:14px;color:var(--dim);margin:8px 0 18px}
+.c3 .result__row{display:flex;justify-content:space-between;font-size:14.5px;padding:10px 0;border-top:1px dashed var(--line)}
+.c3 .result__row b{font-family:'IBM Plex Mono',monospace;font-weight:500}
+</style>
+
+<!-- ============================ КОНЦЕПТ 2 ============================ -->
+<section class="concept" id="c2">
+  <div class="wrap">
+    <div class="concept__head">
+      <div>
+        <p class="concept__num">КОНЦЕПТ 02</p>
+        <h2>Строка заказа</h2>
+        <p>Весь первый экран это одно предложение, в котором четыре слова заменены на поля. Человек не заполняет форму, а дописывает фразу, и справа сразу собирается чек с доставкой и насосом. Ни фотографии, ни слогана, ни квиза.</p>
+      </div>
+      <div class="facts">
+        <div class="fact"><b>ИДЕЯ</b><span>Заказ как фраза, а не как анкета из семи полей</span></div>
+        <div class="fact"><b>ДЕЙСТВИЕ</b><span>Увидеть итоговую сумму за четыре клика</span></div>
+        <div class="fact"><b>КОМУ</b><span>Частнику, который боится скрытых доплат</span></div>
+        <div class="fact"><b>РИСК</b><span>Нужна честная модель цены, иначе чек обманет</span></div>
+      </div>
+    </div>
+
+    <p class="shot-label">ПЕРВЫЙ ЭКРАН И ВТОРОЙ БЛОК</p>
+    <div class="shot">
+      <div class="shot__bar"><i></i><i></i><i></i><span>концепт 02 · строка заказа</span></div>
+      <div class="c2">
+        <div class="hero">
+          <div class="hero__left">
+            <p class="top">БЕТОННЫЙ ЗАВОД · МОСКВА И ОБЛАСТЬ</p>
+            <p class="sentence">
+              Привезите
+              <span class="pick"><select id="c2-grade">
+                <option value="5480" data-name="бетон М300">бетон М300</option>
+                <option value="5170" data-name="бетон М250">бетон М250</option>
+                <option value="5790" data-name="бетон М350">бетон М350</option>
+                <option value="4700" data-name="пескобетон М300">пескобетон М300</option>
+                <option value="4900" data-name="керамзитобетон М150">керамзитобетон М150</option>
+              </select></span>
+              в объёме
+              <span class="pick"><input id="c2-vol" type="number" min="1" max="200" value="24"></span> м³
+              на
+              <span class="pick"><select id="c2-zone">
+                <option value="550" data-name="Одинцово">Одинцово</option>
+                <option value="400" data-name="Москву">Москву</option>
+                <option value="700" data-name="Подольск">Подольск</option>
+                <option value="900" data-name="Кубинку">Кубинку</option>
+              </select></span>
+              к
+              <span class="pick"><select id="c2-when">
+                <option value="0" data-name="завтра, 9:00">завтра, 9:00</option>
+                <option value="0" data-name="сегодня, 17:00">сегодня, 17:00</option>
+                <option value="-180" data-name="в субботу">в субботу</option>
+              </select></span>
+            </p>
+            <p class="hint">Цена собирается прямо во время чтения фразы. <b>Всё, что попадёт в счёт, видно здесь</b>, доплат после выгрузки не будет.</p>
+          </div>
+
+          <div class="check">
+            <p class="check__t">ЧЕК ЗАКАЗА</p>
+            <div class="line"><span id="c2-l1">Бетон М300, 24 м³</span><b id="c2-v1">131 520 ₽</b></div>
+            <div class="line"><span id="c2-l2">Доставка в Одинцово</span><b id="c2-v2">13 200 ₽</b></div>
+            <div class="line"><span>Подача по лоткам, 40 минут</span><b>входит</b></div>
+            <div class="line line--off"><span id="c2-l4">Скидка за объём</span><b id="c2-v4">0 ₽</b></div>
+            <div class="total">
+              <span>итого с доставкой</span>
+              <b id="c2-total">144 720 ₽</b>
+              <em id="c2-perm3">6 030 ₽ за м³</em>
+            </div>
+            <button class="btn">Зафиксировать цену</button>
+            <p class="note">Цена держится 48 часов. Менеджер подтвердит подъезд и время подачи.</p>
+          </div>
+        </div>
+
+        <div class="second">
+          <h4>А если поменять условия</h4>
+          <p class="sub">Второй блок отвечает на вопрос, который человек задаёт себе сам: можно ли дешевле. Три варианта пересчитаны от текущего заказа.</p>
+          <div class="alts">
+            <div class="alt">
+              <span class="alt__q">ЕСЛИ ВЗЯТЬ МАРКУ НИЖЕ</span>
+              <span class="alt__h">М250 вместо М300</span>
+              <span class="alt__d">Подходит для ленты под каркасный дом и хозблок. Для плиты и перекрытия не берите.</span>
+              <span class="alt__p minus" id="c2-a1">минус 7 440 ₽</span>
+            </div>
+            <div class="alt">
+              <span class="alt__q">ЕСЛИ ПЕРЕНЕСТИ НА ВЫХОДНЫЕ</span>
+              <span class="alt__h">Суббота вместо будней</span>
+              <span class="alt__d">В выходные узел загружен меньше, машина приходит точнее в срок.</span>
+              <span class="alt__p minus">минус 4 320 ₽</span>
+            </div>
+            <div class="alt">
+              <span class="alt__q">ЕСЛИ НУЖЕН НАСОС</span>
+              <span class="alt__h">Стрела 32 метра</span>
+              <span class="alt__d">Понадобится, если до дальней точки заливки больше трёх метров от борта.</span>
+              <span class="alt__p plus">плюс 26 000 ₽</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ КОНЦЕПТ 3 ============================ -->
+<section class="concept" id="c3">
+  <div class="wrap">
+    <div class="concept__head">
+      <div>
+        <p class="concept__num">КОНЦЕПТ 03</p>
+        <h2>Разрез объекта</h2>
+        <p>Частник не знает, чем М250 отличается от М300, он знает, что заливает отмостку. Первый экран это чертёж участка с домом: наводите на конструкцию и получаете марку, цену и типовой объём. Каталог открывается через картинку, а не через список марок.</p>
+      </div>
+      <div class="facts">
+        <div class="fact"><b>ИДЕЯ</b><span>Вход в каталог через конструкцию, а не через маркировку</span></div>
+        <div class="fact"><b>ДЕЙСТВИЕ</b><span>Ткнуть в свою задачу и сразу посчитать объём</span></div>
+        <div class="fact"><b>КОМУ</b><span>Частное строительство, дача, первый заказ в жизни</span></div>
+        <div class="fact"><b>РИСК</b><span>Нужна аккуратная графика, халтурный чертёж всё испортит</span></div>
+      </div>
+    </div>
+
+    <p class="shot-label">ПЕРВЫЙ ЭКРАН И ВТОРОЙ БЛОК</p>
+    <div class="shot">
+      <div class="shot__bar"><i></i><i></i><i></i><span>концепт 03 · разрез объекта</span></div>
+      <div class="c3">
+        <div class="hero">
+          <div class="hero__left">
+            <span class="stamp">ПОДБОР ПО КОНСТРУКЦИИ</span>
+            <h3>Покажите, что заливаете. Марку подберём мы.</h3>
+            <p class="lead">Не нужно разбираться в марках и классах. Наведите на элемент на чертеже: подставим подходящую смесь, объём и цену с доставкой.</p>
+            <div class="picked">
+              <p class="picked__l" id="c3-l">ВЫБРАНО НА ЧЕРТЕЖЕ</p>
+              <p class="picked__n" id="c3-n">Плитный фундамент</p>
+              <p class="picked__d" id="c3-d">Монолитная плита под дом из газобетона. Заливается за одну смену, чтобы не было холодного шва.</p>
+              <div class="picked__row"><span>Рекомендуем</span><b id="c3-g">Бетон М300 В22,5</b></div>
+              <div class="picked__row"><span>Типовой объём</span><b id="c3-v">24 м³</b></div>
+              <div class="picked__row"><span>Цена с доставкой</span><b id="c3-p">6 030 ₽ за м³</b></div>
+              <button class="picked__btn">Посчитать мой объём</button>
+            </div>
+          </div>
+
+          <div class="draw">
+            <p class="draw__t">РАЗРЕЗ УЧАСТКА · СХЕМА</p>
+            <p class="draw__h">Наведите курсор на конструкцию</p>
+            <svg viewBox="0 0 760 420" role="img" aria-label="Схематический разрез участка с домом">
+              <line x1="0" y1="300" x2="760" y2="300" stroke="#9c9a92" stroke-width="1.5"/>
+              <text x="8" y="294" class="zlab">уровень земли</text>
+
+              <g class="zone is-on" data-z="plita">
+                <rect class="hit" x="240" y="300" width="290" height="36"/>
+                <rect class="zfill" x="250" y="300" width="270" height="26" rx="2"/>
+                <text class="zlab" x="330" y="341">плитный фундамент</text>
+              </g>
+              <g class="zone" data-z="lenta">
+                <rect class="hit" x="240" y="336" width="48" height="60"/><rect class="hit" x="484" y="336" width="48" height="60"/>
+                <rect class="zfill" x="250" y="326" width="28" height="64" rx="2"/>
+                <rect class="zfill" x="492" y="326" width="28" height="64" rx="2"/>
+                <text class="zlab" x="196" y="384">лента</text>
+              </g>
+              <g class="zone" data-z="stena">
+                <rect class="hit" x="252" y="164" width="46" height="132"/><rect class="hit" x="474" y="164" width="46" height="132"/>
+                <rect class="zfill" x="262" y="170" width="24" height="130" rx="2"/>
+                <rect class="zfill" x="484" y="170" width="24" height="130" rx="2"/>
+                <text class="zlab" x="196" y="240">стены</text>
+              </g>
+              <g class="zone" data-z="perekrytie">
+                <rect class="hit" x="240" y="132" width="290" height="40"/>
+                <rect class="zfill" x="250" y="152" width="270" height="20" rx="2"/>
+                <text class="zlab" x="330" y="146">перекрытие</text>
+              </g>
+              <path d="M240 152 L385 84 L530 152 Z" fill="#c9c6bd" stroke="#9c9a92"/>
+              <g class="zone" data-z="styazhka">
+                <rect class="hit" x="280" y="272" width="212" height="28"/>
+                <rect class="zfill" x="286" y="286" width="198" height="14" rx="2"/>
+                <text class="zlab" x="330" y="280">стяжка пола</text>
+              </g>
+              <g class="zone" data-z="otmostka">
+                <rect class="hit" x="514" y="294" width="108" height="42"/>
+                <rect class="zfill" x="520" y="300" width="96" height="14" rx="2"/>
+                <text class="zlab" x="524" y="332">отмостка</text>
+              </g>
+              <g class="zone" data-z="dorozhka">
+                <rect class="hit" x="626" y="294" width="122" height="42"/>
+                <rect class="zfill" x="632" y="300" width="112" height="12" rx="2"/>
+                <text class="zlab" x="636" y="332">дорожка</text>
+              </g>
+              <g class="zone" data-z="zabor">
+                <rect class="hit" x="44" y="222" width="114" height="150"/>
+                <rect class="zfill" x="60" y="230" width="12" height="70" rx="2"/>
+                <rect class="zfill" x="130" y="230" width="12" height="70" rx="2"/>
+                <rect class="zfill" x="52" y="300" width="98" height="46" rx="2"/>
+                <text class="zlab" x="56" y="366">забор, столбы</text>
+              </g>
+              <line class="dim-line" x1="250" y1="404" x2="520" y2="404"/>
+              <text class="zlab" x="368" y="398" fill="#2f5d8c">10 000</text>
+            </svg>
+          </div>
+        </div>
+
+        <div class="second">
+          <div>
+            <h4>Калькулятор по выбранной конструкции</h4>
+            <p class="sub">Второй блок не общий калькулятор со списком фигур, а продолжение чертежа: поля подставляются под ту конструкцию, которую вы выбрали выше.</p>
+            <div class="fields">
+              <div class="field"><label>ДЛИНА, М</label><input id="c3-a" type="number" value="10" step="0.1"></div>
+              <div class="field"><label>ШИРИНА, М</label><input id="c3-b" type="number" value="8" step="0.1"></div>
+              <div class="field"><label>ТОЛЩИНА, М</label><input id="c3-c" type="number" value="0.3" step="0.01"></div>
+            </div>
+          </div>
+          <div class="result">
+            <p class="result__l">НУЖНО БЕТОНА</p>
+            <p class="result__v" id="c3-vol">25,20 м³</p>
+            <p class="result__s">с запасом 5 процентов на деформацию опалубки</p>
+            <div class="result__row"><span>Марка</span><b id="c3-g2">М300 В22,5</b></div>
+            <div class="result__row"><span>Цена смеси</span><b id="c3-mix">138 096 ₽</b></div>
+            <div class="result__row"><span>Доставка</span><b id="c3-del">13 860 ₽</b></div>
+            <div class="result__row"><span>Итого</span><b id="c3-sum">151 956 ₽</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+/* ================================================================
+   КОНЦЕПТ 4. ПРАЙС ВМЕСТО БАННЕРА
+   ================================================================ */
+.c4{--ink:#0f0f0f;--paper:#fff;--dim:#6a6a6a;--accent:#ffd400;--line:#e2e2e2;
+  background:var(--paper);color:var(--ink);font-family:'IBM Plex Sans',sans-serif}
+.c4 .hero{padding:44px 44px 0}
+.c4 .stripe{height:10px;background:repeating-linear-gradient(45deg,var(--accent) 0 14px,#0f0f0f 14px 28px);margin-bottom:34px}
+.c4 .claim{font-family:'Oswald',sans-serif;font-weight:700;text-transform:none;font-size:clamp(28px,3.6vw,52px);line-height:1.04;letter-spacing:-.01em;margin:0 0 18px;max-width:22ch}
+.c4 .zonepick{appearance:none;font:inherit;font-family:'Oswald',sans-serif;font-weight:700;font-size:inherit;background:var(--accent);border:0;border-bottom:4px solid var(--ink);padding:0 10px;cursor:pointer;outline:none}
+.c4 .sub{color:var(--dim);font-size:16px;max-width:66ch;margin:0 0 30px;line-height:1.6}
+.c4 .sub b{color:var(--ink)}
+.c4 .grid{display:grid;grid-template-columns:repeat(6,1fr);border-top:2px solid var(--ink);border-left:1px solid var(--line)}
+.c4 .cellp{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px 14px;transition:.14s;cursor:pointer}
+.c4 .cellp:hover{background:var(--accent)}
+.c4 .cellp b{display:block;font-family:'Oswald',sans-serif;font-size:21px;font-weight:500;letter-spacing:.01em}
+.c4 .cellp span{display:block;font-size:11.5px;color:var(--dim);margin:3px 0 10px;font-family:'IBM Plex Mono',monospace}
+.c4 .cellp i{display:block;font-style:normal;font-family:'IBM Plex Mono',monospace;font-size:19px;font-weight:600}
+.c4 .cellp em{display:block;font-style:normal;font-size:11px;color:var(--dim);margin-top:2px}
+.c4 .foot{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:22px 0 40px;flex-wrap:wrap}
+.c4 .foot p{margin:0;font-size:13.5px;color:var(--dim);max-width:60ch;line-height:1.55}
+.c4 .btn{background:var(--ink);color:#fff;border:0;padding:16px 28px;font:600 15px 'IBM Plex Sans',sans-serif;cursor:pointer}
+.c4 .btn:hover{background:var(--accent);color:var(--ink)}
+.c4 .second{background:#0f0f0f;color:#fff;padding:52px 44px 58px}
+.c4 .second h4{font-family:'Oswald',sans-serif;font-weight:500;font-size:30px;margin:0 0 8px}
+.c4 .second .s2{color:#9a9a9a;font-size:15.5px;margin:0 0 32px;max-width:72ch;line-height:1.6}
+.c4 .bars{display:grid;gap:14px;max-width:880px}
+.c4 .bar{display:grid;grid-template-columns:190px 1fr 96px;align-items:center;gap:16px}
+.c4 .bar span{font-size:14.5px;color:#cfcfcf}
+.c4 .bar .track{height:30px;background:#1c1c1c}
+.c4 .bar .fill{height:100%;background:var(--accent);display:block}
+.c4 .bar .fill.alt{background:#4a4a4a}
+.c4 .bar b{font-family:'IBM Plex Mono',monospace;font-size:15px;text-align:right}
+.c4 .bar--total{border-top:1px solid #2a2a2a;padding-top:16px;margin-top:6px}
+.c4 .bar--total span,.c4 .bar--total b{color:#fff;font-weight:600;font-size:16px}
+.c4 .why{margin-top:30px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.c4 .why div{border-left:2px solid var(--accent);padding-left:16px}
+.c4 .why b{display:block;font-size:15px;margin-bottom:6px}
+.c4 .why p{margin:0;color:#9a9a9a;font-size:14px;line-height:1.55}
+
+/* ========== финал ========== */
+.final{padding:84px 0 110px;border-top:1px solid #1e2126}
+.final h2{font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(24px,3vw,38px);letter-spacing:-.02em;margin:0 0 14px}
+.final>.wrap>p{color:#9aa1ab;font-size:16px;max-width:76ch;line-height:1.65;margin:0 0 34px}
+.cmp-wrap{overflow-x:auto}
+.cmp{width:100%;min-width:680px;border-collapse:collapse;font-size:14.5px}
+.cmp th{text-align:left;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#7c848f;font-weight:400;padding:0 14px 14px;border-bottom:1px solid #23272e}
+.cmp td{padding:16px 14px;border-bottom:1px solid #191d23;vertical-align:top;color:#c3c8cf}
+.cmp td b{color:#e9eaec}
+.cmp tr:hover td{background:#101216}
+.rec{margin-top:40px;border:1px solid #23272e;border-radius:14px;padding:28px;background:#0e1014;display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.rec h3{font-size:17px;margin:0 0 12px;color:#f0a83c}
+.rec p{margin:0 0 12px;color:#9aa1ab;font-size:15px;line-height:1.65}
+.rec p:last-child{margin:0}
+.rec b{color:#e9eaec}
+
+@media (max-width:1100px){
+  .concept__head,.c1 .hero,.c2 .hero,.c3 .hero,.c3 .second,.rec{grid-template-columns:1fr}
+  .c1 .hero__left,.c2 .hero__left,.c3 .hero__left{border-right:0;border-bottom:1px solid var(--line)}
+  .nav-concepts{grid-template-columns:repeat(2,1fr)}
+  .c4 .grid{grid-template-columns:repeat(3,1fr)}
+  .c2 .alts,.c4 .why{grid-template-columns:1fr}
+  .c1 .heat{grid-template-columns:52px repeat(12,1fr)}
+}
+@media (max-width:700px){
+  .wrap{padding:0 16px}
+  .cover{padding:64px 0 48px}
+  .nav-concepts{grid-template-columns:1fr}
+  .c1 .hero__left,.c1 .board,.c1 .second,.c2 .hero__left,.c2 .check,.c2 .second,.c3 .hero__left,.c3 .draw,.c3 .second,.c4 .hero,.c4 .second{padding:28px 18px}
+  .c4 .grid{grid-template-columns:repeat(2,1fr)}
+  .c3 .fields{grid-template-columns:1fr}
+  .c1 .heat{display:none}
+  .c4 .bar{grid-template-columns:1fr;gap:6px}
+  .c4 .bar b{text-align:left}
+  .c1 .board{overflow-x:auto}
+}
+</style>
+
+<!-- ============================ КОНЦЕПТ 4 ============================ -->
+<section class="concept" id="c4">
+  <div class="wrap">
+    <div class="concept__head">
+      <div>
+        <p class="concept__num">КОНЦЕПТ 04</p>
+        <h2>Прайс вместо баннера</h2>
+        <p>Первый экран это сам прайс. Ни фотографии, ни заголовка про производителя, ни преимуществ. Сверху одна управляющая строка: выбираете зону доставки, и вся сетка цен пересчитывается. Позиция: нам нечего прятать, вот цена конечная.</p>
+      </div>
+      <div class="facts">
+        <div class="fact"><b>ИДЕЯ</b><span>Радикальная прозрачность как единственный аргумент</span></div>
+        <div class="fact"><b>ДЕЙСТВИЕ</b><span>Сравнить цену за десять секунд и позвонить</span></div>
+        <div class="fact"><b>КОМУ</b><span>Снабженцы и прорабы, которые обзванивают пять заводов</span></div>
+        <div class="fact"><b>РИСК</b><span>Работает, только если цена реально конкурентная</span></div>
+      </div>
+    </div>
+
+    <p class="shot-label">ПЕРВЫЙ ЭКРАН И ВТОРОЙ БЛОК</p>
+    <div class="shot">
+      <div class="shot__bar"><i></i><i></i><i></i><span>концепт 04 · прайс вместо баннера</span></div>
+      <div class="c4">
+        <div class="hero">
+          <div class="stripe"></div>
+          <h3 class="claim">Цена за куб с доставкой в
+            <select class="zonepick" id="c4-zone">
+              <option value="400">Москву</option>
+              <option value="550" selected>Одинцово</option>
+              <option value="700">Подольск</option>
+              <option value="900">Кубинку</option>
+            </select>
+          </h3>
+          <p class="sub">Это конечная цена: смесь плюс доставка. <b>Ни звонка, ни формы, ни квиза, чтобы её увидеть.</b> Подача по лоткам и 40 минут выгрузки уже внутри, дальше только простой и насос, если он нужен.</p>
+          <div class="grid" id="c4-grid"></div>
+          <div class="foot">
+            <p>Цены действуют с 23 сентября 2026. Скидка от объёма: 50 м³ минус 3 процента, 200 м³ минус 5, 500 м³ минус 7. Ночная отгрузка по дневному тарифу.</p>
+            <button class="btn">Скачать прайс одним файлом</button>
+          </div>
+        </div>
+
+        <div class="second">
+          <h4>Из чего складывается ваш куб</h4>
+          <p class="s2">Второй блок разбирает цену на составляющие. Конкуренты пишут «низкие цены от производителя», мы показываем структуру себестоимости и где именно наша экономия.</p>
+          <div class="bars">
+            <div class="bar"><span>Цемент ЦЕМ I 42,5</span><span class="track"><b class="fill" style="width:38%"></b></span><b>2 080 ₽</b></div>
+            <div class="bar"><span>Щебень гранитный</span><span class="track"><b class="fill" style="width:22%"></b></span><b>1 210 ₽</b></div>
+            <div class="bar"><span>Песок мытый</span><span class="track"><b class="fill" style="width:11%"></b></span><b>600 ₽</b></div>
+            <div class="bar"><span>Добавки и вода</span><span class="track"><b class="fill" style="width:6%"></b></span><b>330 ₽</b></div>
+            <div class="bar"><span>Работа узла и лаборатория</span><span class="track"><b class="fill alt" style="width:14%"></b></span><b>760 ₽</b></div>
+            <div class="bar"><span>Доставка в Одинцово</span><span class="track"><b class="fill alt" style="width:10%"></b></span><b>550 ₽</b></div>
+            <div class="bar bar--total"><span>Итого за м³ М300</span><span class="track"><b class="fill" style="width:100%"></b></span><b>6 030 ₽</b></div>
+          </div>
+          <div class="why">
+            <div><b>Почему мы это показываем</b><p>Цена бетона на 60 процентов состоит из цемента и щебня. Кто обещает «минус 30 процентов к рынку», экономит именно на них.</p></div>
+            <div><b>Что это значит для вас</b><p>Слишком дешёвый куб это недовес цемента. Он проявится через год трещинами, а не на выгрузке.</p></div>
+            <div><b>Как проверить</b><p>Паспорт качества на каждую машину, отбор проб при вас, испытание кубов в 28 суток.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ ФИНАЛ ============================ -->
+<section class="final">
+  <div class="wrap">
+    <h2>Чем концепты отличаются друг от друга</h2>
+    <p>Все четыре решают разную задачу и говорят с разной аудиторией. Выбор зависит от того, за счёт чего вы хотите выигрывать: скорость подачи, прозрачность цены, простота для новичка или дешевизна.</p>
+    <div class="cmp-wrap"><table class="cmp">
+      <thead>
+        <tr><th>КОНЦЕПТ</th><th>ГЛАВНОЕ ОБЕЩАНИЕ</th><th>ЦЕЛЕВОЕ ДЕЙСТВИЕ</th><th>СИЛЬНАЯ СТОРОНА</th><th>ЧТО ПОТРЕБУЕТСЯ</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>01 Диспетчерская</b></td>
+          <td>Привезём в тот час, который вы выбрали</td>
+          <td>Занять слот</td>
+          <td>Снимает главный страх прораба, выглядит как у логистов, а не как у бетонщиков</td>
+          <td>Данные о загрузке узла или честное расписание слотов</td>
+        </tr>
+        <tr>
+          <td><b>02 Строка заказа</b></td>
+          <td>Итоговая сумма без звонка и без сюрпризов</td>
+          <td>Зафиксировать цену</td>
+          <td>Самый короткий путь до цифры, хорошо заходит частнику</td>
+          <td>Прозрачная модель цены с доставкой и надбавками</td>
+        </tr>
+        <tr>
+          <td><b>03 Разрез объекта</b></td>
+          <td>Не надо разбираться в марках</td>
+          <td>Посчитать объём конструкции</td>
+          <td>Единственный вход для новичка, сильно отличается визуально</td>
+          <td>Аккуратная векторная графика, иначе выглядит дёшево</td>
+        </tr>
+        <tr>
+          <td><b>04 Прайс вместо баннера</b></td>
+          <td>Цена конечная и видна сразу</td>
+          <td>Сравнить и позвонить</td>
+          <td>Экономит время снабженца, который обзванивает пять заводов</td>
+          <td>Цена должна выдерживать сравнение в лоб</td>
+        </tr>
+      </tbody>
+    </table></div>
+
+    <div class="rec">
+      <div>
+        <h3>Что бы я взял в работу</h3>
+        <p><b>Связку 01 и 02.</b> Диспетчерская даёт то, чего нет ни у кого и что нельзя скопировать за неделю, а строка заказа закрывает цену. Первый экран делаем по концепту 02, а борт отгрузок ставим вторым блоком вместо сетки преимуществ.</p>
+        <p>Концепт 03 хорошо работает отдельной посадочной страницей под частника, концепт 04 как страница прайса.</p>
+      </div>
+      <div>
+        <h3>Что дальше</h3>
+        <p>Скажите, какой концепт разворачиваем, и я соберу его в прототипе целиком: первый экран, второй блок, адаптив и состояния. Дальше он встанет на место текущей главной.</p>
+        <p>Файл в Figma с этими же экранами приложен отдельно, чтобы можно было показать дизайнеру и заказчику.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  var fmt = function(n){ return new Intl.NumberFormat('ru-RU').format(Math.round(n)); };
+
+  /* ---------- концепт 01 ---------- */
+  var ROWS = [
+    ['М-412','М300 В22,5','9 м³','Одинцово, ул. Северная','14:20','load','грузится'],
+    ['М-207','М250 В20','7 м³','Голицыно, СНТ Луч','14:35','go','в пути'],
+    ['М-118','М350 В25','12 м³','Москва, ЗАО, Аминьевское','14:50','go','в пути'],
+    ['М-330','Пескобетон М300','6 м³','Красногорск, Павшино','15:05','out','выгрузка'],
+    ['М-091','М300 В22,5 W6','9 м³','Подольск, Красная горка','15:20','load','грузится'],
+    ['М-256','Керамзитобетон М150','7 м³','Москва, СЗАО','15:40','done','сдана'],
+    ['М-402','М400 В30 F300','12 м³','Внуково, терминал','16:00','go','в пути']
+  ];
+  var tb = document.getElementById('c1-rows');
+  if (tb) {
+    tb.innerHTML = ROWS.map(function(r,i){
+      return '<tr style="animation-delay:'+(i*70)+'ms"><td>'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td><td>'+r[3]+'</td><td>'+r[4]+'</td>'+
+             '<td><span class="st st--'+r[5]+'"><i></i>'+r[6]+'</span></td></tr>';
+    }).join('');
+  }
+  var clock = document.getElementById('c1-clock');
+  if (clock) setInterval(function(){
+    var d = new Date();
+    clock.textContent = String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0');
+  }, 1000);
+
+  document.querySelectorAll('.c1 .slot:not(.is-taken)').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.c1 .slot').forEach(function(b){ b.classList.remove('is-active'); });
+      btn.classList.add('is-active');
+      var cta = document.getElementById('c1-btn');
+      if (cta) cta.textContent = 'Занять окно в ' + btn.dataset.slot;
+    });
+  });
+
+  var heat = document.getElementById('c1-heat');
+  if (heat) {
+    var days = ['ПН','ВТ','СР','ЧТ','ПТ','СБ','ВС'];
+    var hours = ['7','9','11','13','15','17','19','21','23','1','3','5'];
+    var html = '<span></span>' + hours.map(function(h){ return '<span class="heat__h">'+h+'</span>'; }).join('');
+    var seed = 7;
+    var rnd = function(){ seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    days.forEach(function(d){
+      html += '<span class="heat__d">'+d+'</span>';
+      hours.forEach(function(h){
+        var peak = (h==='9'||h==='11'||h==='13');
+        var night = (h==='1'||h==='3'||h==='5'||h==='23');
+        var lvl = night ? (rnd()>0.7?1:0) : peak ? 3 + Math.round(rnd()*2) : 1 + Math.round(rnd()*2);
+        if (d==='ВС') lvl = Math.max(0, lvl-2);
+        var free = Math.max(0, Math.round((5-lvl) * 22 + rnd()*14));
+        html += '<span class="cell l'+lvl+'" data-d="'+d+'" data-h="'+h+'" data-free="'+free+'"></span>';
+      });
+    });
+    heat.innerHTML = html;
+    var tip = document.getElementById('c1-tip');
+    heat.addEventListener('mouseover', function(e){
+      var c = e.target.closest('.cell');
+      if (!c || !tip) return;
+      var free = Number(c.dataset.free);
+      tip.innerHTML = free > 40
+        ? c.dataset.d + ', ' + c.dataset.h + ':00 · свободно <b>' + free + ' м³</b> · цена базовая, машина выйдет точно в срок'
+        : free > 0
+          ? c.dataset.d + ', ' + c.dataset.h + ':00 · осталось <b>' + free + ' м³</b> · интервал подачи вырастет до 40 минут'
+          : c.dataset.d + ', ' + c.dataset.h + ':00 · <b>занято</b> · предложим соседнее окно';
+    });
+  }
+
+  /* ---------- концепт 02 ---------- */
+  var g = document.getElementById('c2-grade'), v = document.getElementById('c2-vol'),
+      z = document.getElementById('c2-zone'), w = document.getElementById('c2-when');
+  function c2calc(){
+    if (!g) return;
+    var price = Number(g.value), vol = Math.max(1, Number(v.value) || 1),
+        zone = Number(z.value), bonus = Number(w.value);
+    var mix = price * vol, del = (zone + bonus) * vol;
+    var pct = vol >= 200 ? 5 : vol >= 50 ? 3 : 0;
+    var off = Math.round((mix + del) * pct / 100);
+    var total = mix + del - off;
+    document.getElementById('c2-l1').textContent = g.options[g.selectedIndex].dataset.name.replace(/^./, function(c){return c.toUpperCase();}) + ', ' + vol + ' м³';
+    document.getElementById('c2-v1').textContent = fmt(mix) + ' ₽';
+    document.getElementById('c2-l2').textContent = 'Доставка в ' + z.options[z.selectedIndex].dataset.name;
+    document.getElementById('c2-v2').textContent = fmt(del) + ' ₽';
+    document.getElementById('c2-l4').textContent = pct ? 'Скидка за объём, ' + pct + ' процента' : 'Скидка за объём, от 50 м³';
+    document.getElementById('c2-v4').textContent = off ? 'минус ' + fmt(off) + ' ₽' : '0 ₽';
+    document.getElementById('c2-total').textContent = fmt(total) + ' ₽';
+    document.getElementById('c2-perm3').textContent = fmt(total / vol) + ' ₽ за м³';
+    var a1 = document.getElementById('c2-a1');
+    if (a1) a1.textContent = 'минус ' + fmt(Math.max(0, (price - 5170) * vol)) + ' ₽';
+  }
+  [g,v,z,w].forEach(function(el){ if (el){ el.addEventListener('input', c2calc); el.addEventListener('change', c2calc); } });
+  c2calc();
+
+  /* ---------- концепт 03 ---------- */
+  var ZONES = {
+    plita:      ['Плитный фундамент','Монолитная плита под дом из газобетона. Заливается за одну смену, чтобы не было холодного шва.','Бетон М300 В22,5','24 м³',5480,[10,8,0.3]],
+    lenta:      ['Ленточный фундамент','Лента по периметру под каркасный или газобетонный дом. Объём считается по средней линии.','Бетон М250 В20','12 м³',5170,[36,0.4,0.8]],
+    stena:      ['Монолитные стены','Стены и колонны в несъёмной опалубке. Нужна подвижность П4 и подача насосом.','Бетон М300 В22,5','18 м³',5480,[24,0.25,3]],
+    perekrytie: ['Перекрытие','Монолитная плита перекрытия. Обычно подаётся бетононасосом со стрелой от 32 метров.','Бетон М350 В25','16 м³',5790,[10,8,0.2]],
+    styazhka:   ['Стяжка пола','Выравнивающий слой по грунту или перекрытию. От 30 мм лучше брать пескобетон.','Пескобетон М300','6 м³',4700,[10,8,0.08]],
+    otmostka:   ['Отмостка','Защитная полоса вокруг дома. Обязательна морозостойкость от F150 и уклон от стены.','Бетон М200 В15','4 м³',4860,[36,1,0.1]],
+    dorozhka:   ['Дорожка и площадка','Пешеходная зона или парковка легкового автомобиля. Армирование сеткой обязательно.','Бетон М250 В20','5 м³',5170,[20,1.2,0.12]],
+    zabor:      ['Забор, столбы и лента','Бурение под столбы плюс лента между ними. Объём считается по количеству опор.','Бетон М200 В15','3 м³',4860,[40,0.3,0.5]]
+  };
+  var a = document.getElementById('c3-a'), b = document.getElementById('c3-b'), c = document.getElementById('c3-c');
+  var currentZone = 'plita';
+  function c3calc(){
+    if (!a) return;
+    var raw = (Number(a.value)||0) * (Number(b.value)||0) * (Number(c.value)||0);
+    var vol = raw * 1.05;
+    var price = ZONES[currentZone][4];
+    var mix = price * vol, del = 550 * vol;
+    document.getElementById('c3-vol').textContent = vol.toFixed(2).replace('.', ',') + ' м³';
+    document.getElementById('c3-mix').textContent = fmt(mix) + ' ₽';
+    document.getElementById('c3-del').textContent = fmt(del) + ' ₽';
+    document.getElementById('c3-sum').textContent = fmt(mix + del) + ' ₽';
+  }
+  function c3pick(key){
+    var d = ZONES[key];
+    if (!d) return;
+    currentZone = key;
+    document.getElementById('c3-n').textContent = d[0];
+    document.getElementById('c3-d').textContent = d[1];
+    document.getElementById('c3-g').textContent = d[2];
+    document.getElementById('c3-g2').textContent = d[2].replace('Бетон ','').replace('Пескобетон ','пескобетон ');
+    document.getElementById('c3-v').textContent = d[3];
+    document.getElementById('c3-p').textContent = fmt(d[4] + 550) + ' ₽ за м³';
+    a.value = d[5][0]; b.value = d[5][1]; c.value = d[5][2];
+    document.querySelectorAll('.c3 .zone').forEach(function(zn){ zn.classList.toggle('is-on', zn.dataset.z === key); });
+    c3calc();
+  }
+  document.querySelectorAll('.c3 .zone').forEach(function(zn){
+    zn.addEventListener('mouseenter', function(){ c3pick(zn.dataset.z); });
+    zn.addEventListener('click', function(){ c3pick(zn.dataset.z); });
+  });
+  [a,b,c].forEach(function(el){ if (el) el.addEventListener('input', c3calc); });
+  c3calc();
+
+  /* ---------- концепт 04 ---------- */
+  var MARKS = [
+    ['М100','B7,5 · F50 · W2',4240],['М150','B12,5 · F75 · W2',4550],['М200','B15 · F100 · W4',4860],
+    ['М250','B20 · F150 · W4',5170],['М300','B22,5 · F200 · W6',5480],['М350','B25 · F200 · W8',5790],
+    ['М400','B30 · F300 · W10',6100],['М450','B35 · F300 · W12',6410],['М500','B40 · F400 · W14',6720],
+    ['Тощий М100','жёсткая смесь, П1',3790],['Пескобетон М300','мелкозернистый',4700],['Керамзитобетон М150','лёгкий, D1200',4900]
+  ];
+  var grid = document.getElementById('c4-grid'), zonepick = document.getElementById('c4-zone');
+  function c4render(){
+    if (!grid) return;
+    var add = Number(zonepick.value);
+    grid.innerHTML = MARKS.map(function(m){
+      return '<div class="cellp"><b>'+m[0]+'</b><span>'+m[1]+'</span><i>'+fmt(m[2]+add)+' ₽</i><em>за м³ с доставкой</em></div>';
+    }).join('');
+  }
+  if (zonepick) zonepick.addEventListener('change', c4render);
+  c4render();
+})();
+</script>
+</body>
+</html>
