@@ -28,6 +28,7 @@ jobs:
       - name: Загрузить файлы
         env:
           MAP: ${{ inputs.map }}
+          COMMIT: ${{ inputs.commit }}
         run: |
           python3 - <<'PY' > pairs.tsv
           import json, os
@@ -47,3 +48,11 @@ jobs:
           done < pairs.tsv
           echo "Загружено $ok, ошибок $fail"
           [ "$fail" -eq 0 ]
+          # Один общий коммит: иначе параллельные коммиты затирают друг друга
+          # и в файл доезжают только последние картинки.
+          if [ -n "$COMMIT" ]; then
+            code=$(curl -sS -o commit.txt -w '%{http_code}' -m 300 -X POST "$COMMIT")
+            echo "Коммит -> $code"
+            head -c 500 commit.txt
+            [ "$code" = "200" ] || [ "$code" = "201" ] || [ "$code" = "204" ]
+          fi
