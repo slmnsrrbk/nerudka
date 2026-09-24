@@ -6,7 +6,8 @@
     "status": 200,
     "finalUrl": "https://gmr-beton.ru/",
     "title": "Купите бетон с доставкой по Москве и области от 1м3(куб) от производителя|завод GMR Group",
-    "pageHeight": 19016
+    "pageHeight": 19016,
+    "fullHeight": 6000
   },
   {
     "slug": "02-mosavtobeton",
@@ -15,7 +16,8 @@
     "status": 200,
     "finalUrl": "https://mosavtobeton.ru/",
     "title": "Купить бетон в Москве с низкой ценой за 1 куб(м3) от производителя|MosAvtoBeton бетонный завод",
-    "pageHeight": 18910
+    "pageHeight": 18910,
+    "fullHeight": 6000
   },
   {
     "slug": "03-ksg-beton",
@@ -24,7 +26,8 @@
     "status": 200,
     "finalUrl": "https://ksg-beton.ru/",
     "title": "Купить бетон в Москве с доставкой от производителя | Бетонный завод «КСГ БЕТОН»",
-    "pageHeight": 7653
+    "pageHeight": 7653,
+    "fullHeight": 6000
   },
   {
     "slug": "04-moscow-beton",
@@ -33,7 +36,8 @@
     "status": 200,
     "finalUrl": "https://moscow-beton.ru/",
     "title": "«Московский Бетонный Завод» - производитель бетонных смесей и цементных растворов в Москве | РБУ «МБЗ»",
-    "pageHeight": 11969
+    "pageHeight": 11969,
+    "fullHeight": 6000
   },
   {
     "slug": "05-beton-moscvich",
@@ -42,7 +46,8 @@
     "status": 200,
     "finalUrl": "https://beton-moscvich.ru/",
     "title": "Купить бетон с доставкой от 2890 ₽/м³ в Москве и МО",
-    "pageHeight": 12624
+    "pageHeight": 12624,
+    "fullHeight": 6000
   },
   {
     "slug": "06-beton-gost",
@@ -51,7 +56,8 @@
     "status": 200,
     "finalUrl": "https://beton-gost.ru/",
     "title": "Бетонный завод «Арис» в Москве – производство и поставка бетона",
-    "pageHeight": 12415
+    "pageHeight": 12415,
+    "fullHeight": 6000
   },
   {
     "slug": "07-beton-odin",
@@ -60,7 +66,8 @@
     "status": 200,
     "finalUrl": "https://beton-odin.ru/",
     "title": "Купить бетон с доставкой цена от 2,890 Р/м3 | Бетон купить с НДС20%",
-    "pageHeight": 13534
+    "pageHeight": 13534,
+    "fullHeight": 6000
   },
   {
     "slug": "08-gstbeton",
@@ -69,7 +76,8 @@
     "status": 200,
     "finalUrl": "https://gstbeton.ru/",
     "title": "Бетонный завод в Москве (РБУ) доставка бетона | Бетонзавод ГСТ",
-    "pageHeight": 20339
+    "pageHeight": 20339,
+    "fullHeight": 6000
   },
   {
     "slug": "09-betonstar",
@@ -78,7 +86,8 @@
     "status": 200,
     "finalUrl": "https://xn--80abm6aeoffd.xn--p1ai/",
     "title": "Купить бетон с доставкой в Москве без посредников - завод БетонСтар",
-    "pageHeight": 4748
+    "pageHeight": 4748,
+    "fullHeight": 4748
   },
   {
     "slug": "10-betonmks",
@@ -87,13 +96,18 @@
     "status": 200,
     "finalUrl": "https://betonmks.ru/",
     "title": "Сайт заблокирован хостинг-провайдером",
-    "pageHeight": 900
+    "pageHeight": 900,
+    "fullHeight": 900
   },
   {
     "slug": "11-bz-titan",
     "url": "https://bz-titan.ru/",
-    "ok": false,
-    "error": "page.goto: Timeout 45000ms exceeded."
+    "ok": true,
+    "status": 200,
+    "finalUrl": "https://bz-titan.ru/",
+    "title": "Купить бетон с доставкой в Москве — доступные цены от производителя | Бетонный завод Титан",
+    "pageHeight": 900,
+    "fullHeight": 900
   },
   {
     "slug": "12-mosbetontorg",
@@ -102,7 +116,8 @@
     "status": 200,
     "finalUrl": "https://mosbetontorg.ru/",
     "title": "Бетонный завод БСТ - бетон с доставкой в Москве и области",
-    "pageHeight": 10855
+    "pageHeight": 10855,
+    "fullHeight": 6000
   },
   {
     "slug": "13-gamma-beton",
@@ -111,7 +126,8 @@
     "status": 200,
     "finalUrl": "https://gamma-beton.ru/",
     "title": "Купить бетон в Москве с доставкой, цена от 3 600 ₽ - завод производитель Гамма-Бетон",
-    "pageHeight": 10908
+    "pageHeight": 10908,
+    "fullHeight": 6000
   },
   {
     "slug": "14-pride-beton",
@@ -120,6 +136,7 @@
     "status": 200,
     "finalUrl": "https://pride-beton.ru/",
     "title": "Высококачественный бетон в Москве и области - Быстрая доставка 🏗️",
-    "pageHeight": 7487
+    "pageHeight": 7487,
+    "fullHeight": 6000
   }
 ]
