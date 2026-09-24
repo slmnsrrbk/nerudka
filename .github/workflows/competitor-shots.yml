@@ -57,5 +57,13 @@ jobs:
             echo "Изменений нет"
           else
             git commit -m "Скриншоты сайтов-конкурентов"
-            git push origin HEAD:${{ github.ref_name }}
+            # Съёмка идёт минутами, за это время в ветку могли лечь другие
+            # коммиты, поэтому перед пушем подтягиваем их и пробуем несколько раз.
+            for attempt in 1 2 3 4; do
+              git pull --rebase origin ${{ github.ref_name }} && \
+                git push origin HEAD:${{ github.ref_name }} && exit 0
+              sleep $((attempt * 5))
+            done
+            echo "Не удалось запушить скриншоты"
+            exit 1
           fi
