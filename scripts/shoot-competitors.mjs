@@ -22,6 +22,34 @@ const SITES = [
 ];
 
 const OUT = 'competitors';
+const UA_DESKTOP =
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36';
+const UA_MOBILE =
+  'Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1';
+
+// Куки-баннеры и антибот-заглушки перекрывают первый экран — убираем их,
+// иначе скриншот показывает не сайт, а плашку про обработку данных.
+async function dismissOverlays(page) {
+  await page.evaluate(() => {
+    const WORDS = /(соглас|принима|принять|понятно|хорошо|разрешить|accept|agree|got it|ok)/i;
+    const COOKIE = /(cookie|куки|персональн|обработк)/i;
+    for (const el of document.querySelectorAll('button, a, div[role=button], span')) {
+      const t = (el.textContent || '').trim();
+      if (t.length < 40 && WORDS.test(t)) {
+        const host = el.closest('div, section, aside, footer');
+        if (host && COOKIE.test(host.textContent || '')) {
+          try { el.click(); } catch {}
+        }
+      }
+    }
+    for (const el of document.querySelectorAll('body *')) {
+      const cs = getComputedStyle(el);
+      if (cs.position !== 'fixed' && cs.position !== 'sticky') continue;
+      const t = el.textContent || '';
+      if (t.length < 2000 && COOKIE.test(t) && WORDS.test(t)) el.style.setProperty('display', 'none', 'important');
+    }
+  });
+}
 const MAX_FULL_HEIGHT = 6000; // чтобы не тащить в Figma полотна на 30 000 px
 
 await mkdir(OUT, { recursive: true });
@@ -35,17 +63,28 @@ for (const site of SITES) {
     viewport: { width: 1440, height: 900 },
     deviceScaleFactor: 1,
     locale: 'ru-RU',
-    userAgent:
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36',
+    userAgent: UA_DESKTOP,
     ignoreHTTPSErrors: true,
   });
   const page = await ctx.newPage();
   try {
-    const res = await page.goto(site.url, { waitUntil: 'domcontentloaded', timeout: 45000 });
+    let res = null;
+    for (let attempt = 1; attempt <= 3 && !res; attempt += 1) {
+      try {
+        res = await page.goto(site.url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+      } catch (e) {
+        row.retries = attempt;
+        if (attempt === 3) throw e;
+        await page.waitForTimeout(3000);
+      }
+    }
     row.status = res?.status() ?? 0;
     row.finalUrl = page.url();
-    await page.waitForTimeout(3500);
+    // Часть сайтов держит антибот-заглушку 5-8 секунд, поэтому ждём с запасом.
+    await page.waitForTimeout(9000);
     try { await page.waitForLoadState('networkidle', { timeout: 8000 }); } catch {}
+    await dismissOverlays(page);
+    await page.waitForTimeout(800);
 
     row.title = await page.title();
 
@@ -84,11 +123,14 @@ for (const site of SITES) {
       isMobile: true,
       hasTouch: true,
       locale: 'ru-RU',
+      userAgent: UA_MOBILE,
       ignoreHTTPSErrors: true,
     });
     const mpage = await mctx.newPage();
-    await mpage.goto(site.url, { waitUntil: 'domcontentloaded', timeout: 45000 });
-    await mpage.waitForTimeout(3000);
+    await mpage.goto(site.url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await mpage.waitForTimeout(8000);
+    await dismissOverlays(mpage);
+    await mpage.waitForTimeout(600);
     await mpage.screenshot({ path: `${OUT}/${site.slug}-mobile.jpg`, type: 'jpeg', quality: 82 });
     await mctx.close();
 
