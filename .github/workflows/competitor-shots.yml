@@ -1,0 +1,61 @@
+# Снимает скриншоты сайтов-конкурентов и кладёт их в репозиторий.
+#
+# Зачем отдельный workflow: у контейнера разработки эти домены закрыты сетевой
+# политикой (прокси отвечает 403 на CONNECT), а у раннера GitHub сеть открытая.
+# Запуск руками: вкладка Actions -> Competitor screenshots -> Run workflow.
+name: Competitor screenshots
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: competitor-shots
+  cancel-in-progress: true
+
+jobs:
+  shoot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Установить Chromium для Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Снять сайты
+        run: node scripts/shoot-competitors.mjs
+
+      - name: Показать результат
+        run: |
+          ls -lh competitors
+          cat competitors/report.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: competitor-screenshots
+          path: competitors
+          retention-days: 30
+
+      - name: Закоммитить скриншоты
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A competitors
+          if git diff --cached --quiet; then
+            echo "Изменений нет"
+          else
+            git commit -m "Скриншоты сайтов-конкурентов"
+            git push origin HEAD:${{ github.ref_name }}
+          fi
