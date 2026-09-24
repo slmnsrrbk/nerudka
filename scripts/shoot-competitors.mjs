@@ -108,13 +108,13 @@ for (const site of SITES) {
 
     const h = await page.evaluate(() => document.documentElement.scrollHeight);
     row.pageHeight = h;
-    await page.screenshot({
-      path: `${OUT}/${site.slug}-full.jpg`,
-      type: 'jpeg',
-      quality: 78,
-      fullPage: h <= MAX_FULL_HEIGHT,
-      ...(h > MAX_FULL_HEIGHT ? { clip: { x: 0, y: 0, width: 1440, height: MAX_FULL_HEIGHT } } : {}),
-    });
+    // clip не работает за пределами вьюпорта, а fullPage с ним несовместим,
+    // поэтому просто растягиваем окно до нужной высоты и снимаем как есть.
+    const shotHeight = Math.min(h, MAX_FULL_HEIGHT);
+    await page.setViewportSize({ width: 1440, height: shotHeight });
+    await page.waitForTimeout(1500);
+    await page.screenshot({ path: `${OUT}/${site.slug}-full.jpg`, type: 'jpeg', quality: 72 });
+    row.fullHeight = shotHeight;
 
     // мобильный первый экран
     const mctx = await browser.newContext({
