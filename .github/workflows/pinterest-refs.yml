@@ -1,0 +1,53 @@
+# Ищет референсы на Pinterest и собирает контактные листы с номерами.
+# Из контейнера разработки Pinterest закрыт сетевой политикой, у раннера сеть открытая.
+name: Pinterest references
+
+on:
+  workflow_dispatch:
+    inputs:
+      queries:
+        description: 'Поисковые запросы через |'
+        required: false
+        default: ''
+      per_query:
+        description: 'Сколько пинов на запрос'
+        required: false
+        default: '12'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pinterest-refs
+
+jobs:
+  refs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Собрать референсы
+        env:
+          QUERIES: ${{ inputs.queries }}
+          PER_QUERY: ${{ inputs.per_query }}
+        run: node scripts/pinterest-refs.mjs
+      - name: Закоммитить
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A references
+          if git diff --cached --quiet; then echo "Изменений нет"; exit 0; fi
+          git commit -m "Референсы с Pinterest"
+          for attempt in 1 2 3 4; do
+            git pull --rebase origin ${{ github.ref_name }} && git push origin HEAD:${{ github.ref_name }} && exit 0
+            sleep $((attempt * 5))
+          done
+          exit 1
