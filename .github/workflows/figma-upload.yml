@@ -40,6 +40,9 @@ jobs:
           while IFS=$'\t' read -r f u; do
             if [ ! -f "$f" ]; then echo "НЕТ ФАЙЛА $f"; fail=$((fail+1)); continue; fi
             code=$(curl -sS -o resp.txt -w '%{http_code}' -m 180 -X POST "$u" -F "file=@$f;type=image/jpeg")
+            # Каждая загрузка коммитит файл отдельно. Без паузы коммиты
+            # наезжают друг на друга и в файле остаются только последние.
+            sleep 4
             if [ "$code" = "200" ] || [ "$code" = "201" ] || [ "$code" = "204" ]; then
               ok=$((ok+1)); echo "ok   $f"
             else
