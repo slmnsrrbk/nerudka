@@ -7,6 +7,11 @@ name: Competitor screenshots
 
 on:
   workflow_dispatch:
+    inputs:
+      script:
+        description: 'Какой скрипт запустить'
+        required: false
+        default: 'scripts/shoot-competitors.mjs'
 
 permissions:
   contents: write
@@ -35,12 +40,17 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Снять сайты
-        run: node scripts/shoot-competitors.mjs
+        env:
+          SCRIPT: ${{ inputs.script }}
+        run: |
+          case "${SCRIPT:-scripts/shoot-competitors.mjs}" in
+            scripts/shoot-competitors.mjs|scripts/competitor-outline.mjs) node "${SCRIPT:-scripts/shoot-competitors.mjs}" ;;
+            *) echo "Неизвестный скрипт: $SCRIPT"; exit 1 ;;
+          esac
 
       - name: Показать результат
         run: |
-          ls -lh competitors
-          cat competitors/report.json
+          ls -lh competitors competitors/outline 2>/dev/null || true
 
       - uses: actions/upload-artifact@v4
         with:
