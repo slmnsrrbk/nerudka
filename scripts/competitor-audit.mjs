@@ -21,6 +21,7 @@ const SITES = process.env.AUDIT_URL ? [{ slug: 'local', url: process.env.AUDIT_U
   { slug: '13-gamma-beton', url: 'https://gamma-beton.ru/' },
   { slug: '14-pride-beton', url: 'https://pride-beton.ru/' },
 ];
+const ONLY = process.env.AUDIT_ONLY || '';
 const OUT = process.env.AUDIT_OUT || 'competitors/audit';
 const SLICE = 8000; // css px на один снимок; при масштабе 0.5 это 4000 px картинки
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36';
@@ -29,13 +30,13 @@ await mkdir(OUT, { recursive: true });
 const browser = await chromium.launch();
 const summary = [];
 
-for (const site of SITES) {
+for (const site of SITES.filter((x) => !ONLY || ONLY.split(',').includes(x.slug))) {
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 0.5, locale: 'ru-RU', userAgent: UA });
   const page = await ctx.newPage();
   try {
     let ok = false;
     for (let i = 0; i < 3 && !ok; i++) {
-      try { await page.goto(site.url, { waitUntil: 'domcontentloaded', timeout: 60000 }); ok = true; } catch (e) { if (i === 2) throw e; }
+      try { await page.goto(site.url, { waitUntil: 'domcontentloaded', timeout: 90000 }); ok = true; } catch (e) { if (i === 2) throw e; await page.waitForTimeout(15000); }
     }
     await page.waitForTimeout(9000);
     await page.evaluate(async () => {
@@ -148,5 +149,5 @@ for (const site of SITES) {
     console.log(`FAIL ${site.slug}: ${String(e.message || e).split('\n')[0]}`);
   } finally { await ctx.close(); }
 }
-await writeFile(`${OUT}/summary.json`, JSON.stringify(summary, null, 2) + '\n');
+if (!ONLY) await writeFile(`${OUT}/summary.json`, JSON.stringify(summary, null, 2) + '\n');
 await browser.close();

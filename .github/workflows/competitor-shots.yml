@@ -12,6 +12,10 @@ on:
         description: 'Какой скрипт запустить'
         required: false
         default: 'scripts/shoot-competitors.mjs'
+      only:
+        description: 'Только эти сайты (slug через запятую), для competitor-audit'
+        required: false
+        default: ''
 
 permissions:
   contents: write
@@ -42,6 +46,7 @@ jobs:
       - name: Снять сайты
         env:
           SCRIPT: ${{ inputs.script }}
+          AUDIT_ONLY: ${{ inputs.only }}
         run: |
           case "${SCRIPT:-scripts/shoot-competitors.mjs}" in
             scripts/shoot-competitors.mjs|scripts/competitor-outline.mjs|scripts/competitor-audit.mjs) node "${SCRIPT:-scripts/shoot-competitors.mjs}" ;;
