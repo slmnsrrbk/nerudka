@@ -1,30 +1,35 @@
 ---
 import Block from '../ui/Block.astro';
 import Container from '../ui/Container.astro';
-import ImagePlaceholder from '../ui/ImagePlaceholder.astro';
 const cards = [
-  { href: '/o-zavode/', title: 'Производство', text: 'Шесть узлов, автоматическое дозирование, 2 500 м³ в сутки.' },
-  { href: '/laboratoriya/', title: 'Лаборатория', text: 'Входной контроль сырья, испытания каждой партии, протоколы.' },
-  { href: '/avtopark/', title: 'Автопарк', text: '28 миксеров и 8 насосов, интервал подачи от 20 минут.' },
+  { href: '/o-zavode/', title: 'Производство', text: 'Шесть узлов, автоматическое дозирование, 2 500 м³ в сутки.', photo: 'Фото: бетонный узел' },
+  { href: '/laboratoriya/', title: 'Лаборатория', text: 'Входной контроль сырья, испытания каждой партии, протоколы.', photo: 'Фото: пресс и кубы' },
+  { href: '/avtopark/', title: 'Автопарк', text: '28 миксеров и 8 насосов, интервал подачи от 20 минут.', photo: 'Фото: миксеры на погрузке' },
 ];
 ---
 <Block id="H-08" name="Завод изнутри">
   <Container class="py-12 md:py-20">
     <h2 class="text-xl md:text-2xl font-semibold tracking-tight">Завод изнутри</h2>
-    <div class="mt-6 grid gap-6 lg:grid-cols-2">
-      <div class="ph rounded-md" style="padding-top:56.25%">
-        <span class="absolute inset-0 flex items-center justify-center text-center text-xs text-ink-2">
+    <div class="mt-6 grid items-start gap-6 lg:grid-cols-12">
+      <div class="ph rounded-md lg:col-span-7" style="aspect-ratio:16/9" role="img" aria-label="Видео: обзорная экскурсия по узлу">
+        <span class="absolute inset-0 flex flex-col items-center justify-center gap-3 p-4 text-center text-xs text-ink-2">
+          <span class="flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-sm">
+            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M5 3.2v11.6c0 .6.7 1 1.2.6l8.3-5.8c.4-.3.4-.9 0-1.2L6.2 2.6c-.5-.4-1.2 0-1.2.6z" fill="currentColor"/></svg>
+          </span>
           Видео: обзорная экскурсия по узлу, 60 секунд · 16:9
         </span>
       </div>
-      <div class="grid gap-3">
+      <div class="grid gap-3 lg:col-span-5">
         {cards.map((c) => (
-          <a href={c.href} class="flex gap-4 rounded-md border border-line bg-white p-4 transition-colors hover:border-accent">
-            <ImagePlaceholder label="Фото" ratio="1:1" class="w-20 shrink-0" />
-            <span class="min-w-0">
-              <span class="block font-medium">{c.title}</span>
+          <a href={c.href} class="group flex items-center gap-4 rounded-md border border-line bg-white p-3 transition-colors hover:border-accent">
+            <div class="ph w-24 shrink-0 self-center rounded" style="aspect-ratio:1/1" role="img" aria-label={c.photo}>
+              <span class="absolute inset-0 flex items-center justify-center p-1 text-center text-[10px] leading-tight text-ink-2">{c.photo}</span>
+            </div>
+            <span class="min-w-0 flex-1">
+              <span class="block font-medium group-hover:text-accent">{c.title}</span>
               <span class="mt-1 block text-sm text-ink-2">{c.text}</span>
             </span>
+            <span class="shrink-0 pr-1 text-ink-2 group-hover:text-accent" aria-hidden="true">→</span>
           </a>
         ))}
       </div>
