@@ -1,53 +1,73 @@
 [
   {
     "slug": "01-gmr-beton",
-    "ok": false,
-    "error": "page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': 'video, iframe[src*=youtube], iframe[src*=rutube], iframe[src*=vk.com], iframe[src*=vkvideo], [class*=video], [data-fancybox][href*=youtu]' is not a valid selector."
+    "ok": true,
+    "sections": 13,
+    "height": 19016,
+    "slices": 3
   },
   {
     "slug": "02-mosavtobeton",
-    "ok": false,
-    "error": "page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': 'video, iframe[src*=youtube], iframe[src*=rutube], iframe[src*=vk.com], iframe[src*=vkvideo], [class*=video], [data-fancybox][href*=youtu]' is not a valid selector."
+    "ok": true,
+    "sections": 6,
+    "height": 18910,
+    "slices": 3
   },
   {
     "slug": "03-ksg-beton",
-    "ok": false,
-    "error": "page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': 'video, iframe[src*=youtube], iframe[src*=rutube], iframe[src*=vk.com], iframe[src*=vkvideo], [class*=video], [data-fancybox][href*=youtu]' is not a valid selector."
+    "ok": true,
+    "sections": 12,
+    "height": 7652,
+    "slices": 1
   },
   {
     "slug": "04-moscow-beton",
-    "ok": false,
-    "error": "page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': 'video, iframe[src*=youtube], iframe[src*=rutube], iframe[src*=vk.com], iframe[src*=vkvideo], [class*=video], [data-fancybox][href*=youtu]' is not a valid selector."
+    "ok": true,
+    "sections": 12,
+    "height": 11969,
+    "slices": 2
   },
   {
     "slug": "05-beton-moscvich",
-    "ok": false,
-    "error": "page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': 'video, iframe[src*=youtube], iframe[src*=rutube], iframe[src*=vk.com], iframe[src*=vkvideo], [class*=video], [data-fancybox][href*=youtu]' is not a valid selector."
+    "ok": true,
+    "sections": 6,
+    "height": 12624,
+    "slices": 2
   },
   {
     "slug": "06-beton-gost",
-    "ok": false,
-    "error": "page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': 'video, iframe[src*=youtube], iframe[src*=rutube], iframe[src*=vk.com], iframe[src*=vkvideo], [class*=video], [data-fancybox][href*=youtu]' is not a valid selector."
+    "ok": true,
+    "sections": 8,
+    "height": 12415,
+    "slices": 2
   },
   {
     "slug": "07-beton-odin",
-    "ok": false,
-    "error": "page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': 'video, iframe[src*=youtube], iframe[src*=rutube], iframe[src*=vk.com], iframe[src*=vkvideo], [class*=video], [data-fancybox][href*=youtu]' is not a valid selector."
+    "ok": true,
+    "sections": 5,
+    "height": 13534,
+    "slices": 2
   },
   {
     "slug": "08-gstbeton",
-    "ok": false,
-    "error": "page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': 'video, iframe[src*=youtube], iframe[src*=rutube], iframe[src*=vk.com], iframe[src*=vkvideo], [class*=video], [data-fancybox][href*=youtu]' is not a valid selector."
+    "ok": true,
+    "sections": 23,
+    "height": 20339,
+    "slices": 3
   },
   {
     "slug": "09-betonstar",
-    "ok": false,
-    "error": "page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': 'video, iframe[src*=youtube], iframe[src*=rutube], iframe[src*=vk.com], iframe[src*=vkvideo], [class*=video], [data-fancybox][href*=youtu]' is not a valid selector."
+    "ok": true,
+    "sections": 3,
+    "height": 4748,
+    "slices": 1
   },
   {
     "slug": "10-betonmks",
-    "ok": false,
-    "error": "page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': 'video, iframe[src*=youtube], iframe[src*=rutube], iframe[src*=vk.com], iframe[src*=vkvideo], [class*=video], [data-fancybox][href*=youtu]' is not a valid selector."
+    "ok": true,
+    "sections": 2,
+    "height": 900,
+    "slices": 1
   },
   {
     "slug": "11-bz-titan",
@@ -56,17 +76,23 @@
   },
   {
     "slug": "12-mosbetontorg",
-    "ok": false,
-    "error": "page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': 'video, iframe[src*=youtube], iframe[src*=rutube], iframe[src*=vk.com], iframe[src*=vkvideo], [class*=video], [data-fancybox][href*=youtu]' is not a valid selector."
+    "ok": true,
+    "sections": 17,
+    "height": 10855,
+    "slices": 2
   },
   {
     "slug": "13-gamma-beton",
-    "ok": false,
-    "error": "page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': 'video, iframe[src*=youtube], iframe[src*=rutube], iframe[src*=vk.com], iframe[src*=vkvideo], [class*=video], [data-fancybox][href*=youtu]' is not a valid selector."
+    "ok": true,
+    "sections": 12,
+    "height": 10908,
+    "slices": 2
   },
   {
     "slug": "14-pride-beton",
-    "ok": false,
-    "error": "page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': 'video, iframe[src*=youtube], iframe[src*=rutube], iframe[src*=vk.com], iframe[src*=vkvideo], [class*=video], [data-fancybox][href*=youtu]' is not a valid selector."
+    "ok": true,
+    "sections": 4,
+    "height": 8173,
+    "slices": 2
   }
 ]
