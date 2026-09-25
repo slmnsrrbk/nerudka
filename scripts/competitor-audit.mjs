@@ -5,7 +5,7 @@
 import { chromium } from 'playwright';
 import { mkdir, writeFile } from 'node:fs/promises';
 
-const SITES = [
+const SITES = process.env.AUDIT_URL ? [{ slug: 'local', url: process.env.AUDIT_URL }] : [
   { slug: '01-gmr-beton', url: 'https://gmr-beton.ru/' },
   { slug: '02-mosavtobeton', url: 'https://mosavtobeton.ru/' },
   { slug: '03-ksg-beton', url: 'https://ksg-beton.ru/' },
@@ -21,7 +21,7 @@ const SITES = [
   { slug: '13-gamma-beton', url: 'https://gamma-beton.ru/' },
   { slug: '14-pride-beton', url: 'https://pride-beton.ru/' },
 ];
-const OUT = 'competitors/audit';
+const OUT = process.env.AUDIT_OUT || 'competitors/audit';
 const SLICE = 8000; // css px на один снимок; при масштабе 0.5 это 4000 px картинки
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36';
 
@@ -85,7 +85,7 @@ for (const site of SITES) {
         button: clean([...f.querySelectorAll('button, input[type=submit], .btn, [class*=button]')].filter(shown).map((b) => b.innerText || b.value).join(' | ')).slice(0, 120),
       }));
       const frames = [...document.querySelectorAll('iframe')].map((f) => ({ top: abs(f).top, src: (f.src || f.dataset.src || '').slice(0, 120) }));
-      const videos = [...document.querySelectorAll('video, iframe[src*=youtube], iframe[src*=rutube], iframe[src*=vk.com], iframe[src*=vkvideo], [class*=video], [data-fancybox][href*=youtu]')].filter(shown).length;
+      const videos = [...document.querySelectorAll('video, iframe[src*="youtube"], iframe[src*="rutube"], iframe[src*="vk.com"], iframe[src*="vkvideo"], [class*="video"], [data-fancybox][href*="youtu"]')].filter(shown).length;
       for (const s of sections) {
         s.forms = forms.filter((f) => f.top >= s.top - 20 && f.top < s.top + s.height).length;
         s.inputs = [...document.querySelectorAll('input:not([type=hidden]), textarea, select')].filter((i) => shown(i) && inRange(i, s)).length;
