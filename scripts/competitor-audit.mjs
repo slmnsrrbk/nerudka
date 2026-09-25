@@ -20,6 +20,14 @@ const SITES = process.env.AUDIT_URL ? [{ slug: 'local', url: process.env.AUDIT_U
   { slug: '12-mosbetontorg', url: 'https://mosbetontorg.ru/' },
   { slug: '13-gamma-beton', url: 'https://gamma-beton.ru/' },
   { slug: '14-pride-beton', url: 'https://pride-beton.ru/' },
+  { slug: '15-beton50', url: 'https://beton50.com/' },
+  { slug: '16-atlantbeton', url: 'https://atlantbeton.ru/' },
+  { slug: '17-mks-beton', url: 'https://mks-beton.ru/' },
+  { slug: '18-vitoria', url: 'https://www.vitoria.ru/' },
+  { slug: '19-souzgroup', url: 'https://souzgroup.ru/' },
+  { slug: '20-beton-mos', url: 'https://beton-mos.ru/' },
+  { slug: '21-prombeton', url: 'https://prombeton.ru/' },
+  { slug: '22-houmstroi', url: 'https://www.houmstroi.ru/' },
 ];
 const ONLY = process.env.AUDIT_ONLY || '';
 const OUT = process.env.AUDIT_OUT || 'competitors/audit';
