@@ -1,0 +1,72 @@
+[
+  {
+    "slug": "01-gmr-beton",
+    "ok": false,
+    "error": "page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': 'video, iframe[src*=youtube], iframe[src*=rutube], iframe[src*=vk.com], iframe[src*=vkvideo], [class*=video], [data-fancybox][href*=youtu]' is not a valid selector."
+  },
+  {
+    "slug": "02-mosavtobeton",
+    "ok": false,
+    "error": "page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': 'video, iframe[src*=youtube], iframe[src*=rutube], iframe[src*=vk.com], iframe[src*=vkvideo], [class*=video], [data-fancybox][href*=youtu]' is not a valid selector."
+  },
+  {
+    "slug": "03-ksg-beton",
+    "ok": false,
+    "error": "page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': 'video, iframe[src*=youtube], iframe[src*=rutube], iframe[src*=vk.com], iframe[src*=vkvideo], [class*=video], [data-fancybox][href*=youtu]' is not a valid selector."
+  },
+  {
+    "slug": "04-moscow-beton",
+    "ok": false,
+    "error": "page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': 'video, iframe[src*=youtube], iframe[src*=rutube], iframe[src*=vk.com], iframe[src*=vkvideo], [class*=video], [data-fancybox][href*=youtu]' is not a valid selector."
+  },
+  {
+    "slug": "05-beton-moscvich",
+    "ok": false,
+    "error": "page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': 'video, iframe[src*=youtube], iframe[src*=rutube], iframe[src*=vk.com], iframe[src*=vkvideo], [class*=video], [data-fancybox][href*=youtu]' is not a valid selector."
+  },
+  {
+    "slug": "06-beton-gost",
+    "ok": false,
+    "error": "page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': 'video, iframe[src*=youtube], iframe[src*=rutube], iframe[src*=vk.com], iframe[src*=vkvideo], [class*=video], [data-fancybox][href*=youtu]' is not a valid selector."
+  },
+  {
+    "slug": "07-beton-odin",
+    "ok": false,
+    "error": "page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': 'video, iframe[src*=youtube], iframe[src*=rutube], iframe[src*=vk.com], iframe[src*=vkvideo], [class*=video], [data-fancybox][href*=youtu]' is not a valid selector."
+  },
+  {
+    "slug": "08-gstbeton",
+    "ok": false,
+    "error": "page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': 'video, iframe[src*=youtube], iframe[src*=rutube], iframe[src*=vk.com], iframe[src*=vkvideo], [class*=video], [data-fancybox][href*=youtu]' is not a valid selector."
+  },
+  {
+    "slug": "09-betonstar",
+    "ok": false,
+    "error": "page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': 'video, iframe[src*=youtube], iframe[src*=rutube], iframe[src*=vk.com], iframe[src*=vkvideo], [class*=video], [data-fancybox][href*=youtu]' is not a valid selector."
+  },
+  {
+    "slug": "10-betonmks",
+    "ok": false,
+    "error": "page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': 'video, iframe[src*=youtube], iframe[src*=rutube], iframe[src*=vk.com], iframe[src*=vkvideo], [class*=video], [data-fancybox][href*=youtu]' is not a valid selector."
+  },
+  {
+    "slug": "11-bz-titan",
+    "ok": false,
+    "error": "page.goto: net::ERR_CONNECTION_TIMED_OUT at https://bz-titan.ru/"
+  },
+  {
+    "slug": "12-mosbetontorg",
+    "ok": false,
+    "error": "page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': 'video, iframe[src*=youtube], iframe[src*=rutube], iframe[src*=vk.com], iframe[src*=vkvideo], [class*=video], [data-fancybox][href*=youtu]' is not a valid selector."
+  },
+  {
+    "slug": "13-gamma-beton",
+    "ok": false,
+    "error": "page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': 'video, iframe[src*=youtube], iframe[src*=rutube], iframe[src*=vk.com], iframe[src*=vkvideo], [class*=video], [data-fancybox][href*=youtu]' is not a valid selector."
+  },
+  {
+    "slug": "14-pride-beton",
+    "ok": false,
+    "error": "page.evaluate: SyntaxError: Failed to execute 'querySelectorAll' on 'Document': 'video, iframe[src*=youtube], iframe[src*=rutube], iframe[src*=vk.com], iframe[src*=vkvideo], [class*=video], [data-fancybox][href*=youtu]' is not a valid selector."
+  }
+]
