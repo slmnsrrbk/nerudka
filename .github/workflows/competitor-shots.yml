@@ -44,13 +44,13 @@ jobs:
           SCRIPT: ${{ inputs.script }}
         run: |
           case "${SCRIPT:-scripts/shoot-competitors.mjs}" in
-            scripts/shoot-competitors.mjs|scripts/competitor-outline.mjs) node "${SCRIPT:-scripts/shoot-competitors.mjs}" ;;
+            scripts/shoot-competitors.mjs|scripts/competitor-outline.mjs|scripts/competitor-audit.mjs) node "${SCRIPT:-scripts/shoot-competitors.mjs}" ;;
             *) echo "Неизвестный скрипт: $SCRIPT"; exit 1 ;;
           esac
 
       - name: Показать результат
         run: |
-          ls -lh competitors competitors/outline 2>/dev/null || true
+          ls -lh competitors competitors/outline competitors/audit 2>/dev/null || true
 
       - uses: actions/upload-artifact@v4
         with:
