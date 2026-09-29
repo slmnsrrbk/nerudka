@@ -24,7 +24,6 @@
       el.textContent = val;
     }
   });
-  if (!data.next || !data.next.title) document.querySelector('[data-section="next"]').hidden = true;
 
   // ---------- Плитка фото разных размеров.
   // Сетка из 12 колонок, фото раскладываются рядами по шаблонам. Горизонтальные фото
@@ -98,7 +97,7 @@
   const io = 'IntersectionObserver' in window && new IntersectionObserver((entries) => entries.forEach((e) => {
     if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
   }), { rootMargin: '0px 0px -6% 0px' });
-  document.querySelectorAll('.tile, .about__photo, .next__card').forEach((el) => (io ? io.observe(el) : el.classList.add('is-in')));
+  document.querySelectorAll('.tile, .about__photo').forEach((el) => (io ? io.observe(el) : el.classList.add('is-in')));
 
   // ---------- Курсор: белая точка, над фото растёт и показывает «Смотреть»
   const cursor = document.querySelector('.cursor');

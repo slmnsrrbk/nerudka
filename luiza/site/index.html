@@ -24,11 +24,11 @@
     <a href="#" class="txt2">Портфолио</a>
     <a href="#" class="txt2">О нас</a>
     <a href="#" class="txt2">Новости</a>
-    <a href="#contact" class="txt2">Контакты</a>
+    <a href="#" class="txt2">Контакты</a>
   </nav>
   <div class="nav__right">
     <a class="nav__phone" href="tel:+79297254467">+7 (929) 725-44-67</a>
-    <a class="nav__cta" href="#contact">Записаться на встречу</a>
+    <a class="nav__cta" href="#">Записаться на встречу</a>
     <button class="nav__burger" type="button" aria-label="Меню"><span></span><span></span></button>
   </div>
 </header>
@@ -88,37 +88,8 @@
   <!-- 3. Фото плиткой разных размеров -->
   <section class="tiles" data-field="gallery" data-bind="gallery"></section>
 
-  <!-- 4. Следующий проект: плитка потока, лимит 1 -->
-  <section class="next" data-section="next">
-    <a class="next__card" href="#" data-view>
-      <img data-bind="next.card_img" alt="">
-      <div class="next__body">
-        <span class="pill">Следующий проект</span>
-        <span class="next__title" data-bind="next.title"></span>
-        <span class="next__arrow" aria-hidden="true">→</span>
-      </div>
-    </a>
-  </section>
 </main>
 
-<!-- 5. Подвал с формой: общий для всех постов -->
-<footer class="footer" id="contact">
-  <div class="blob blob--a"></div><div class="blob blob--b"></div>
-  <div class="footer__inner">
-    <h2 class="footer__title">Остались вопросы?</h2>
-    <p class="footer__sub">Заполните форму, мы с вами свяжемся</p>
-    <form class="form" onsubmit="event.preventDefault(); this.classList.add('is-sent')">
-      <input id="f-name" type="text" placeholder="Имя" required>
-      <input id="f-phone" type="tel" placeholder="Телефон" required>
-      <button type="submit" class="btn">Отправить</button>
-      <p class="form__ok">Спасибо, мы свяжемся с вами</p>
-    </form>
-    <div class="footer__bottom">
-      <span>Петербургская улица, 64, Казань</span>
-      <span>+7 (929) 725-44-67</span>
-    </div>
-  </div>
-</footer>
 
 <!-- Просмотр фото на весь экран -->
 <div class="lb" hidden role="dialog" aria-modal="true" aria-label="Просмотр фото">
