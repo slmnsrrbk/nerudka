@@ -5,7 +5,11 @@
   display: grid; grid-template-columns: calc(var(--colf) * 100%) minmax(0, 620px);
   align-items: start; padding: 120px var(--pad) 40px;
 }
-.beat .pill { justify-self: start; }
+.beat__title {
+  font: 300 clamp(26px, 2.65vw, 44px)/1.1 var(--display);
+  text-transform: uppercase; letter-spacing: .01em; text-wrap: balance;
+  padding-right: 24px;
+}
 .beat__text, .beat__list { font-size: clamp(17px, 1.35vw, 20px); line-height: 1.6; color: var(--muted); }
 .beat__list { list-style: none; padding: 0; display: grid; gap: 10px; }
 .beat__list li { position: relative; padding-left: 20px; }
@@ -26,6 +30,7 @@
 
 @media (max-width: 700px) {
   .beat { grid-template-columns: 1fr; gap: 16px; padding: 72px var(--pad) 24px; }
+  .beat__title { font-size: clamp(24px, 7vw, 30px); padding-right: 0; }
   .shots { flex-direction: column; }
   .shot, .shots--single .shot { flex: none; width: 100%; border-radius: 16px; }
 }
