@@ -1,0 +1,31 @@
+/* Вариант 4: ритм «чуть-чуть текста → фото, фото, фото → снова текст».
+   Текст стоит в той же колонке, что заголовок первого экрана. Фото раздела идут
+   одним рядом одной высоты, ширина каждого по его пропорциям (задаётся в app.js). */
+.beat {
+  display: grid; grid-template-columns: calc(var(--colf) * 100%) minmax(0, 620px);
+  align-items: start; padding: 120px var(--pad) 40px;
+}
+.beat .pill { justify-self: start; }
+.beat__text, .beat__list { font-size: clamp(17px, 1.35vw, 20px); line-height: 1.6; color: var(--muted); }
+.beat__list { list-style: none; padding: 0; display: grid; gap: 10px; }
+.beat__list li { position: relative; padding-left: 20px; }
+.beat__list li::before { content: ""; position: absolute; left: 0; top: .62em; width: 6px; height: 6px; border-radius: 50%; background: var(--pink); }
+
+.shots { display: flex; gap: var(--gap); padding: 0 var(--pad); }
+.shots + .shots { padding-top: var(--gap); }
+.shot {
+  flex: var(--ratio, .75) 1 0; aspect-ratio: var(--ratio, .75); min-width: 0;
+  margin: 0; border-radius: var(--r); overflow: hidden; background: var(--card); cursor: zoom-in;
+}
+.shot img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s cubic-bezier(.2, .7, .2, 1); }
+.shot:hover img { transform: scale(1.04); }
+/* Одно вертикальное фото не растягиваем на всю ширину, иначе оно в два экрана высотой */
+.shots--single { justify-content: center; }
+.shots--single .shot { flex: 0 0 auto; width: min(100%, calc(88vh * var(--ratio, .75))); }
+.shots--single .shot--wide { width: 100%; }
+
+@media (max-width: 700px) {
+  .beat { grid-template-columns: 1fr; gap: 16px; padding: 72px var(--pad) 24px; }
+  .shots { flex-direction: column; }
+  .shot, .shots--single .shot { flex: none; width: 100%; border-radius: 16px; }
+}

@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Шаблон кейса Luiza, вариант 2</title>
+<title>Шаблон кейса Luiza, вариант 4</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Unbounded:wght@300;400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../style.css">
-<link rel="stylesheet" href="v2.css">
+<link rel="stylesheet" href="v4.css">
 </head>
 <body>
 
@@ -63,67 +63,50 @@
   </section>
 
 
-  <section class="ch" data-field="concept_text">
-    <div class="ch__side">
-      <div class="ch__sticky">
-        <span class="pill">Концепция</span>
-        <p class="ch__text" data-bind="concept_text"></p>
-      </div>
-    </div>
-    <div class="ch__photos ch__photos--2">
-        <figure class="ph" data-field="concept_ph1" data-view><img data-bind="concept_ph1" alt=""></figure>
-        <figure class="ph" data-field="concept_ph2" data-view><img data-bind="concept_ph2" alt=""></figure>
-    </div>
+  <!-- Концепция: немного текста, потом ряд фото раздела -->
+  <section class="beat" data-field="concept_text">
+    <span class="pill">Концепция</span>
+    <p class="beat__text" data-bind="concept_text"></p>
   </section>
+  <div class="shots">
+    <figure class="shot" data-field="concept_ph1" data-view><img data-bind="concept_ph1" alt=""></figure><figure class="shot" data-field="concept_ph2" data-view><img data-bind="concept_ph2" alt=""></figure>
+  </div>
 
-  <section class="wide"><figure class="ph ph--wide" data-field="wide_img" data-view><img data-bind="wide_img" alt=""></figure></section>
+  <div class="shots"><figure class="shot" data-field="wide_img" data-view><img data-bind="wide_img" alt=""></figure></div>
 
-  <section class="ch ch--rev" data-field="tasks_text">
-    <div class="ch__side">
-      <div class="ch__sticky">
-        <span class="pill">Задачи</span>
-        <p class="ch__text" data-bind="tasks_text"></p>
-      </div>
-    </div>
-    <div class="ch__photos ch__photos--3">
-        <figure class="ph" data-field="tasks_ph1" data-view><img data-bind="tasks_ph1" alt=""></figure>
-        <figure class="ph" data-field="tasks_ph2" data-view><img data-bind="tasks_ph2" alt=""></figure>
-        <figure class="ph" data-field="tasks_ph3" data-view><img data-bind="tasks_ph3" alt=""></figure>
-    </div>
+  <!-- Задачи: немного текста, потом ряд фото раздела -->
+  <section class="beat" data-field="tasks_text">
+    <span class="pill">Задачи</span>
+    <p class="beat__text" data-bind="tasks_text"></p>
   </section>
+  <div class="shots">
+    <figure class="shot" data-field="tasks_ph1" data-view><img data-bind="tasks_ph1" alt=""></figure><figure class="shot" data-field="tasks_ph2" data-view><img data-bind="tasks_ph2" alt=""></figure><figure class="shot" data-field="tasks_ph3" data-view><img data-bind="tasks_ph3" alt=""></figure>
+  </div>
 
-  <section class="ch" data-field="decor_text">
-    <div class="ch__side">
-      <div class="ch__sticky">
-        <span class="pill">Декор</span>
-        <p class="ch__text" data-bind="decor_text"></p>
-      </div>
-    </div>
-    <div class="ch__photos ch__photos--3">
-        <figure class="ph" data-field="decor_ph1" data-view><img data-bind="decor_ph1" alt=""></figure>
-        <figure class="ph" data-field="decor_ph2" data-view><img data-bind="decor_ph2" alt=""></figure>
-        <figure class="ph" data-field="decor_ph3" data-view><img data-bind="decor_ph3" alt=""></figure>
-    </div>
+  <!-- Декор: немного текста, потом ряд фото раздела -->
+  <section class="beat" data-field="decor_text">
+    <span class="pill">Декор</span>
+    <p class="beat__text" data-bind="decor_text"></p>
   </section>
+  <div class="shots">
+    <figure class="shot" data-field="decor_ph1" data-view><img data-bind="decor_ph1" alt=""></figure><figure class="shot" data-field="decor_ph2" data-view><img data-bind="decor_ph2" alt=""></figure><figure class="shot" data-field="decor_ph3" data-view><img data-bind="decor_ph3" alt=""></figure>
+  </div>
 
-  <section class="ch ch--rev" data-field="extra_text">
-    <div class="ch__side">
-      <div class="ch__sticky">
-        <span class="pill">Что было ещё</span>
-        <ul class="ch__list" data-bind="extra_text" data-list></ul>
-      </div>
-    </div>
-    <div class="ch__photos ch__photos--1">
-        <figure class="ph" data-field="extra_img" data-view><img data-bind="extra_img" alt=""></figure>
-    </div>
+  <!-- Что было ещё: немного текста, потом ряд фото раздела -->
+  <section class="beat" data-field="extra_text">
+    <span class="pill">Что было ещё</span>
+    <ul class="beat__list" data-bind="extra_text" data-list></ul>
   </section>
+  <div class="shots">
+    <figure class="shot" data-field="extra_img" data-view><img data-bind="extra_img" alt=""></figure>
+  </div>
 
   <!-- Галерея: оставшиеся фото плиткой -->
   <section class="tiles" data-field="gallery" data-bind="gallery"></section>
 </main>
 
 <nav class="variants" aria-label="Варианты страницы">
-  <a href="../index.html">1</a><a href="../v2/index.html" aria-current="page">2</a><a href="../v3/index.html">3</a><a href="../v4/index.html">4</a>
+  <a href="../index.html">1</a><a href="../v2/index.html">2</a><a href="../v3/index.html">3</a><a href="../v4/index.html" aria-current="page">4</a>
 </nav>
 
 <!-- Просмотр фото на весь экран -->

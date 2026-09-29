@@ -73,6 +73,23 @@
     return `<figure class="tile${g.w > g.h ? ' tile--wide' : ''}" style="--span:${span}" data-view><img src="${esc(url(g.src))}" width="${g.w}" height="${g.h}" loading="lazy" alt=""></figure>`;
   }
 
+  // ---------- Ряды фото варианта 4: одна высота, ширина по пропорциям фото
+  document.querySelectorAll('.shots').forEach((row) => {
+    const shots = [...row.querySelectorAll('.shot')].filter((f) => !f.hidden);
+    if (!shots.length) { row.hidden = true; return; }
+    row.classList.toggle('shots--single', shots.length === 1);
+    shots.forEach((f) => {
+      const img = f.querySelector('img');
+      const set = () => {
+        if (!img.naturalWidth) return;
+        const r = img.naturalWidth / img.naturalHeight;
+        f.style.setProperty('--ratio', r.toFixed(3));
+        f.classList.toggle('shot--wide', r > 1);
+      };
+      img.complete ? set() : img.addEventListener('load', set, { once: true });
+    });
+  });
+
   // ---------- Аккордеон «О проекте». Открыт один пункт, справа фото этого пункта.
   const accItems = [...document.querySelectorAll('.acc__item')].filter((it) => !it.hidden);
   const aboutImg = document.querySelector('.about__photo img');
