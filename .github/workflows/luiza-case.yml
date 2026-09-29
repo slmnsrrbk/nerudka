@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
   push:
     branches: [claude/cloudflare-page-variant-f0lfc1]
-    paths: ['luiza/**', 'scripts/luiza-fetch.mjs', '.github/workflows/luiza-case.yml']
+    paths: ['luiza/**', 'scripts/luiza-fetch.mjs', 'scripts/luiza-header.mjs', '.github/workflows/luiza-case.yml']
 
 permissions:
   contents: write
@@ -50,6 +50,14 @@ jobs:
           done
           rm -rf luiza/source/orig
           ls -lh luiza/site/img
+
+      - name: Снять шапку и первый экран
+        if: hashFiles('luiza/source/header/info.json') == ''
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+          node scripts/luiza-header.mjs
+          ls -lh luiza/source/header
 
       - name: Закоммитить фото
         if: hashFiles('luiza/source/source.json') != ''
