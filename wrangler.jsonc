@@ -1,0 +1,9 @@
+// Прототип страницы кейса Luiza Event: статика из luiza/site на Cloudflare Workers.
+// Имя должно совпадать с именем проекта в панели Cloudflare.
+{
+  "name": "luiza-case",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./luiza/site"
+  }
+}

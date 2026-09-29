@@ -44,19 +44,19 @@ jobs:
           node scripts/luiza-fetch.mjs
           sudo apt-get install -y -qq imagemagick >/dev/null
           # Оригиналы Тильды весят по 5–15 МБ, для прототипа хватит 2000 px по длинной стороне.
-          mkdir -p luiza/source/img
+          mkdir -p luiza/site/img
           for f in luiza/source/orig/*; do
-            b=$(basename "$f"); convert "$f" -auto-orient -resize '2000x2000>' -strip -quality 80 "luiza/source/img/${b%.*}.jpg"
+            b=$(basename "$f"); convert "$f" -auto-orient -resize '2000x2000>' -strip -quality 80 "luiza/site/img/${b%.*}.jpg"
           done
           rm -rf luiza/source/orig
-          ls -lh luiza/source/img
+          ls -lh luiza/site/img
 
       - name: Закоммитить фото
         if: hashFiles('luiza/source/source.json') != ''
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A luiza/source
+          git add -A luiza/source luiza/site/img
           if git diff --cached --quiet; then echo "Изменений нет"; exit 0; fi
           git commit -m "Luiza: тексты и фото кейса ilya_and_elizabeth"
           for attempt in 1 2 3 4; do
@@ -68,7 +68,6 @@ jobs:
       - name: Собрать сайт
         run: |
           rm -rf luiza/dist && cp -r luiza/site luiza/dist
-          [ -d luiza/source/img ] && cp -r luiza/source/img luiza/dist/img || true
           ls -R luiza/dist | head -80
 
       - name: Создать проект Cloudflare Pages

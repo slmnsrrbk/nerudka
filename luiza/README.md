@@ -9,15 +9,14 @@
 - `site/app.js`: подстановка полей, курсор «Смотреть», анимация букв меню, появление с увеличением, лайтбокс.
 - Кнопка «Поля CMS» в шапке подписывает, какое поле потока стоит за каждым элементом.
 - `source/`: тексты и фото кейса, их собирает `scripts/luiza-fetch.mjs` на раннере GitHub
-  (из контейнера разработки сайт закрыт). Фото ужаты до 2000 px.
+  (из контейнера разработки сайт закрыт). Фото ужаты до 2000 px и лежат в `site/img`.
 
 Деплой: workflow `.github/workflows/luiza-case.yml` публикует `site/` и фото на Cloudflare Pages,
 проект `luiza-case`. Нужны секреты репозитория `CLOUDFLARE_API_TOKEN` (права Cloudflare Pages: Edit)
-и `CLOUDFLARE_ACCOUNT_ID`. Локально: `cp -r luiza/site luiza/dist && cp -r luiza/source/img luiza/dist/img`,
-затем `python3 -m http.server -d luiza/dist`.
+и `CLOUDFLARE_ACCOUNT_ID`. Локально: `python3 -m http.server -d luiza/site`.
 
-Без секретов, через подключение репозитория в панели Cloudflare:
-Workers & Pages → Create → Pages → Connect to Git → `slmnsrrbk/nerudka`,
-production branch `claude/cloudflare-page-variant-f0lfc1`, Framework preset `None`,
-Build command `cp -r luiza/site luiza/out && cp -r luiza/source/img luiza/out/img`,
-Build output directory `luiza/out`.
+Без секретов, через Cloudflare Workers с подключённым репозиторием (настройки в `wrangler.jsonc` в корне):
+Workers & Pages → Create → Import a repository → `slmnsrrbk/nerudka`, Project name `luiza-case`,
+Build command пустая, Deploy command `npx wrangler deploy`,
+Preview command `npx wrangler versions upload`. После создания: Settings → Build → Branch control →
+Production branch `claude/cloudflare-page-variant-f0lfc1`.
