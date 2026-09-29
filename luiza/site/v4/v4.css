@@ -34,3 +34,33 @@
   .shots { flex-direction: column; }
   .shot, .shots--single .shot { flex: none; width: 100%; border-radius: 16px; }
 }
+
+/* Свечение за текстовыми блоками: те же цвета, что на первом экране, но тише.
+   Два размытых пятна на блок, медленно дрейфуют; у каждого раздела свой оттенок. */
+.beat { position: relative; isolation: isolate; }
+.beat::before, .beat::after {
+  content: ""; position: absolute; z-index: -1; pointer-events: none;
+  border-radius: 50%; filter: blur(80px); opacity: .32;
+  animation: beatDrift 14s ease-in-out infinite alternate;
+}
+.beat::before { width: 46%; height: 70%; left: -8%; top: 20%; background: var(--c1, #a20075); }
+.beat::after  { width: 34%; height: 60%; left: 22%; top: 35%; background: var(--c2, #ae67ff); animation-duration: 18s; animation-direction: alternate-reverse; }
+.beat:nth-of-type(4n+1) { --c1: #a20075; --c2: #ae67ff; }
+.beat:nth-of-type(4n+2) { --c1: #ff5174; --c2: #f4bf95; }
+.beat:nth-of-type(4n+3) { --c1: #600446; --c2: #ff5cd1; }
+.beat:nth-of-type(4n)   { --c1: #ae67ff; --c2: #eb9d9d; }
+/* Через раз пятна уходят вправо, чтобы страница не была одинаковой */
+.beat:nth-of-type(even)::before { left: auto; right: -8%; }
+.beat:nth-of-type(even)::after  { left: auto; right: 22%; }
+@keyframes beatDrift {
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(6vw, -30px) scale(1.15); }
+}
+@media (max-width: 700px) {
+  .beat::before { width: 90%; left: -20%; }
+  .beat::after  { width: 70%; left: 30%; }
+  .beat:nth-of-type(even)::before { right: -20%; }
+  .beat:nth-of-type(even)::after  { right: 30%; }
+}
+/* Пятна не должны давать горизонтальную прокрутку: обрезаем по краям страницы */
+main { overflow-x: clip; }
