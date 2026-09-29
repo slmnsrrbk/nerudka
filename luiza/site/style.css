@@ -63,16 +63,45 @@ button { font: inherit; color: inherit; }
 
 /* ---------- Первый экран ---------- */
 .hero { position: relative; padding: 84px var(--pad) 0; }
+/* Свечение как на сайте: восемь размытых пятен тех же цветов и в тех же местах,
+   каждое медленно дрейфует по своей траектории. Низ растворяется в чёрный маской. */
 .hero__glow {
-  position: absolute; inset: 0 0 auto; height: 520px; pointer-events: none; z-index: -1;
-  background:
-    radial-gradient(38% 60% at 6% 30%, rgba(140, 62, 170, .95), transparent 70%),
-    radial-gradient(22% 45% at 24% 0%, rgba(214, 128, 140, .9), transparent 70%),
-    radial-gradient(30% 55% at 52% 5%, rgba(160, 30, 90, .85), transparent 70%),
-    radial-gradient(40% 60% at 90% 10%, rgba(95, 25, 55, .8), transparent 70%),
-    linear-gradient(#2a0a24, #12030f 55%, #000);
-  -webkit-mask-image: linear-gradient(#000 45%, transparent);
-          mask-image: linear-gradient(#000 45%, transparent);
+  position: absolute; inset: 0 0 auto; height: 680px; z-index: -1;
+  overflow: hidden; pointer-events: none;
+  -webkit-mask-image: linear-gradient(#000 35%, rgba(0, 0, 0, .6) 60%, transparent);
+          mask-image: linear-gradient(#000 35%, rgba(0, 0, 0, .6) 60%, transparent);
+}
+.g {
+  position: absolute; border-radius: 50%; opacity: .55;
+  filter: blur(70px); will-change: transform;
+  animation: drift var(--t, 20s) ease-in-out infinite alternate;
+}
+.g1 { left: -18%; top: -300px; width: 158%; height: 480px; background: #a20075; --dx: 4vw; --dy: 40px; --r: 4deg; --t: 16s; }
+.g2 { left: 2%;   top: -200px; width: 114%; height: 440px; background: #600446; --dx: -5vw; --dy: 30px; --r: -6deg; --t: 14s; }
+.g3 { left: 59%;  top: -420px; width: 69%;  height: 520px; background: #eb9d9d; --dx: -6vw; --dy: 50px; --r: 10deg; --t: 12s; }
+.g4 { left: 4%;   top: -160px; width: 32%;  height: 420px; background: #e85fff; --dx: 7vw; --dy: 40px; --r: -12deg; --t: 11s; }
+.g5 { left: -31%; top: -40px;  width: 62%;  height: 520px; background: #ff5cd1; opacity: .4; --dx: 6vw; --dy: -40px; --r: 8deg; --t: 15s; }
+.g6 { left: -13%; top: -160px; width: 55%;  height: 440px; background: #ae67ff; --dx: 5vw; --dy: 30px; --r: -8deg; --t: 13s; }
+.g7 { left: 25%;  top: -180px; width: 39%;  height: 400px; background: #ff5174; opacity: .45; --dx: -7vw; --dy: 40px; --r: 14deg; --t: 12s; }
+.g8 { left: 6%;   top: -190px; width: 41%;  height: 380px; background: #f4bf95; opacity: .45; --dx: 8vw; --dy: 30px; --r: -10deg; --t: 14s; }
+/* Пятно за курсором: плавно догоняет мышь в пределах первого экрана */
+.g-mouse {
+  left: 0; top: 0; width: 520px; height: 420px; margin: -210px 0 0 -260px;
+  background: radial-gradient(closest-side, #ff5cd1, #ae67ff 60%, transparent);
+  opacity: 0; filter: blur(60px); animation: none;
+  transform: translate(var(--mx, 50vw), var(--my, 120px));
+  transition: opacity .8s;
+}
+.hero.is-hover .g-mouse { opacity: .55; }
+/* Зерно поверх свечения, чтобы градиент не выглядел пластиковым */
+.hero__glow::after {
+  content: ""; position: absolute; inset: 0; opacity: .12; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+@keyframes drift {
+  0%   { transform: translate(0, 0) rotate(0) scale(1); }
+  50%  { transform: translate(calc(var(--dx) * 1.6), calc(var(--dy) * 1.4)) rotate(calc(var(--r) * 1.5)) scale(1.15); }
+  100% { transform: translate(calc(var(--dx) * -.6), calc(var(--dy) * .5)) rotate(calc(var(--r) * -1)) scale(.96); }
 }
 .hero__line { height: 1px; background: var(--line); }
 .hero__grid { display: grid; grid-template-columns: calc(var(--colf) * 100%) 1fr; padding: 50px 0 58px; }
@@ -204,7 +233,8 @@ button { font: inherit; color: inherit; }
   .nav__burger::before { content: "Меню"; }
   .nav__burger span { display: none; }
   .hero { padding-top: 72px; }
-  .hero__glow { height: 460px; }
+  .hero__glow { height: 560px; }
+  .g { filter: blur(50px); }
   .hero__grid { grid-template-columns: 1fr; gap: 30px; padding: 44px 0 34px; }
   .hero__title { font-size: clamp(24px, 7vw, 30px); }
   .hero__lead { margin-top: 18px; }

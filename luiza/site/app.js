@@ -181,6 +181,25 @@
     sx = sy = null;
   });
 
+  // ---------- Пятно свечения за курсором на первом экране
+  const hero = document.querySelector('.hero');
+  const blob = document.querySelector('.g-mouse');
+  if (blob && matchMedia('(hover: hover) and (pointer: fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let tx = innerWidth / 2, ty = 120, bx = tx, by = ty;
+    hero.addEventListener('mousemove', (e) => {
+      const r = hero.getBoundingClientRect();
+      tx = e.clientX - r.left; ty = Math.min(e.clientY - r.top, 520);
+      hero.classList.add('is-hover');
+    });
+    hero.addEventListener('mouseleave', () => hero.classList.remove('is-hover'));
+    (function follow() {
+      bx += (tx - bx) * 0.06; by += (ty - by) * 0.06;
+      blob.style.setProperty('--mx', bx + 'px');
+      blob.style.setProperty('--my', by + 'px');
+      requestAnimationFrame(follow);
+    })();
+  }
+
   // ---------- Шапка: фон появляется после прокрутки первого экрана
   const nav = document.querySelector('.nav');
   const onScroll = () => nav.classList.toggle('is-solid', scrollY > 40);
