@@ -15,3 +15,9 @@
 проект `luiza-case`. Нужны секреты репозитория `CLOUDFLARE_API_TOKEN` (права Cloudflare Pages: Edit)
 и `CLOUDFLARE_ACCOUNT_ID`. Локально: `cp -r luiza/site luiza/dist && cp -r luiza/source/img luiza/dist/img`,
 затем `python3 -m http.server -d luiza/dist`.
+
+Без секретов, через подключение репозитория в панели Cloudflare:
+Workers & Pages → Create → Pages → Connect to Git → `slmnsrrbk/nerudka`,
+production branch `claude/cloudflare-page-variant-f0lfc1`, Framework preset `None`,
+Build command `cp -r luiza/site luiza/out && cp -r luiza/source/img luiza/out/img`,
+Build output directory `luiza/out`.
