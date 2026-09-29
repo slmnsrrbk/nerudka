@@ -170,6 +170,21 @@ button { font: inherit; color: inherit; }
 .tile, .about__photo { transform: scale(.97); transition: transform 1s cubic-bezier(.2, .7, .2, 1); }
 .is-in { transform: none; }
 
+/* ---------- Метка раздела ---------- */
+.pill { display: inline-flex; padding: 7px 16px; border: 1px solid var(--pill); border-radius: 100px; font-size: 14px; line-height: 1.2; }
+
+/* ---------- Переключатель вариантов страницы ---------- */
+.variants {
+  position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 30;
+  transform: translateX(-50%); display: flex; gap: 4px; padding: 4px;
+  background: rgba(20, 20, 20, .8); backdrop-filter: blur(12px);
+  border: 1px solid var(--line); border-radius: 100px;
+}
+.variants a { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; font-size: 14px; color: var(--muted); transition: background .25s, color .25s; }
+.variants a:hover { color: var(--text); }
+.variants a[aria-current] { background: var(--text); color: #000; }
+html.lb-open .variants { display: none; }
+
 /* ---------- Курсор в духе Cuberto ---------- */
 .cursor {
   position: fixed; left: 0; top: 0; z-index: 50; pointer-events: none;

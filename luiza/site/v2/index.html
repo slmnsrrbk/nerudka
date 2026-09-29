@@ -1,14 +1,15 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" data-base="../">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Шаблон кейса Luiza</title>
+<title>Шаблон кейса Luiza, вариант 2</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Unbounded:wght@300;400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="v2.css">
 </head>
 <body>
 
@@ -19,7 +20,7 @@
 <div class="cursor" aria-hidden="true"><span>Смотреть</span></div>
 
 <header class="nav">
-  <a class="logo" href="#top" aria-label="Luiza Event"><img src="logo.svg" width="204" height="27" alt="Luiza Event"></a>
+  <a class="logo" href="#top" aria-label="Luiza Event"><img src="../logo.svg" width="204" height="27" alt="Luiza Event"></a>
   <nav class="menu">
     <a href="#" class="txt2">Портфолио</a>
     <a href="#" class="txt2">О нас</a>
@@ -61,43 +62,69 @@
     </figure>
   </section>
 
-  <!-- 2. О проекте: заголовок и аккордеоны слева, фото раздела справа -->
-  <section class="about">
-    <div class="about__left">
-      <h2 class="about__title">О проекте</h2>
-      <div class="acc">
-        <div class="acc__item is-open" data-field="concept_text" data-photo="concept_ph1">
-          <button class="acc__head" type="button" aria-expanded="true"><span>Концепция</span><i></i></button>
-          <div class="acc__body"><div><p data-bind="concept_text"></p></div></div>
-        </div>
-        <div class="acc__item" data-field="tasks_text" data-photo="tasks_ph1">
-          <button class="acc__head" type="button" aria-expanded="false"><span>Задачи</span><i></i></button>
-          <div class="acc__body"><div><p data-bind="tasks_text"></p></div></div>
-        </div>
-        <div class="acc__item" data-field="decor_text" data-photo="decor_ph1">
-          <button class="acc__head" type="button" aria-expanded="false"><span>Декор</span><i></i></button>
-          <div class="acc__body"><div><p data-bind="decor_text"></p></div></div>
-        </div>
-        <div class="acc__item" data-field="extra_text" data-photo="extra_img">
-          <button class="acc__head" type="button" aria-expanded="false"><span>Что было ещё</span><i></i></button>
-          <div class="acc__body"><div><ul class="acc__list" data-bind="extra_text" data-list></ul></div></div>
-        </div>
+
+  <section class="ch" data-field="concept_text">
+    <div class="ch__side">
+      <div class="ch__sticky">
+        <span class="pill">Концепция</span>
+        <p class="ch__text" data-bind="concept_text"></p>
       </div>
     </div>
-    <div class="about__right">
-      <figure class="about__photo" data-view><img alt=""></figure>
+    <div class="ch__photos ch__photos--2">
+        <figure class="ph" data-field="concept_ph1" data-view><img data-bind="concept_ph1" alt=""></figure>
+        <figure class="ph" data-field="concept_ph2" data-view><img data-bind="concept_ph2" alt=""></figure>
     </div>
   </section>
 
-  <!-- 3. Фото плиткой разных размеров -->
-  <section class="tiles" data-field="gallery" data-bind="gallery"></section>
+  <section class="wide"><figure class="ph ph--wide" data-field="wide_img" data-view><img data-bind="wide_img" alt=""></figure></section>
 
+  <section class="ch ch--rev" data-field="tasks_text">
+    <div class="ch__side">
+      <div class="ch__sticky">
+        <span class="pill">Задачи</span>
+        <p class="ch__text" data-bind="tasks_text"></p>
+      </div>
+    </div>
+    <div class="ch__photos ch__photos--3">
+        <figure class="ph" data-field="tasks_ph1" data-view><img data-bind="tasks_ph1" alt=""></figure>
+        <figure class="ph" data-field="tasks_ph2" data-view><img data-bind="tasks_ph2" alt=""></figure>
+        <figure class="ph" data-field="tasks_ph3" data-view><img data-bind="tasks_ph3" alt=""></figure>
+    </div>
+  </section>
+
+  <section class="ch" data-field="decor_text">
+    <div class="ch__side">
+      <div class="ch__sticky">
+        <span class="pill">Декор</span>
+        <p class="ch__text" data-bind="decor_text"></p>
+      </div>
+    </div>
+    <div class="ch__photos ch__photos--3">
+        <figure class="ph" data-field="decor_ph1" data-view><img data-bind="decor_ph1" alt=""></figure>
+        <figure class="ph" data-field="decor_ph2" data-view><img data-bind="decor_ph2" alt=""></figure>
+        <figure class="ph" data-field="decor_ph3" data-view><img data-bind="decor_ph3" alt=""></figure>
+    </div>
+  </section>
+
+  <section class="ch ch--rev" data-field="extra_text">
+    <div class="ch__side">
+      <div class="ch__sticky">
+        <span class="pill">Что было ещё</span>
+        <ul class="ch__list" data-bind="extra_text" data-list></ul>
+      </div>
+    </div>
+    <div class="ch__photos ch__photos--1">
+        <figure class="ph" data-field="extra_img" data-view><img data-bind="extra_img" alt=""></figure>
+    </div>
+  </section>
+
+  <!-- Галерея: оставшиеся фото плиткой -->
+  <section class="tiles" data-field="gallery" data-bind="gallery"></section>
 </main>
 
 <nav class="variants" aria-label="Варианты страницы">
-  <a href="index.html" aria-current="page">1</a><a href="v2/index.html">2</a><a href="v3/index.html">3</a>
+  <a href="../index.html">1</a><a href="../v2/index.html" aria-current="page">2</a><a href="../v3/index.html">3</a>
 </nav>
-
 
 <!-- Просмотр фото на весь экран -->
 <div class="lb" hidden role="dialog" aria-modal="true" aria-label="Просмотр фото">
@@ -108,7 +135,7 @@
   <div class="lb__count"></div>
 </div>
 
-<script src="case.js"></script>
-<script src="app.js"></script>
+<script src="../case.js"></script>
+<script src="../app.js"></script>
 </body>
 </html>

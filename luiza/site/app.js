@@ -3,6 +3,10 @@
 (() => {
   const data = window.CASE || {};
   const get = (path) => path.split('.').reduce((o, k) => (o == null ? o : o[k]), data);
+  // Страницы вариантов лежат в подпапках и задают путь к общим файлам через <html data-base="../">.
+  const BASE = document.documentElement.dataset.base || '';
+  const url = (v) => (typeof v === 'string' && v.startsWith('img/') ? BASE + v : v);
+  const used = new Set();
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
   // ---------- Привязка полей. Пустое поле прячет свой элемент, как видимость «Указано».
@@ -13,11 +17,13 @@
     if (val == null || val === '' || (Array.isArray(val) && !val.length)) { holder.hidden = true; return; }
 
     if (el.tagName === 'IMG') {
-      el.src = val;
+      el.src = url(val);
+      used.add(val);
       el.alt = data.title || '';
       if (!holder.closest('.hero')) el.loading = 'lazy';
     } else if (key === 'gallery') {
-      el.innerHTML = layoutTiles(val);
+      // Фото, которые уже стоят в разделах этой страницы, в плитке не повторяем.
+      el.innerHTML = layoutTiles(val.filter((g) => !used.has(g.src)));
     } else if ('list' in el.dataset) {
       el.innerHTML = String(val).split('\n').map((s) => s.trim()).filter(Boolean).map((s) => `<li>${esc(s)}</li>`).join('');
     } else {
@@ -64,19 +70,20 @@
     return w <= wide.length && r.cells.length - w <= tall.length;
   }
   function cell(g, span) {
-    return `<figure class="tile${g.w > g.h ? ' tile--wide' : ''}" style="--span:${span}" data-view><img src="${esc(g.src)}" width="${g.w}" height="${g.h}" loading="lazy" alt=""></figure>`;
+    return `<figure class="tile${g.w > g.h ? ' tile--wide' : ''}" style="--span:${span}" data-view><img src="${esc(url(g.src))}" width="${g.w}" height="${g.h}" loading="lazy" alt=""></figure>`;
   }
 
   // ---------- Аккордеон «О проекте». Открыт один пункт, справа фото этого пункта.
   const accItems = [...document.querySelectorAll('.acc__item')].filter((it) => !it.hidden);
   const aboutImg = document.querySelector('.about__photo img');
+  if (!aboutImg) accItems.length = 0;
   function openItem(item) {
     accItems.forEach((it) => {
       const on = it === item && !it.classList.contains('is-open');
       it.classList.toggle('is-open', on);
       it.querySelector('.acc__head').setAttribute('aria-expanded', on);
     });
-    const src = get((item.classList.contains('is-open') ? item : accItems[0]).dataset.photo);
+    const src = url(get((item.classList.contains('is-open') ? item : accItems[0]).dataset.photo));
     if (src && aboutImg.getAttribute('src') !== src) {
       aboutImg.classList.add('is-fading');
       const next = new Image();
@@ -86,7 +93,7 @@
   }
   accItems.forEach((it) => it.querySelector('.acc__head').addEventListener('click', () => openItem(it)));
   const first = accItems.find((it) => it.classList.contains('is-open')) || accItems[0];
-  if (first) { aboutImg.src = get(first.dataset.photo) || ''; aboutImg.alt = data.title || ''; }
+  if (first) { aboutImg.src = url(get(first.dataset.photo)) || ''; aboutImg.alt = data.title || ''; }
 
   // ---------- Буквы меню для анимации .txt2 .letter
   document.querySelectorAll('.txt2').forEach((a) => {
@@ -122,7 +129,7 @@
   let cur = 0;
   let lastFocus = null;
 
-  const collect = () => [...document.querySelectorAll('.hero__media img, .about__photo img, .tile img')]
+  const collect = () => [...document.querySelectorAll('main [data-view] img')]
     .filter((im) => im.getAttribute('src'))
     .map((im) => im.getAttribute('src'))
     .filter((src, i, arr) => arr.indexOf(src) === i);
@@ -155,7 +162,7 @@
   }
 
   document.addEventListener('click', (e) => {
-    const fig = e.target.closest('.hero__media, .about__photo, .tile');
+    const fig = e.target.closest('main [data-view]');
     if (!fig) return;
     const img = fig.querySelector('img');
     if (img && img.getAttribute('src')) open(img.getAttribute('src'));
