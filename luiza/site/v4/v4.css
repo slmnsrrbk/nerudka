@@ -1,8 +1,8 @@
 /* Вариант 4: ритм «чуть-чуть текста → фото, фото, фото → снова текст».
-   Текст стоит в той же колонке, что заголовок первого экрана. Фото раздела идут
+   На десктопе заголовок и текст раздела делят ширину пополам. Фото раздела идут
    одним рядом одной высоты, ширина каждого по его пропорциям (задаётся в app.js). */
 .beat {
-  display: grid; grid-template-columns: calc(var(--colf) * 100%) minmax(0, 620px);
+  display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap);
   align-items: start; padding: 120px var(--pad) 40px;
 }
 .beat__title {
