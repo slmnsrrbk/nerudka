@@ -20,3 +20,7 @@ Workers & Pages → Create → Import a repository → `slmnsrrbk/nerudka`, Proj
 Build command пустая, Deploy command `npx wrangler deploy`,
 Preview command `npx wrangler versions upload`. После создания: Settings → Build → Branch control →
 Production branch `claude/cloudflare-page-variant-f0lfc1`.
+
+Проверка деплоя: в сборке Cloudflare должна стоять ветка `claude/cloudflare-page-variant-f0lfc1`,
+а в логе шага Deploying строка про 40 файлов из `luiza/site`. Кнопка Retry build повторяет
+старую сборку с её веткой, новую сборку запускает пуш в production-ветку.
