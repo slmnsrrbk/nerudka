@@ -1,1 +1,147 @@
-<!doctype html><html lang="ru"><meta charset="utf-8"><title>Luiza Event</title><body style="background:#000;color:#fff">Черновик</body></html>
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Шаблон кейса · Luiza Event</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500&family=Unbounded:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Прототип шаблона страницы поста (Tilda CMS, Zero Block).
+     Каждый элемент с data-field связан с полем потока и скрывается, если поле пустое
+     (в Тильде: видимость «Указано»). Метки разделов статичные. -->
+
+<div class="cursor" aria-hidden="true"><span>Смотреть</span></div>
+
+<header class="nav">
+  <a class="logo" href="#top">Luiza<b>Event</b></a>
+  <nav class="menu">
+    <a href="#" class="txt2">Свадьбы</a>
+    <a href="#" class="txt2">Дни рождения</a>
+    <a href="#" class="txt2">Корпоративы</a>
+    <a href="#" class="txt2">Бренды</a>
+    <a href="#contact" class="txt2">Контакты</a>
+  </nav>
+  <button class="fields-toggle" type="button" aria-pressed="false">Поля CMS</button>
+</header>
+
+<main id="top">
+
+  <!-- 1. Первый экран -->
+  <section class="hero" data-section="hero">
+    <div class="hero__media" data-field="hero_img" data-view>
+      <img data-bind="hero_img" alt="">
+    </div>
+    <div class="hero__shade"></div>
+    <div class="hero__content">
+      <div class="pills">
+        <span class="pill" data-field="category" data-bind="category"></span>
+        <span class="pill" data-field="year" data-bind="year"></span>
+      </div>
+      <h1 class="hero__title" data-field="title" data-bind="title"></h1>
+      <p class="hero__project" data-field="project_name" data-bind="project_name"></p>
+      <p class="hero__lead" data-field="lead" data-bind="lead"></p>
+    </div>
+    <div class="scroll-hint" aria-hidden="true"></div>
+  </section>
+
+  <!-- 2. Концепция -->
+  <section class="block" data-section="concept">
+    <div class="block__head reveal">
+      <span class="pill pill--label">Концепция</span>
+      <p class="block__text" data-field="concept_text" data-bind="concept_text"></p>
+    </div>
+    <div class="grid-2">
+      <figure class="ph ph--tall reveal" data-field="concept_ph1" data-view><img data-bind="concept_ph1" alt=""></figure>
+      <figure class="ph ph--tall ph--shift reveal" data-field="concept_ph2" data-view><img data-bind="concept_ph2" alt=""></figure>
+    </div>
+  </section>
+
+  <!-- 3. Фото на всю ширину -->
+  <section class="wide reveal" data-field="wide_img" data-view>
+    <img data-bind="wide_img" alt="">
+  </section>
+
+  <!-- 4. Задачи -->
+  <section class="block" data-section="tasks">
+    <div class="block__head reveal">
+      <span class="pill pill--label">Задачи</span>
+      <p class="block__text" data-field="tasks_text" data-bind="tasks_text"></p>
+    </div>
+    <div class="mosaic">
+      <figure class="ph mosaic__a reveal" data-field="tasks_ph1" data-view><img data-bind="tasks_ph1" alt=""></figure>
+      <figure class="ph mosaic__b reveal" data-field="tasks_ph2" data-view><img data-bind="tasks_ph2" alt=""></figure>
+      <figure class="ph mosaic__c reveal" data-field="tasks_ph3" data-view><img data-bind="tasks_ph3" alt=""></figure>
+    </div>
+  </section>
+
+  <!-- 5. Декор -->
+  <section class="block" data-section="decor">
+    <div class="block__head reveal">
+      <span class="pill pill--label">Декор</span>
+      <p class="block__text" data-field="decor_text" data-bind="decor_text"></p>
+    </div>
+    <div class="strip">
+      <figure class="ph reveal" data-field="decor_ph1" data-view><img data-bind="decor_ph1" alt=""></figure>
+      <figure class="ph reveal" data-field="decor_ph2" data-view><img data-bind="decor_ph2" alt=""></figure>
+      <figure class="ph reveal" data-field="decor_ph3" data-view><img data-bind="decor_ph3" alt=""></figure>
+    </div>
+  </section>
+
+  <!-- 6. Что было ещё -->
+  <section class="block extra" data-section="extra">
+    <div class="extra__text reveal">
+      <span class="pill pill--label">Что было ещё</span>
+      <ul class="extra__list" data-field="extra_text" data-bind="extra_text" data-list></ul>
+    </div>
+    <figure class="ph ph--vertical reveal" data-field="extra_img" data-view><img data-bind="extra_img" alt=""></figure>
+  </section>
+
+  <!-- 7. Галерея -->
+  <section class="block" data-section="gallery">
+    <div class="gallery" data-field="gallery" data-bind="gallery"></div>
+  </section>
+
+  <!-- 8. Следующий проект: плитка потока, лимит 1 -->
+  <section class="block next" data-section="next">
+    <a class="next__card reveal" href="#" data-view>
+      <img data-bind="next.card_img" alt="">
+      <div class="next__body">
+        <span class="pill">Следующий проект</span>
+        <span class="next__title" data-bind="next.title"></span>
+        <span class="next__arrow" aria-hidden="true">→</span>
+      </div>
+    </a>
+  </section>
+</main>
+
+<!-- 9. Подвал с формой: общий для всех постов -->
+<footer class="footer" id="contact">
+  <div class="blob blob--a"></div><div class="blob blob--b"></div>
+  <div class="footer__inner">
+    <h2 class="footer__title">Расскажите о своём событии</h2>
+    <form class="form" onsubmit="event.preventDefault(); this.classList.add('is-sent')">
+      <input type="text" placeholder="Имя" required>
+      <input type="tel" placeholder="Телефон" required>
+      <input type="text" placeholder="Дата и формат события">
+      <button type="submit" class="btn">Отправить</button>
+      <p class="form__ok">Спасибо, мы свяжемся с вами</p>
+    </form>
+    <div class="footer__bottom">
+      <span>© Luiza Event</span>
+      <span>Прототип шаблона страницы кейса</span>
+    </div>
+  </div>
+</footer>
+
+<div class="lightbox" hidden><img alt=""><button type="button" aria-label="Закрыть">×</button></div>
+
+<script src="case.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
