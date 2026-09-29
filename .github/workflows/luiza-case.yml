@@ -1,0 +1,99 @@
+# Прототип страницы кейса luizaevent.ru: сбор фото и деплой на Cloudflare Pages.
+#
+# 1. Если в luiza/source ещё нет фото, раннер забирает тексты и фото кейса
+#    (из контейнера разработки домен закрыт) и коммитит их в ветку.
+# 2. Сжатые фото и страница из luiza/site публикуются на Cloudflare Pages,
+#    проект luiza-case. Нужны секреты CLOUDFLARE_API_TOKEN (права Cloudflare
+#    Pages: Edit) и CLOUDFLARE_ACCOUNT_ID. Без них деплой пропускается.
+name: Luiza case page
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/cloudflare-page-variant-f0lfc1]
+    paths: ['luiza/**', 'scripts/luiza-fetch.mjs', '.github/workflows/luiza-case.yml']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: luiza-case
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      HAS_CLOUDFLARE: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Забрать тексты и фото кейса
+        if: hashFiles('luiza/source/source.json') == ''
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+          node scripts/luiza-fetch.mjs
+          sudo apt-get install -y -qq imagemagick >/dev/null
+          # Оригиналы Тильды весят по 5–15 МБ, для прототипа хватит 2000 px по длинной стороне.
+          mkdir -p luiza/source/img
+          for f in luiza/source/orig/*; do
+            b=$(basename "$f"); convert "$f" -auto-orient -resize '2000x2000>' -strip -quality 80 "luiza/source/img/${b%.*}.jpg"
+          done
+          rm -rf luiza/source/orig
+          ls -lh luiza/source/img
+
+      - name: Закоммитить фото
+        if: hashFiles('luiza/source/source.json') != ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A luiza/source
+          if git diff --cached --quiet; then echo "Изменений нет"; exit 0; fi
+          git commit -m "Luiza: тексты и фото кейса ilya_and_elizabeth"
+          for attempt in 1 2 3 4; do
+            git pull --rebase origin ${{ github.ref_name }} && git push origin HEAD:${{ github.ref_name }} && exit 0
+            sleep $((attempt * 5))
+          done
+          exit 1
+
+      - name: Собрать сайт
+        run: |
+          rm -rf luiza/dist && cp -r luiza/site luiza/dist
+          [ -d luiza/source/img ] && cp -r luiza/source/img luiza/dist/img || true
+          ls -R luiza/dist | head -80
+
+      - name: Создать проект Cloudflare Pages
+        if: env.HAS_CLOUDFLARE == 'true'
+        continue-on-error: true
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages project create luiza-case --production-branch=main
+
+      - name: Опубликовать на Cloudflare Pages
+        if: env.HAS_CLOUDFLARE == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy luiza/dist --project-name=luiza-case --branch=main --commit-dirty=true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: luiza-site
+          path: luiza/dist
+          retention-days: 30
+
+      - name: Подсказка, если секреты не заданы
+        if: env.HAS_CLOUDFLARE != 'true'
+        run: echo "Секреты CLOUDFLARE_API_TOKEN и CLOUDFLARE_ACCOUNT_ID не заданы, деплой на Cloudflare пропущен."
