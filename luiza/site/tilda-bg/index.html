@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Свечение фоном, демо для Тильды</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Unbounded:wght@300&display=swap" rel="stylesheet">
+<style>
+  /* Макет страницы Тильды: тёмный фон страницы, блоки с прозрачным фоном */
+  body { margin: 0; background: #000; color: #fff; font: 16px/1.6 Inter, system-ui, sans-serif; }
+  .t-rec { padding: 0 24px; }
+  .demo-hero { min-height: 80vh; display: grid; align-content: center; gap: 20px; max-width: 900px; margin: 0 auto; }
+  .demo-hero h1 { margin: 0; font: 300 clamp(28px, 4vw, 56px)/1.1 Unbounded, Arial, sans-serif; text-transform: uppercase; }
+  .demo-hero p { margin: 0; color: rgba(255,255,255,.75); max-width: 560px; }
+  .demo-ph { max-width: 900px; margin: 0 auto 24px; border-radius: 20px; overflow: hidden; }
+  .demo-ph img { display: block; width: 100%; }
+  .demo-note { max-width: 900px; margin: 0 auto 120px; color: rgba(255,255,255,.6); font-size: 14px; }
+</style>
+</head>
+<body>
+<div id="allrecords">
+  <div class="t-rec">
+<!-- Luiza Event: живое свечение фоном всей страницы.
+     Вставка: блок T123 «HTML-код» в самый верх страницы.
+     Свечение закреплено на экране, пятна медленно дрейфуют, одно пятно идёт за мышью.
+     На первом экране свечение яркое, при прокрутке плавно затихает до LZ_MIN.
+     Чтобы свечение было видно, у блоков страницы фон должен быть прозрачным
+     (в Zero Block: настройки артборда → цвет фона пустой). -->
+<style>
+  .lz-glow {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+    opacity: var(--lz-k, 1);
+    -webkit-mask-image: linear-gradient(#000 30%, rgba(0,0,0,.55) 65%, rgba(0,0,0,.15));
+            mask-image: linear-gradient(#000 30%, rgba(0,0,0,.55) 65%, rgba(0,0,0,.15));
+  }
+  /* Блоки Тильды над свечением */
+  #allrecords { position: relative; z-index: 1; }
+  .lz-glow i {
+    position: absolute; display: block; border-radius: 50%; opacity: .55;
+    filter: blur(70px); will-change: transform;
+    animation: lz-drift var(--t, 14s) ease-in-out infinite alternate;
+  }
+  .lz-glow .g1 { left: -18%; top: -300px; width: 158%; height: 480px; background: #a20075; --dx: 4vw;  --dy: 40px;  --r: 4deg;   --t: 16s; }
+  .lz-glow .g2 { left: 2%;   top: -200px; width: 114%; height: 440px; background: #600446; --dx: -5vw; --dy: 30px;  --r: -6deg;  --t: 14s; }
+  .lz-glow .g3 { left: 59%;  top: -420px; width: 69%;  height: 520px; background: #eb9d9d; --dx: -6vw; --dy: 50px;  --r: 10deg;  --t: 12s; }
+  .lz-glow .g4 { left: 4%;   top: -160px; width: 32%;  height: 420px; background: #e85fff; --dx: 7vw;  --dy: 40px;  --r: -12deg; --t: 11s; }
+  .lz-glow .g5 { left: -31%; top: -40px;  width: 62%;  height: 520px; background: #ff5cd1; opacity: .4;  --dx: 6vw;  --dy: -40px; --r: 8deg;   --t: 15s; }
+  .lz-glow .g6 { left: -13%; top: -160px; width: 55%;  height: 440px; background: #ae67ff; --dx: 5vw;  --dy: 30px;  --r: -8deg;  --t: 13s; }
+  .lz-glow .g7 { left: 25%;  top: -180px; width: 39%;  height: 400px; background: #ff5174; opacity: .45; --dx: -7vw; --dy: 40px;  --r: 14deg;  --t: 12s; }
+  .lz-glow .g8 { left: 6%;   top: -190px; width: 41%;  height: 380px; background: #f4bf95; opacity: .45; --dx: 8vw;  --dy: 30px;  --r: -10deg; --t: 14s; }
+  /* Пятно за мышью */
+  .lz-glow .gm {
+    left: 0; top: 0; width: 520px; height: 420px; margin: -210px 0 0 -260px;
+    background: radial-gradient(closest-side, #ff5cd1, #ae67ff 60%, transparent);
+    filter: blur(60px); opacity: 0; animation: none; transition: opacity .8s;
+    transform: translate(var(--mx, 50vw), var(--my, 120px));
+  }
+  .lz-glow.is-mouse .gm { opacity: .55; }
+  /* Лёгкое зерно, чтобы градиент не был пластиковым */
+  .lz-glow::after {
+    content: ""; position: absolute; inset: 0; opacity: .12; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  @keyframes lz-drift {
+    0%   { transform: translate(0, 0) rotate(0) scale(1); }
+    50%  { transform: translate(calc(var(--dx) * 1.6), calc(var(--dy) * 1.4)) rotate(calc(var(--r) * 1.5)) scale(1.15); }
+    100% { transform: translate(calc(var(--dx) * -.6), calc(var(--dy) * .5)) rotate(calc(var(--r) * -1)) scale(.96); }
+  }
+  @media (max-width: 700px) { .lz-glow i { filter: blur(50px); } }
+  @media (prefers-reduced-motion: reduce) { .lz-glow i { animation: none; } }
+</style>
+
+<script>
+(function () {
+  // Насколько затихает свечение после первого экрана: 1 — не затихает, 0 — гаснет полностью.
+  var LZ_MIN = 0.35;
+  // За сколько экранов прокрутки свечение доходит до LZ_MIN.
+  var LZ_FADE_SCREENS = 1;
+
+  function init() {
+    if (document.querySelector('.lz-glow')) return;
+    var glow = document.createElement('div');
+    glow.className = 'lz-glow';
+    glow.setAttribute('aria-hidden', 'true');
+    glow.innerHTML = '<i class="g1"></i><i class="g2"></i><i class="g3"></i><i class="g4"></i>' +
+                     '<i class="g5"></i><i class="g6"></i><i class="g7"></i><i class="g8"></i><i class="gm"></i>';
+    // Кладём прямо в body: внутри блоков Тильды position: fixed может сломаться.
+    document.body.insertBefore(glow, document.body.firstChild);
+
+    // Яркость от прокрутки
+    var ticking = false;
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () {
+        var p = Math.min(1, window.pageYOffset / (window.innerHeight * LZ_FADE_SCREENS));
+        var k = 1 - (1 - LZ_MIN) * p;
+        glow.style.setProperty('--lz-k', k.toFixed(3));
+        ticking = false;
+      });
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    // Пятно за мышью: только где есть мышь и не просили меньше движения
+    var fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!fine || calm) return;
+    var blob = glow.querySelector('.gm');
+    var tx = innerWidth / 2, ty = 120, bx = tx, by = ty;
+    window.addEventListener('mousemove', function (e) {
+      tx = e.clientX; ty = e.clientY;
+      glow.classList.add('is-mouse');
+    }, { passive: true });
+    document.addEventListener('mouseleave', function () { glow.classList.remove('is-mouse'); });
+    (function follow() {
+      bx += (tx - bx) * 0.06; by += (ty - by) * 0.06;
+      blob.style.setProperty('--mx', bx + 'px');
+      blob.style.setProperty('--my', by + 'px');
+      requestAnimationFrame(follow);
+    })();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
+
+  </div>
+  <div class="t-rec">
+    <div class="demo-hero">
+      <h1>Илья и Елизавета<br>«уДАЧА»</h1>
+      <p>Демо кода для блока T123. Свечение закреплено на экране, при прокрутке затихает, одно пятно идёт за мышью.</p>
+    </div>
+  </div>
+  <div class="t-rec"><div class="demo-ph"><img src="../img/02.jpg" alt="" loading="lazy"></div></div><div class="t-rec"><div class="demo-ph"><img src="../img/03.jpg" alt="" loading="lazy"></div></div><div class="t-rec"><div class="demo-ph"><img src="../img/07.jpg" alt="" loading="lazy"></div></div><div class="t-rec"><div class="demo-ph"><img src="../img/04.jpg" alt="" loading="lazy"></div></div><div class="t-rec"><div class="demo-ph"><img src="../img/14.jpg" alt="" loading="lazy"></div></div><div class="t-rec"><div class="demo-ph"><img src="../img/09.jpg" alt="" loading="lazy"></div></div><div class="t-rec"><div class="demo-ph"><img src="../img/12.jpg" alt="" loading="lazy"></div></div><div class="t-rec"><div class="demo-ph"><img src="../img/27.jpg" alt="" loading="lazy"></div></div><div class="t-rec"><div class="demo-ph"><img src="../img/19.jpg" alt="" loading="lazy"></div></div><div class="t-rec"><div class="demo-ph"><img src="../img/26.jpg" alt="" loading="lazy"></div></div>
+  <div class="t-rec"><p class="demo-note">Код: luiza/tilda/gradient-bg.html</p></div>
+</div>
+</body>
+</html>
