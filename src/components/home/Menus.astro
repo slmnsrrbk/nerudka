@@ -1,0 +1,109 @@
+---
+// Мегаменю «Продукция» (десктоп) и выезжающее меню-аккордеон (мобильные). Дерево — src/lib/menu.ts.
+import Icon from './Icon.astro';
+import NavBar from './NavBar.astro';
+import { MENU, NAV } from '../../lib/menu';
+import { site } from '../../lib/home-site';
+const extra = [
+  { label: 'Прайс-лист', href: '#price', icon: 'receipt' },
+  { label: 'Калькулятор', href: '#calc', icon: 'calculator' },
+  { label: 'Доставка', href: '#delivery', icon: 'truck' },
+];
+---
+<div class="sticky-bar" data-sticky aria-hidden="true">
+  <div class="wrap"><NavBar variant="sticky" /></div>
+</div>
+
+<div class="mega-backdrop" data-mega-backdrop hidden></div>
+<div class="mega" id="mega" data-mega hidden role="dialog" aria-label="Каталог продукции">
+  <div class="mega-rail" role="tablist" aria-orientation="vertical">
+    {MENU.map((s, i) => (
+      <button type="button" class:list={['rail-item', { on: i === 0 }]} role="tab" aria-selected={i === 0 ? 'true' : 'false'} data-mega-tab={s.id}>
+        <Icon name={s.icon} size={20} /><span>{s.label}</span><Icon name="chevron-right" size={16} class="rail-ch" />
+      </button>
+    ))}
+    <span class="rail-sep"></span>
+    {extra.map((l) => (
+      <a class="rail-item" href={l.href}><Icon name={l.icon} size={20} /><span>{l.label}</span><Icon name="chevron-right" size={16} class="rail-ch" /></a>
+    ))}
+  </div>
+  <div class="mega-body">
+    {MENU.map((s, i) => (
+      <div class="mega-pane" data-mega-pane={s.id} role="tabpanel" hidden={i !== 0}>
+        <div class="mega-cols">
+          {s.columns.map((col) => (
+            <div class="mega-col">
+              {col.map((g) => (
+                <div class="mega-group">
+                  <p class="mega-h">{g.title}</p>
+                  {g.kind === 'chips'
+                    ? <div class="mega-chips">{g.items.map((it) => <a class="mchip" href={it.href}>{it.label}</a>)}</div>
+                    : <ul class="mega-list">{g.items.map((it) => <li><a href={it.href}>{it.label}</a></li>)}</ul>}
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+        <div class="mega-foot">
+          {s.footer.map((l) => l.href === '#consult'
+            ? <button type="button" class="ulink" data-modal="lead" data-topic="Консультация по услугам">{l.label}<Icon name="arrow-right" size={16} /></button>
+            : <a class="ulink" href={l.href}>{l.label}<Icon name="arrow-right" size={16} /></a>)}
+        </div>
+      </div>
+    ))}
+  </div>
+  <aside class="mega-promo">
+    <img src="/img/home/hero.webp" alt="" width="250" height="130" loading="lazy" />
+    <div class="mega-promo-t">
+      <span class="muted-w">Цена с завода</span>
+      <strong>от 3 990 ₽ за м³</strong>
+      <span class="muted-w">Единый прайс на все шесть РБУ. Скидка от 50 м³ — 10 %.</span>
+      <button type="button" class="btn btn-light" data-modal="lead" data-topic="Расчёт цены со скидкой">Рассчитать цену<Icon name="arrow-right" size={16} /></button>
+      <a class="promo-phone" href={`tel:${site.phoneHref}`}>{site.phone}</a>
+    </div>
+  </aside>
+</div>
+
+<div class="drawer" id="drawer" data-drawer hidden role="dialog" aria-modal="true" aria-label="Меню">
+  <div class="drawer-top">
+    <a class="logo logo-dark" href="/"><span class="logo-dot"></span>{site.name}</a>
+    <a class="sq-btn" href={`tel:${site.phoneHref}`} aria-label="Позвонить"><Icon name="phone" size={20} /></a>
+    <button type="button" class="sq-btn sq-dark" data-drawer-close aria-label="Закрыть меню"><Icon name="x" size={20} /></button>
+  </div>
+  <div class="drawer-scroll">
+    <button type="button" class="drawer-search" data-search-open><Icon name="search" size={18} />Марка, вид бетона или услуга</button>
+    <nav class="acc" aria-label="Каталог">
+      <details class="acc-l0" open>
+        <summary>Продукция<Icon name="chevron-down" size={18} class="acc-ch" /></summary>
+        <div class="acc-body">
+          {MENU.map((s, i) => (
+            <details class="acc-l1" open={i === 0}>
+              <summary><Icon name={s.icon} size={20} />{s.label}<Icon name="chevron-down" size={18} class="acc-ch" /></summary>
+              <div class="acc-body acc-in">
+                {s.columns.flat().map((g, j) => (
+                  <details class="acc-l2" open={i === 0 && j === 0}>
+                    <summary>{g.title}<Icon name="chevron-down" size={16} class="acc-ch" /></summary>
+                    {g.kind === 'chips'
+                      ? <div class="mega-chips acc-chips">{g.items.map((it) => <a class="mchip" href={it.href}>{it.label}</a>)}</div>
+                      : <ul class="acc-list">{g.items.map((it) => <li><a href={it.href}>{it.label}</a></li>)}</ul>}
+                  </details>
+                ))}
+                <div class="acc-foot">{s.footer.filter((l) => l.href !== '#consult').map((l) => <a class="ulink" href={l.href}>{l.label}<Icon name="arrow-right" size={16} /></a>)}</div>
+              </div>
+            </details>
+          ))}
+        </div>
+      </details>
+      {NAV.map((l) => <a class="acc-link" href={l.href} data-drawer-close>{l.label}</a>)}
+    </nav>
+    <div class="drawer-contacts">
+      <a class="drawer-phone" href={`tel:${site.phoneHref}`}>{site.phone}</a>
+      <a class="drawer-mail" href={`mailto:${site.email}`}>{site.email} · круглосуточно</a>
+      <div class="drawer-msg">
+        <a class="sq-btn" href={site.tg} aria-label="Telegram"><svg width="25" height="25" viewBox="0 0 25 25" aria-hidden="true"><circle cx="12.5" cy="12.5" r="12.5" fill="#2AABEE"/><path d="M5.456 11.938 17.644 7.25c.52-.208 1.041.104.833.938l-2.083 9.687c-.105.625-.521.833-1.042.52l-3.125-2.29-1.563 1.457c-.104.209-.312.313-.625.313l.209-3.23 5.937-5.312c.208-.208 0-.312-.416-.104l-7.292 4.583-3.125-.937c-.625-.208-.625-.73.104-.938Z" fill="#fff"/></svg></a>
+        <a class="sq-btn" href={site.max} aria-label="MAX"><svg width="25" height="25" viewBox="0 0 25 25" aria-hidden="true"><defs><linearGradient id="mx-drawer" x1="6.25" y1="6.25" x2="18.75" y2="18.75" gradientUnits="userSpaceOnUse"><stop stop-color="#408CFF"/><stop offset=".55" stop-color="#6154FA"/><stop offset="1" stop-color="#A840F0"/></linearGradient></defs><rect width="25" height="25" rx="7.3" fill="url(#mx-drawer)"/><circle cx="12.5" cy="11.875" r="4.79" stroke="#fff" stroke-width="2.5" fill="none"/><path d="m5.833 15.208 3.542 1.459-2.708 2.291-.834-3.75Z" fill="#fff"/></svg></a>
+      </div>
+      <button type="button" class="btn btn-dark btn-block" data-modal="lead" data-topic="Расчёт цены со скидкой">Рассчитать цену с учётом скидки<Icon name="arrow-right" size={16} /></button>
+    </div>
+  </div>
+</div>

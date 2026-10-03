@@ -1,0 +1,88 @@
+---
+// Модальная заявка, поиск, корзина, уведомление и нижняя панель на мобильных.
+import Icon from './Icon.astro';
+import { searchIndex } from '../../lib/home';
+import { site } from '../../lib/home-site';
+const idx = searchIndex();
+---
+<div class="ov" data-overlay="lead" hidden role="dialog" aria-modal="true" aria-labelledby="lead-title">
+  <div class="ov-card">
+    <button type="button" class="ov-x" data-close aria-label="Закрыть"><Icon name="x" size={20} /></button>
+    <form class="lead-form" data-form novalidate>
+      <p class="ov-kicker" data-lead-topic>Заявка</p>
+      <h3 class="ov-title" id="lead-title">Оставьте заявку — перезвоним с расчётом</h3>
+      <p class="ov-sub">Диспетчер перезвонит в течение 15 минут, круглосуточно.</p>
+      <input type="hidden" name="topic" data-lead-topic-input />
+      <label class="fld"><span>Имя</span><input name="name" autocomplete="name" placeholder="Ваше имя" required /></label>
+      <label class="fld"><span>Телефон</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" data-phone required /></label>
+      <label class="fld"><span>Комментарий <em>необязательно</em></span><textarea name="comment" rows="2" placeholder="Марка, объём, адрес объекта" data-lead-comment></textarea></label>
+      <label class="consent"><input type="checkbox" name="consent" required /><span class="box"><Icon name="check" size={14} stroke={2.5} /></span><span>Даю согласие на <a href="/soglasie/" target="_blank">обработку своих персональных данных</a> в соответствии с законом</span></label>
+      <p class="form-err" data-form-err hidden></p>
+      <button class="btn btn-dark btn-block" type="submit">Отправить заявку<Icon name="arrow-right" size={16} /></button>
+    </form>
+    <div class="done" data-done hidden>
+      <span class="tile tile-grey done-ic"><Icon name="check" size={24} /></span>
+      <h3 class="ov-title">Заявка принята</h3>
+      <p class="ov-sub">Перезвоним с расчётом в течение 15 минут. Если срочно — <a href={`tel:${site.phoneHref}`}>{site.phone}</a>.</p>
+      <p class="proto-note">Прототип: отправка заявки пока не подключена к CRM.</p>
+      <button type="button" class="btn btn-light btn-block" data-close>Хорошо</button>
+    </div>
+  </div>
+</div>
+
+<div class="ov ov-top" data-overlay="search" hidden role="dialog" aria-modal="true" aria-label="Поиск">
+  <div class="ov-card search-card">
+    <div class="search-row">
+      <Icon name="search" size={20} />
+      <input type="search" placeholder="Марка, вид бетона или раствор: например, М300 на граните" data-search-input aria-label="Поиск по продукции" />
+      <button type="button" class="ov-x ov-x-in" data-close aria-label="Закрыть"><Icon name="x" size={20} /></button>
+    </div>
+    <div class="search-hints" data-search-hints>
+      {['М300', 'Бетон на граните', 'Керамзитобетон', 'Кладочный раствор', 'Тощий бетон', 'ЦПС'].map((q) => <button type="button" class="mchip" data-q={q}>{q}</button>)}
+    </div>
+    <ul class="search-res" data-search-res></ul>
+  </div>
+  <script type="application/json" id="search-data" set:html={JSON.stringify(idx)} />
+</div>
+
+<div class="ov ov-side" data-overlay="cart" hidden role="dialog" aria-modal="true" aria-labelledby="cart-title">
+  <div class="side">
+    <div class="side-head">
+      <h3 class="ov-title" id="cart-title">Корзина</h3>
+      <button type="button" class="ov-x ov-x-in" data-close aria-label="Закрыть"><Icon name="x" size={20} /></button>
+    </div>
+    <div class="side-body">
+      <p class="cart-empty" data-cart-empty>Корзина пуста. Добавьте позиции из прайс-листа — кнопка с корзиной рядом с ценой.</p>
+      <ul class="cart-list" data-cart-list></ul>
+      <div class="cart-sum" data-cart-sum hidden>
+        <div><span>Объём</span><b data-cart-vol>0 м³</b></div>
+        <div><span>Сумма по прайсу</span><b data-cart-subtotal>0 ₽</b></div>
+        <div class="cart-disc" data-cart-disc-row><span data-cart-disc-label>Скидка</span><b data-cart-disc>0 ₽</b></div>
+        <div class="cart-total"><span>Итого без доставки</span><b data-cart-total>0 ₽</b></div>
+        <p class="cart-hint" data-cart-hint></p>
+      </div>
+      <form class="lead-form cart-form" data-form data-cart-form hidden novalidate>
+        <input type="hidden" name="topic" value="Заказ из корзины" />
+        <label class="fld"><span>Имя</span><input name="name" autocomplete="name" placeholder="Ваше имя" required /></label>
+        <label class="fld"><span>Телефон</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" data-phone required /></label>
+        <label class="consent"><input type="checkbox" name="consent" required /><span class="box"><Icon name="check" size={14} stroke={2.5} /></span><span>Даю согласие на <a href="/soglasie/" target="_blank">обработку своих персональных данных</a> в соответствии с законом</span></label>
+        <p class="form-err" data-form-err hidden></p>
+        <button class="btn btn-dark btn-block" type="submit">Оформить заявку<Icon name="arrow-right" size={16} /></button>
+      </form>
+      <div class="done" data-done hidden>
+        <span class="tile tile-grey done-ic"><Icon name="check" size={24} /></span>
+        <h3 class="ov-title">Заявка принята</h3>
+        <p class="ov-sub">Диспетчер перезвонит, уточнит адрес и время подачи и назовёт сумму с доставкой.</p>
+        <p class="proto-note">Прототип: отправка заявки пока не подключена к CRM.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" data-toast role="status" aria-live="polite" hidden></div>
+
+<div class="mbar" data-mbar>
+  <a class="mbar-btn" href={`tel:${site.phoneHref}`}><Icon name="phone" size={20} /><span class="mbar-l">Позвонить</span></a>
+  <button type="button" class="mbar-btn mbar-cart" data-cart-open><Icon name="shopping-cart" size={20} /><span class="mbar-l">Корзина</span><span class="cart-badge" data-cart-count>0</span></button>
+  <button type="button" class="mbar-btn mbar-main" data-modal="lead" data-topic="Расчёт цены со скидкой">Рассчитать цену со скидкой</button>
+</div>

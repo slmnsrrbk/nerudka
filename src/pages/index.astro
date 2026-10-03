@@ -1,51 +1,515 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Hero from '../components/blocks/Hero.astro';
-import TrustStrip from '../components/blocks/TrustStrip.astro';
-import PurposeCards from '../components/blocks/PurposeCards.astro';
-import PriceTabs from '../components/blocks/PriceTabs.astro';
-import HowItWorks from '../components/blocks/HowItWorks.astro';
-import DeliveryShort from '../components/blocks/DeliveryShort.astro';
-import PlantInside from '../components/blocks/PlantInside.astro';
-import HonestVolume from '../components/blocks/HonestVolume.astro';
-import ProjectsGrid from '../components/blocks/ProjectsGrid.astro';
-import B2BShort from '../components/blocks/B2BShort.astro';
-import ReviewsBlock from '../components/blocks/ReviewsBlock.astro';
-import DocumentsGrid from '../components/blocks/DocumentsGrid.astro';
-import FaqBlock from '../components/blocks/FaqBlock.astro';
-import SeoText from '../components/blocks/SeoText.astro';
-import CtaFinal from '../components/blocks/CtaFinal.astro';
-import site from '../data/site.json';
+// Итоговая главная в дизайне «3»: Figma «Концепты главной страницы после правок» → П8.
+import HomeLayout from '../layouts/HomeLayout.astro';
+import NavBar from '../components/home/NavBar.astro';
+import Icon from '../components/home/Icon.astro';
+import SectionHead from '../components/home/SectionHead.astro';
+import Hook from '../components/home/Hook.astro';
+import { priceTabs, rub, PLANTS, OBJECTS, FAQ, TIPS, fmt } from '../lib/home';
+import { products } from '../lib/catalog';
+import { site } from '../lib/home-site';
 
-const ld = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: site.name,
-  telephone: site.phone,
-  email: site.email,
-  address: { '@type': 'PostalAddress', streetAddress: site.address },
-};
+const tabs = priceTabs();
+const betonTabs = tabs.filter((t) => t.group === 'beton');
+const mortarTabs = tabs.filter((t) => t.group === 'rastvor');
+const totalItems = tabs.reduce((s, t) => s + t.count, 0);
+const heroGrades = products.filter((p) => p.category === 'tovarnyj');
+
+const img = (name: string, w = 1024) => `/img/home/${name}${w <= 560 ? '-560' : ''}.webp`;
+
+const ld = [
+  {
+    '@context': 'https://schema.org', '@type': 'Organization', name: site.name,
+    telephone: site.phone, email: site.email,
+  },
+  {
+    '@context': 'https://schema.org', '@type': 'FAQPage',
+    mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+  },
+];
+
+const deliveryItems = [
+  ['truck', 'Миксеры от 9 до 16 м³', 'Подача по графику, интервал между машинами от 20 минут.'],
+  ['map-pin', 'Шесть узлов в Москве и области', 'Машина идёт с ближайшего к объекту.'],
+  ['timer', 'Разгрузка до 60 минут бесплатно', 'Сумму называем до выезда машины.'],
+  ['clock', 'Интервал от 20 минут', 'Подача по графику: машины идут одна за другой, без простоя бригады.'],
+];
+const zones = [['До 10 км', 400], ['10–20 км', 550], ['20–35 км', 700], ['35–50 км', 900]] as const;
+const steps = [
+  ['01', 'message-circle', 'Заявка', 'Форма, почта, звонок или мессенджер. Не знаете марку — подскажем по конструкции.'],
+  ['02', 'calendar-check', 'Подтверждение', 'Согласуем время, подъезд и нужен ли насос. Сумму называем до выезда машины.'],
+  ['03', 'file-check', 'Приёмка', 'Миксер приезжает ко времени с паспортом качества и весовой распечаткой.'],
+];
+const honest = [
+  ['scale', 'Объём', 'По весам, распечатка к накладной', 'Проверить объём нечем'],
+  ['flask-conical', 'Марка', 'Подтверждена лабораторией, протокол по запросу', 'Марку не подтвердить до 28 суток'],
+  ['file-check', 'Документы', 'Паспорт качества на каждую партию', 'Паспорт «по запросу» или нет'],
+  ['truck', 'Доставка', 'Свой парк, время согласуем заранее', 'Машину ищут у третьих лиц'],
+];
+const schedule = [
+  ['calendar-check', 'Резерв мощности', 'Закрепляем объём за вашим объектом на период заливки [заглушка: условия резерва].'],
+  ['factory', 'Шесть узлов', 'Если один узел на обслуживании — машины идут с соседнего.'],
+  ['truck', 'Подача по графику', 'Интервал от 20 минут, миксеры от 9 до 16 м³, АБН до 52 м.'],
+  ['clock', 'Ночные отгрузки', 'Когда днём не проехать — возим ночью, как на «Северном парке».'],
+];
+const b2b = [
+  ['file-text', 'Договор поставки и УПД через ЭДО'],
+  ['wallet', 'Отсрочка до 30 дней постоянным клиентам'],
+  ['file-check', 'Паспорт качества на каждую партию'],
+  ['flask-conical', 'Протоколы испытаний 7 и 28 суток по запросу'],
+  ['calendar-check', 'График подачи и ночные отгрузки'],
+];
+const downloads = [['Договор поставки', 'DOCX'], ['Карточка организации', 'PDF'], ['Прайс-лист', 'PDF'], ['Образец паспорта качества', 'PDF']];
+const useful = [
+  ['Бетон М300', '/beton/m300/', 'm300-slab'],
+  ['Бетон для фундамента', '/beton/dlya-fundament/', 'columns'],
+  ['Керамзитобетон', '/catalog/beton/keramzitobeton/', 'keramzit'],
+  ['Цементный раствор', '/catalog/rastvor/cementnyj-rastvor/', 'mortar'],
+];
+const footerGrades = ['М100 В7,5', 'М150 В12,5', 'М200 В15', 'М250 В20', 'М300 В22,5', 'М350 В25', 'М400 В30', 'М450 В35', 'М500 В40', 'М550 В45', 'М600 В45'];
+const docs = [
+  ['Сертификаты и декларации на бетон', '/sertifikaty/'],
+  ['Политика конфиденциальности', '/politika/'],
+  ['Согласие на обработку персональных данных', '/soglasie/'],
+  ['Перечень персональных данных', '/politika/'],
+  ['Инструкция по порядку учёта и уничтожения персональных данных', '/politika/'],
+  ['Инструкция пользователя информационных систем персональных данных', '/politika/'],
+  ['Приказ об утверждении документов по персональным данным [заглушка]', '/politika/'],
+  ['Правила публичной оферты', '/oferta/'],
+  ['Реквизиты', '/kontakty/'],
+];
 ---
-<BaseLayout
-  title={`Бетон с доставкой в Москве и области от производителя: ${site.name}`}
-  description="Товарный бетон, растворы и специальные смеси от завода. Цена с доставкой в калькуляторе, отгрузка круглосуточно от 1 м³, паспорт качества на каждую партию."
-  template="T01"
-  templateName="Главная"
+<HomeLayout
+  title={`Бетон с доставкой в Москве и области от производителя — ${site.name}`}
+  description="Товарный бетон, растворы и смеси с шести собственных РБУ. Цена с завода от 3 990 ₽ за м³, скидка от 50 м³ до 20 %, миксеры 9–16 м³, разгрузка до 60 минут бесплатно."
   jsonLd={ld}
 >
-  <Hero />
-  <TrustStrip />
-  <PurposeCards />
-  <PriceTabs />
-  <HowItWorks />
-  <DeliveryShort />
-  <PlantInside />
-  <HonestVolume />
-  <ProjectsGrid />
-  <B2BShort />
-  <ReviewsBlock />
-  <DocumentsGrid />
-  <FaqBlock id="H-15" scope="home" title="Частые вопросы" limit={6} />
-  <SeoText id="H-16" topic="бетон с доставкой в Москве и области, марки, цены, условия поставки" />
-  <CtaFinal id="H-17" hero />
-</BaseLayout>
+  <!-- 01 · Первый экран: на всю ширину и высоту окна, отступ 16 px по краям -->
+  <section class="hero" id="top" data-hero>
+    <div class="hero-in">
+      <img class="hero-bg" src="/img/home/hero.webp" alt="Бетонный завод: бетоносмесительный узел, силосы цемента и миксеры на отгрузке" width="2000" height="1125" fetchpriority="high" />
+      <div class="hero-grad"></div>
+      <NavBar variant="hero" />
+      <div class="hero-main">
+        <div class="hero-text">
+          <h1>Бетон с доставкой<br />по Москве и области</h1>
+          <p class="hero-sub">Цена с завода — от 3 990 ₽ за м³</p>
+        </div>
+        <div class="hero-side">
+          <dl class="glass hero-stats">
+            <div><dt>м³ отгружаем в сутки</dt><dd>2 500</dd></div>
+            <div><dt>своих узлов в Москве и области</dt><dd>6</dd></div>
+            <div><dt>минимальный заказ</dt><dd>от 1 м³</dd></div>
+          </dl>
+          <form class="glass hero-form lead-form" data-form data-hero-form novalidate>
+            <p class="hero-form-t">Рассчитать цену с учетом скидки</p>
+            <input type="hidden" name="topic" value="Расчёт цены с первого экрана" />
+            <label class="fld fld-w"><span>Марка</span>
+              <span class="sel"><select name="grade">{heroGrades.map((p) => <option selected={p.id === 'beton-m300-gravij'}>{p.name.replace('Бетон ', '').replace(' на ', ` ${p.class} на `)}</option>)}</select><Icon name="chevron-down" size={16} /></span>
+            </label>
+            <label class="fld fld-w"><span>Объём, м³</span><input name="volume" type="number" inputmode="decimal" min="1" step="0.5" value="10" /></label>
+            <div class="fld-row">
+              <label class="fld fld-w"><span>Имя</span><input name="name" autocomplete="name" placeholder="Ваше имя" required /></label>
+              <label class="fld fld-w"><span>Телефон</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" data-phone required /></label>
+            </div>
+            <label class="consent consent-w"><input type="checkbox" name="consent" required /><span class="box"><Icon name="check" size={14} stroke={2.5} /></span><span>Даю согласие на обработку своих персональных данных в соответствии с законом</span></label>
+            <p class="form-err" data-form-err hidden></p>
+            <button class="btn btn-dark" type="submit">Отправить заявку<Icon name="arrow-right" size={16} /></button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 · Прайс-лист -->
+  <section class="sec" id="price" aria-labelledby="price-h">
+    <div class="wrap">
+      <SectionHead id="price-h" label="Прайс" title="Прайс-лист" sub="все виды бетона и растворов" desc="Цены за 1 м³ с завода, на условиях самовывоза. Прайс единый для всех шести РБУ — отгружаем с ближайшего к объекту." />
+      <div class="stack">
+        <div class="card addr-card">
+          <div class="addr-t">
+            <h3 class="h3">Адреса производств</h3>
+            <p class="muted">Один прайс на все шесть РБУ. Заявка уходит на ближайший к объекту узел.</p>
+          </div>
+          <ul class="addr-grid">
+            {PLANTS.map((p) => (
+              <li class="addr"><span class="tile"><Icon name="map-pin" /></span><span><b>РБУ {p.n}</b><span class="muted">{p.address}</span></span></li>
+            ))}
+          </ul>
+        </div>
+        <div class="price" data-price>
+          <aside class="card price-nav">
+            <div class="price-nav-h"><h3 class="h3">Все виды продукции</h3><p class="small muted">{tabs.length} видов · {totalItems} позиций</p></div>
+            {[['Бетон', betonTabs], ['Растворы и смеси', mortarTabs]].map(([title, list]) => (
+              <div class="price-nav-g">
+                <p class="kicker">{title as string} · {(list as typeof tabs).length} видов</p>
+                <div class="price-nav-list" role="tablist" aria-label={title as string}>
+                  {(list as typeof tabs).map((t) => (
+                    <button type="button" role="tab" class:list={['kind', { on: t.slug === 'tovarnyj' }]} aria-selected={t.slug === 'tovarnyj' ? 'true' : 'false'} data-price-tab={t.slug}>
+                      <span>{t.name}</span><span class="kind-p">от {fmt(t.min)} ₽</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </aside>
+          <div class="card price-panel">
+            <div class="price-top">
+              {tabs.map((t) => (
+                <div class="ptab" data-price-pane={t.slug} role="tabpanel" hidden={t.slug !== 'tovarnyj'}>
+                  <div class="ptab-h">
+                    <div><h3 class="h3 h3-l">{t.name}</h3><p class="small muted">{t.note}</p></div>
+                    <a class="ulink" href={t.href}>Раздел каталога<Icon name="arrow-right" size={16} /></a>
+                  </div>
+                  <div class:list={['prow', 'prow-head', { two: t.columns.length > 1 }]}>
+                    <span>Марка</span>{t.columns.map((c) => <span>{c}</span>)}
+                  </div>
+                  <div class="prows">
+                    {t.rows.map((r) => (
+                      <div class:list={['prow', { two: t.columns.length > 1 }]}>
+                        <div class="prow-name"><a href={(r.cells.find(Boolean))!.href}>{r.title}</a><span>{r.sub}</span></div>
+                        {r.cells.map((c, i) => c ? (
+                          <div class="pcell" data-item={c.id} data-name={c.name} data-price={c.price} data-href={c.href}>
+                            <span class="pcell-l">{t.columns[i].replace(' · за м³', '')}</span>
+                            <b class="pcell-p">{rub(c.price)}</b>
+                            <div class="stepper">
+                              <button type="button" class="st-cart" data-add aria-label={`Добавить в корзину: ${c.name}`}><Icon name="shopping-cart" size={16} /></button>
+                              <button type="button" class="st-b" data-dec aria-label="Меньше"><Icon name="minus" size={14} stroke={2} /></button>
+                              <input class="st-q" value="1" inputmode="decimal" data-qty aria-label="Объём, м³" />
+                              <button type="button" class="st-b" data-inc aria-label="Больше"><Icon name="plus" size={14} stroke={2} /></button>
+                            </div>
+                            <button type="button" class="btn btn-dark btn-sm" data-order>Заказать</button>
+                            <a class="more" href={c.href}>Подробнее<Icon name="arrow-right" size={14} /></a>
+                          </div>
+                        ) : (
+                          <div class="pcell pcell-none"><span class="pcell-l">{t.columns[i].replace(' · за м³', '')}</span><b class="pcell-p">—</b><span class="small muted">нет в прайсе</span></div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+              <div class="strip">
+                <span class="tile tile-grey"><Icon name="percent" /></span>
+                <div><p class="strip-t">От 50 м³ — скидка 10 %, от 200 м³ — 15 %, от 500 м³ — 20 %</p><p class="small muted">Скидку учтём в расчёте цены и в корзине</p></div>
+              </div>
+              <div><a class="btn btn-dark" href="/price/">Скачать прайс PDF<Icon name="download" size={16} /></a></div>
+            </div>
+            <div class="banner">
+              <div class="banner-t"><p class="banner-h">Не нашли нужную марку?</p><p>Подберём состав под вашу задачу и пришлём расчёт — выберите вид продукции слева или напишите нам.</p></div>
+              <button type="button" class="btn btn-light" data-modal="lead" data-topic="Подбор марки">Заказать консультацию<Icon name="arrow-right" size={16} /></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 · Данные о заводах -->
+  <section class="sec" id="plants" aria-labelledby="plants-h">
+    <div class="wrap">
+      <SectionHead id="plants-h" label="Заводы" title="Данные о заводах" sub="шесть узлов в Москве и области" desc="Заявка уходит на ближайший к объекту узел: плечо доставки короче, себестоимость товара становится дешевле." phone />
+      <div class="stack">
+        <div class="statbar">
+          {[['factory', '6 узлов', 'в Москве и области'], ['gauge', '2 500 м³', 'отгрузка в сутки'], ['truck', 'От 12 до 20 миксеров', 'на каждом РБУ'], ['flask-conical', 'Своя лаборатория', 'аккредитованная']].map(([i, t, d]) => (
+            <div class="stat"><span class="tile tile-grey"><Icon name={i} /></span><div><b>{t}</b><span class="small muted">{d}</span></div></div>
+          ))}
+        </div>
+        <div class="plants">
+          {PLANTS.map((p) => (
+            <article class="plant">
+              <div class="slider" data-slider>
+                <div class="slides" data-track>
+                  {p.photos.map((ph, k) => <img src={img(ph, 560)} alt={`РБУ ${p.n}, фото ${k + 1}`} width="560" height="560" loading="lazy" decoding="async" />)}
+                </div>
+                <span class="badge-dark">РБУ {p.n}</span>
+                <span class="sl-count"><Icon name="images" size={14} /><b data-cur>1</b> / {p.photos.length}</span>
+                <button type="button" class="sl-btn sl-prev" data-prev aria-label="Предыдущее фото"><Icon name="chevron-left" size={18} /></button>
+                <button type="button" class="sl-btn sl-next" data-next aria-label="Следующее фото"><Icon name="chevron-right" size={18} /></button>
+                <div class="sl-dots" data-dots>{p.photos.map((_, k) => <button type="button" aria-label={`Фото ${k + 1}`} class:list={[{ on: k === 0 }]}></button>)}</div>
+              </div>
+              <div class="plant-c">
+                <h3 class="h3">{p.name}</h3>
+                <dl class="fields">
+                  <div><dt>Адрес</dt><dd>{p.address}</dd></div>
+                  <div><dt>Мощность</dt><dd>{p.power}</dd></div>
+                  <div><dt>Режим</dt><dd>{p.mode}</dd></div>
+                </dl>
+                <button type="button" class="btn btn-white" data-modal="lead" data-topic={`Диспетчер РБУ ${p.n}`}>Связаться с диспетчером РБУ<Icon name="headset" size={16} /></button>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 · Калькулятор -->
+  <section class="sec" id="calc" aria-labelledby="calc-h">
+    <div class="wrap">
+      <SectionHead id="calc-h" label="Калькулятор" title="Калькулятор бетона:" sub="сколько кубов нужно" desc="Выберите конструкцию и размеры — посчитаем нужный объём с запасом 5 %." />
+      <div class="calc" data-calc>
+        <div class="card calc-l">
+          <div class="chips" role="tablist" aria-label="Конструкция">
+            {['Лента', 'Плита', 'Стяжка', 'Столбы и сваи', 'Отмостка'].map((c, i) => <button type="button" role="tab" class:list={['chipb', { on: i === 1 }]} aria-selected={i === 1 ? 'true' : 'false'} data-calc-type={i}>{c}</button>)}
+          </div>
+          <div class="calc-row">
+            <figure class="calc-fig" data-calc-fig aria-hidden="true"></figure>
+            <div class="calc-f">
+              <div class="calc-fields" data-calc-fields></div>
+              <p class="small muted" data-calc-grade></p>
+            </div>
+          </div>
+        </div>
+        <div class="calc-r">
+          <div>
+            <p class="muted-w">Нужно бетона</p>
+            <p class="calc-v" data-calc-v>57,6 м³</p>
+            <p class="calc-s" data-calc-s>С запасом 5 % — 60,5 м³</p>
+          </div>
+          <button type="button" class="btn btn-light" data-modal="lead" data-topic="Консультация по расчёту объёма" data-calc-order>Заказать консультацию<Icon name="arrow-right" size={16} /></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 · Доставка -->
+  <section class="sec" id="delivery" aria-labelledby="delivery-h">
+    <div class="wrap">
+      <SectionHead id="delivery-h" label="Доставка" title="Доставка бетона" sub="по Москве и области" desc="Машина идёт с ближайшего из шести узлов. Сумму называем до выезда." />
+      <div class="stack">
+        <div class="two">
+          <ul class="items">
+            {deliveryItems.map(([i, t, d]) => <li class="item"><span class="tile"><Icon name={i} /></span><div><b>{t}</b><span class="small muted">{d}</span></div></li>)}
+          </ul>
+          <div class="card zones">
+            <img src={img('delivery-pour')} alt="Бетон заливают из миксера в опалубку фундамента" width="1024" height="1024" loading="lazy" />
+            <div class="zones-b">
+              <p class="small muted">Зоны доставки от узла</p>
+              <table><tbody>{zones.map(([z, p]) => <tr><td>{z}</td><td>{p} ₽ за м³</td></tr>)}</tbody></table>
+              <p class="small muted">Дальше 50 км — 90 ₽ за км сверх зоны.</p>
+            </div>
+          </div>
+        </div>
+        <div class="banner banner-ic">
+          <span class="tile tile-dark"><Icon name="map-pinned" /></span>
+          <p class="banner-txt">Мы осуществляем доставку бетонной продукции по всем районам и округам Москвы и Московской области, грамотно рассчитывая ближайшее к объекту производство</p>
+          <a class="banner-phone" href={`tel:${site.phoneHref}`}>{site.phone}</a>
+          <button type="button" class="btn btn-light" data-modal="lead" data-topic="Заказ доставки">Заказать доставку<Icon name="arrow-right" size={16} /></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 · Как заказать -->
+  <section class="sec" id="order" aria-labelledby="order-h">
+    <div class="wrap">
+      <SectionHead id="order-h" label="Заказ" title="Как заказать" sub="три шага до бетона на объекте" desc="Заявка до 12:00 — бетон сегодня. Машина приезжает ко времени с паспортом качества и весовой распечаткой." />
+      <div class="stack">
+        <ol class="steps">
+          {steps.map(([n, i, t, d]) => <li class="card step"><div class="step-top"><span class="step-n">{n}</span><span class="tile"><Icon name={i} /></span></div><b class="h3">{t}</b><p class="small muted">{d}</p></li>)}
+        </ol>
+        <div class="darkbar">
+          <span class="darkbar-t"><Icon name="clock" />Заявка до 12:00 — бетон сегодня</span>
+          <a href={`tel:${site.phoneHref}`} class="darkbar-ph">{site.phone} · круглосуточно</a>
+          <a class="btn btn-light" href={`mailto:${site.email}`}><Icon name="mail" size={16} />{site.email}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 · Из чего складывается цена -->
+  <section class="sec" id="honest" aria-labelledby="honest-h">
+    <div class="wrap">
+      <SectionHead id="honest-h" label="Честно о цене" title="Из чего складывается цена" sub="и почему мы не самые дешёвые" desc="Бетон дешевле найти можно. Разберём, за что вы платите — и что проверить у любого поставщика." />
+      <div class="stack">
+        <div class="grid4">
+          {honest.map(([i, t, us, them]) => (
+            <div class="card hcard">
+              <div class="hcard-h"><span class="tile"><Icon name={i} /></span><b class="h3">{t}</b></div>
+              <div class="hbox hbox-us"><span class="small muted">У нас</span><p>{us}</p></div>
+              <div class="hbox"><span class="small muted">Где дешевле</span><p class="muted">{them}</p></div>
+            </div>
+          ))}
+        </div>
+        <div class="grid2">
+          <div class="strip"><span class="tile tile-grey"><Icon name="percent" /></span><div><p class="strip-t">От 50 м³ — скидка 10 %, от 200 м³ — 15 %, от 500 м³ — 20 %</p><p class="small muted">Скидку учтём в расчёте цены</p></div></div>
+          <div class="strip"><span class="tile tile-grey"><Icon name="package" /></span><div><p class="strip-t">Нужно меньше 1 м³?</p><p class="small muted">Выгоднее сухие смеси в мешках — сэкономите на доставке</p></div></div>
+        </div>
+        <Hook icon="calculator" title="Посчитаем цену со скидкой от объёма" btn="Рассчитать цену" />
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 · Объекты -->
+  <section class="sec" id="objects" aria-labelledby="objects-h">
+    <div class="wrap">
+      <SectionHead id="objects-h" label="Объекты" title="Куда мы уже возили" sub="и что говорят заказчики" desc="Марка, объём, техника и сроки — по каждому объекту. Отзыв — от заказчика этого объекта." />
+      <div class="stack">
+        <div class="carousel" data-carousel>
+          <div class="car-track" data-track>
+            {OBJECTS.map((o) => (
+              <article class="card obj">
+                <img src={img(o.img, 560)} alt={o.name} width="560" height="560" loading="lazy" decoding="async" />
+                <div class="obj-c">
+                  <h3 class="h3"><a href={`/proekty/${o.slug}/`}>{o.name}</a></h3>
+                  <dl class="obj-dl">
+                    <div><dt>Марка</dt><dd>{o.grade}</dd></div>
+                    <div><dt>Объём</dt><dd>{o.volume}</dd></div>
+                    <div><dt>Техника</dt><dd>{o.tech}</dd></div>
+                    <div><dt>Сроки</dt><dd>{o.period}</dd></div>
+                  </dl>
+                  <blockquote class="review"><Icon name="message-circle" size={18} /><p>{o.review}</p></blockquote>
+                </div>
+              </article>
+            ))}
+          </div>
+          <button type="button" class="car-btn car-prev" data-prev aria-label="Предыдущие объекты"><Icon name="chevron-left" size={22} /></button>
+          <button type="button" class="car-btn car-next" data-next aria-label="Следующие объекты"><Icon name="chevron-right" size={22} /></button>
+          <div class="car-foot"><span class="small muted">Листайте, чтобы посмотреть ещё объекты</span><div class="car-dots" data-dots></div></div>
+        </div>
+        <Hook icon="hard-hat" title="Расскажите про ваш объект — подберём марку и график" btn="Обсудить объект" />
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 · График -->
+  <section class="sec" id="schedule" aria-labelledby="schedule-h">
+    <div class="wrap">
+      <SectionHead id="schedule-h" label="График" title="Как держим график" sub="без простоя бригады" desc="Интервал от 20 минут, миксеры от 9 до 16 м³, АБН до 52 м. Если один узел на обслуживании — машины идут с соседнего." />
+      <div class="stack">
+        <div class="two">
+          <ul class="items">
+            {schedule.map(([i, t, d]) => <li class="item"><span class="tile"><Icon name={i} /></span><div><b>{t}</b><span class="small muted">{d}</span></div></li>)}
+          </ul>
+          <img class="photo" src={img('plant-pour')} alt="Бетон выгружают из миксера на узле" width="1024" height="1024" loading="lazy" />
+        </div>
+        <Hook icon="calendar-check" title="Согласуем график поставки под вашу заливку" sub="Резерв мощности и ночные отгрузки — по договорённости" btn="Согласовать график" />
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 · Для компаний -->
+  <section class="sec" id="b2b" aria-labelledby="b2b-h">
+    <div class="wrap">
+      <SectionHead id="b2b-h" label="Юрлицам" title="Для компаний" sub="и подрядчиков" desc="Договор, закрывающие документы и протоколы — без лишних писем. Документы для закупки можно скачать сразу." />
+      <div class="stack">
+        <div class="grid2">
+          <div class="card b2b-c">
+            <h3 class="h3">Работаем по договору</h3>
+            <ul class="checks">{b2b.map(([i, t]) => <li><span class="tile tile-sm"><Icon name={i} size={18} /></span>{t}</li>)}</ul>
+            <div><button type="button" class="btn btn-dark" data-modal="lead" data-topic="Запрос КП">Запросить КП<Icon name="arrow-right" size={16} /></button></div>
+          </div>
+          <div class="card b2b-c">
+            <h3 class="h3">Скачать для закупки</h3>
+            <ul class="docs">{downloads.map(([t, f]) => <li><a class="doc" href="/sertifikaty/"><Icon name="file-text" size={18} /><span>{t}</span><span class="fmt">{f}</span><Icon name="download" size={18} /></a></li>)}</ul>
+          </div>
+        </div>
+        <div class="strip"><span class="tile tile-grey"><Icon name="landmark" /></span><p>Работа по 44-ФЗ и 223-ФЗ — [заглушка: подтвердить] · Казначейское сопровождение — [заглушка: подтвердить]</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 · FAQ -->
+  <section class="sec" id="faq" aria-labelledby="faq-h">
+    <div class="wrap">
+      <SectionHead id="faq-h" label="Вопросы" title="Вопросы о бетоне" sub="и доставке — коротко" desc="Самое частое, что спрашивают перед заказом. Ответы видны сразу. Не нашли свой — напишите на почту, в Telegram или MAX." />
+      <div class="stack">
+        <div class="faq">
+          {FAQ.map(([q, a]) => <div class="card qa"><p class="qa-q"><Icon name="circle-help" size={18} />{q}</p><p class="small muted">{a}</p></div>)}
+        </div>
+        <Hook icon="circle-help" title="Не нашли свой вопрос? Спросите диспетчера" sub="Ответим по телефону или на почту" btn="Задать вопрос" />
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 · Советы технолога -->
+  <section class="sec" id="tips" aria-labelledby="tips-h">
+    <div class="wrap">
+      <SectionHead id="tips-h" label="Советы" title="Советы технолога" sub="перед заливкой" desc="Короткие статьи из блога: что делать, если не хватило бетона, как принять машину, как лить зимой." />
+      <div class="stack">
+        <div class="grid4 tips">
+          {TIPS.map((t) => (
+            <a class="card tip" href={t.h}>
+              <img src={img(t.img, 560)} alt="" width="560" height="560" loading="lazy" decoding="async" />
+              <div class="tip-c"><b class="h3">{t.t}</b><span class="small muted">{t.d}</span><span class="tip-more">Читать<Icon name="arrow-right" size={14} /></span></div>
+            </a>
+          ))}
+        </div>
+        <Hook icon="flask-conical" title="Нужен совет технолога по вашей конструкции?" sub="Подскажем марку и объём по проекту" btn="Заказать консультацию" />
+      </div>
+    </div>
+  </section>
+
+  <!-- 13 · SEO-текст с картинками -->
+  <section class="sec" id="about" aria-labelledby="about-h">
+    <div class="wrap">
+      <SectionHead id="about-h" label="О бетоне" title="Бетон с доставкой в Москве" sub="и области от производителя" desc="Коротко о продукции, ценах и условиях поставки. Полный текст раскрывается по кнопке." />
+      <div class="stack">
+        <div class="card seo" data-seo>
+          <img class="seo-img" src={img('mixer-site')} alt="Миксер и автобетононасос на строительной площадке" width="1024" height="1024" loading="lazy" />
+          <div class="seo-t">
+            <div class="seo-text" data-seo-text>
+              <div class="seo-cols">
+                <div>
+                  <p>Производим товарный бетон и строительные растворы на шести собственных РБУ в Москве и Московской области. В прайсе 26 видов продукции и 128 позиций: товарный бетон марок М100–М600 (классы B7,5–B45) на гравийном и гранитном щебне по ГОСТ 7473-2010, лёгкие и специальные бетоны, растворы и смеси.</p>
+                  <p>Цены указаны за 1 м³ с завода, на условиях самовывоза. Прайс единый для всех РБУ: заявка уходит на ближайший к объекту узел — плечо доставки короче, себестоимость ниже. От 50 м³ — скидка 10 %, от 200 м³ — 15 %, от 500 м³ — 20 %.</p>
+                </div>
+                <div>
+                  <h3 class="h3">Какую марку выбрать</h3>
+                  <p>Для ленточного фундамента обычно берут М250, для плитного — М300, для стяжки и отмостки — М200, для аэродромных покрытий — М400. Точную марку подскажет технолог по проекту и нагрузкам.</p>
+                  <h3 class="h3">Доставка и приёмка</h3>
+                  <p>Возим миксерами от 9 до 16 м³ по всем районам и округам Москвы и Московской области. Разгрузка до 60 минут — бесплатно. На каждую партию — паспорт качества, объём подтверждаем весовой распечаткой.</p>
+                </div>
+              </div>
+              <div class="seo-more" data-seo-more>
+                <figure class="seo-fig"><img src={img('lab-press', 560)} alt="Испытание бетонных кубов на прессе в лаборатории" width="560" height="560" loading="lazy" /><figcaption class="small muted">Лаборатория проверяет каждую партию: пробы на 7 и 28 сутки.</figcaption></figure>
+                <div>
+                  <h3 class="h3">Как проверяем качество</h3>
+                  <p>[Заглушка: полный SEO-текст ~3000 знаков на этапе наполнения.] Структура: определение, применение, отличия от смежных решений, как выбрать, частые ошибки, условия поставки. Блок стоит один раз внизу страницы и не разрывает продающие блоки.</p>
+                  <h3 class="h3">Зимнее бетонирование</h3>
+                  <p>Льём до −25 °C: противоморозные добавки и прогрев — от 350 ₽ за м³. Технолог подскажет режим прогрева под вашу конструкцию.</p>
+                </div>
+              </div>
+            </div>
+            <button type="button" class="ulink" data-seo-toggle aria-expanded="false"><span>Читать полностью</span><Icon name="chevron-down" size={16} /></button>
+          </div>
+        </div>
+        <div>
+          <h3 class="h3 h3-l useful-h">Полезные страницы</h3>
+          <div class="grid4 useful">
+            {useful.map(([t, h, im]) => (
+              <a class="ucard" href={h}><img src={img(im, 560)} alt="" width="560" height="560" loading="lazy" decoding="async" /><span class="ucard-t">{t}</span><span class="ucard-m">Подробнее<Icon name="arrow-right" size={14} /></span></a>
+            ))}
+          </div>
+        </div>
+        <Hook icon="phone" title="Оставьте заявку — перезвоним с расчётом" btn="Оставить заявку" />
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot" id="contacts" slot="footer">
+    <div class="wrap">
+      <div class="foot-cols">
+        <div><p class="foot-h">Марки и классы</p><ul>{footerGrades.map((g) => <li><a href={`/beton/${g.split(' ')[0].replace('М', 'm')}/`}>{g}</a></li>)}</ul></div>
+        <div><p class="foot-h">Виды бетона</p><ul>{betonTabs.slice(0, 10).map((t) => <li><a href={t.href}>{t.name}</a></li>)}</ul></div>
+        <div><p class="foot-h">Растворы</p><ul>{mortarTabs.filter((t) => /раствор/i.test(t.name)).map((t) => <li><a href={t.href}>{t.name}</a></li>)}</ul></div>
+        <div class="foot-docs"><p class="foot-h">Документы</p><ul>{docs.map(([t, h]) => <li><a href={h}>{t}</a></li>)}</ul></div>
+        <div class="foot-contacts">
+          <a class="foot-phone" href={`tel:${site.phoneHref}`}>{site.phone}</a>
+          <button type="button" class="foot-call" data-modal="lead" data-topic="Обратный звонок">Заказать звонок →</button>
+          <a href={`mailto:${site.email}`}>{site.email}</a>
+          <span class="foot-muted">{site.hours}</span>
+          <div class="foot-msg">
+            <a class="foot-sq" href={site.tg} aria-label="Telegram"><svg width="25" height="25" viewBox="0 0 25 25" aria-hidden="true"><circle cx="12.5" cy="12.5" r="12.5" fill="#2AABEE"/><path d="M5.456 11.938 17.644 7.25c.52-.208 1.041.104.833.938l-2.083 9.687c-.105.625-.521.833-1.042.52l-3.125-2.29-1.563 1.457c-.104.209-.312.313-.625.313l.209-3.23 5.937-5.312c.208-.208 0-.312-.416-.104l-7.292 4.583-3.125-.937c-.625-.208-.625-.73.104-.938Z" fill="#fff"/></svg></a>
+            <a class="foot-sq" href={site.max} aria-label="MAX"><svg width="25" height="25" viewBox="0 0 25 25" aria-hidden="true"><defs><linearGradient id="mx-foot" x1="6.25" y1="6.25" x2="18.75" y2="18.75" gradientUnits="userSpaceOnUse"><stop stop-color="#408CFF"/><stop offset=".55" stop-color="#6154FA"/><stop offset="1" stop-color="#A840F0"/></linearGradient></defs><rect width="25" height="25" rx="7.3" fill="url(#mx-foot)"/><circle cx="12.5" cy="11.875" r="4.79" stroke="#fff" stroke-width="2.5" fill="none"/><path d="m5.833 15.208 3.542 1.459-2.708 2.291-.834-3.75Z" fill="#fff"/></svg></a>
+          </div>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <p>{site.legal}</p>
+        <p>Цены на сайте не являются публичной офертой.</p>
+      </div>
+    </div>
+  </footer>
+</HomeLayout>

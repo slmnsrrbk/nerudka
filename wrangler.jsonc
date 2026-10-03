@@ -1,0 +1,13 @@
+// Cloudflare Workers (статические ассеты): проект luiza-case подключён к репозиторию через Workers Builds.
+// Сборка Astro кладёт сайт в dist/, воркер только раздаёт файлы.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "luiza-case",
+  "compatibility_date": "2026-09-01",
+  "build": { "command": "npm run build" },
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}

@@ -1,0 +1,23 @@
+---
+// Шапка раздела: метка, двухцветный H2, описание справа (компонент «Заголовок раздела» в UI-ките).
+import { site } from '../../lib/home-site';
+interface Props { label: string; title: string; sub?: string; desc?: string; phone?: boolean; id?: string }
+const { label, title, sub, desc, phone = false, id } = Astro.props;
+---
+<header class="sh">
+  <div class="sh-l">
+    <span class="chip-label">{label}</span>
+    <h2 class="h2" id={id}>{title}{sub && <><br /><span class="h2-sub">{sub}</span></>}</h2>
+  </div>
+  {(desc || phone) && (
+    <div class="sh-r">
+      {desc && <p class="desc">{desc}</p>}
+      {phone && (
+        <div class="sh-phone">
+          <a href={`tel:${site.phoneHref}`} class="sh-phone-n">{site.phone}</a>
+          <span class="sh-phone-c">Единый номер для всех РБУ · круглосуточно</span>
+        </div>
+      )}
+    </div>
+  )}
+</header>

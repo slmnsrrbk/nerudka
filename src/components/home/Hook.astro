@@ -1,0 +1,17 @@
+---
+// «Крючок» в конце блока: оффер, единый телефон, почта, кнопка заявки.
+import Icon from './Icon.astro';
+import { site } from '../../lib/home-site';
+interface Props { icon: string; title: string; sub?: string; btn: string; topic?: string }
+const { icon, title, sub = 'Диспетчер на связи круглосуточно, без выходных', btn, topic = title } = Astro.props;
+---
+<div class="hook">
+  <span class="tile tile-grey"><Icon name={icon} /></span>
+  <div class="hook-t">
+    <p class="hook-title">{title}</p>
+    <p class="hook-sub">{sub}</p>
+  </div>
+  <a class="hook-phone" href={`tel:${site.phoneHref}`}>{site.phone}</a>
+  <a class="pill-mail" href={`mailto:${site.email}`}><Icon name="mail" size={16} />{site.email}</a>
+  <button type="button" class="btn btn-dark" data-modal="lead" data-topic={topic}>{btn}<Icon name="arrow-right" size={16} /></button>
+</div>

@@ -1,0 +1,42 @@
+---
+// Раскладка итоговой главной в дизайне «3» (Figma: «Концепты главной страницы после правок» → П8).
+import '@fontsource/onest/400.css';
+import '@fontsource/onest/500.css';
+import '@fontsource/onest/600.css';
+import '../styles/home.css';
+import Menus from '../components/home/Menus.astro';
+import Overlays from '../components/home/Overlays.astro';
+interface Props { title: string; description: string; jsonLd?: Record<string, unknown>[] }
+const { title, description, jsonLd = [] } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://beton-prototype.local').href;
+---
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#1C2438" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/img/home/hero.webp" />
+    <link rel="preload" as="image" href="/img/home/hero.webp" fetchpriority="high" />
+    {jsonLd.map((ld) => <script type="application/ld+json" set:html={JSON.stringify(ld)} />)}
+  </head>
+  <body class="home">
+    <a class="skip" href="#main">К содержанию</a>
+    <Menus />
+    <main id="main">
+      <slot />
+    </main>
+    <slot name="footer" />
+    <Overlays />
+    <script>
+      import '../scripts/home';
+    </script>
+  </body>
+</html>

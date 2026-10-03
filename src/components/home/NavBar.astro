@@ -1,0 +1,23 @@
+---
+import Icon from './Icon.astro';
+import { NAV } from '../../lib/menu';
+import { site } from '../../lib/home-site';
+interface Props { variant: 'hero' | 'sticky' }
+const { variant } = Astro.props;
+---
+<div class={`nav nav-${variant}`}>
+  <a class="logo" href="/" aria-label={`${site.name}, главная`}><span class="logo-dot"></span>{site.name}</a>
+  <nav class="nav-links" aria-label="Основное меню">
+    <button type="button" class="nav-link" data-mega-toggle aria-expanded="false" aria-controls="mega">Продукция<Icon name="chevron-down" size={14} stroke={2} /></button>
+    {NAV.map((l) => <a class="nav-link" href={l.href}>{l.label}</a>)}
+  </nav>
+  <div class="nav-tools">
+    <a class="glass-pill nav-mail" href={`mailto:${site.email}`}><Icon name="mail" size={18} />{site.email}</a>
+    <button type="button" class="glass-sq" data-search-open aria-label="Поиск по продукции"><Icon name="search" size={20} /></button>
+    <button type="button" class="glass-sq cart-btn" data-cart-open aria-label="Корзина"><Icon name="shopping-cart" size={20} /><span class="cart-badge" data-cart-count>0</span></button>
+    <a class="glass-sq nav-msg" href={site.tg} aria-label="Написать в Telegram"><svg width="25" height="25" viewBox="0 0 25 25" aria-hidden="true"><circle cx="12.5" cy="12.5" r="12.5" fill="#2AABEE"/><path d="M5.456 11.938 17.644 7.25c.52-.208 1.041.104.833.938l-2.083 9.687c-.105.625-.521.833-1.042.52l-3.125-2.29-1.563 1.457c-.104.209-.312.313-.625.313l.209-3.23 5.937-5.312c.208-.208 0-.312-.416-.104l-7.292 4.583-3.125-.937c-.625-.208-.625-.73.104-.938Z" fill="#fff"/></svg></a>
+    <a class="glass-sq nav-msg" href={site.max} aria-label="Написать в MAX"><svg width="25" height="25" viewBox="0 0 25 25" aria-hidden="true"><defs><linearGradient id={`mx-${variant}`} x1="6.25" y1="6.25" x2="18.75" y2="18.75" gradientUnits="userSpaceOnUse"><stop stop-color="#408CFF"/><stop offset=".55" stop-color="#6154FA"/><stop offset="1" stop-color="#A840F0"/></linearGradient></defs><rect width="25" height="25" rx="7.3" fill={`url(#mx-${variant})`}/><circle cx="12.5" cy="11.875" r="4.79" stroke="#fff" stroke-width="2.5" fill="none"/><path d="m5.833 15.208 3.542 1.459-2.708 2.291-.834-3.75Z" fill="#fff"/></svg></a>
+    <a class="phone-pill" href={`tel:${site.phoneHref}`}><Icon name="phone" size={18} class="phone-ic" /><span>{site.phone}</span></a>
+    <button type="button" class="glass-sq burger" data-drawer-open aria-label="Открыть меню" aria-controls="drawer"><Icon name="menu" size={22} /></button>
+  </div>
+</div>
