@@ -119,6 +119,20 @@
       }
     }
 
+    // линия этапов заполняется по прокрутке и заканчивается на последнем шаге
+    if (stepsLine && stepsFill && stepDots.length > 1) {
+      var lr = stepsLine.getBoundingClientRect();
+      var sp;
+      if (stepsVertical) sp = clamp01((h * 0.6 - lr.top) / Math.max(1, lr.height));
+      else sp = clamp01((h * 0.8 - lr.top) / (h * 0.45));
+      if (reduceMotion.matches) sp = 1;
+      stepsFill.style.transform = stepsVertical ? 'scaleY(' + sp + ')' : 'scaleX(' + sp + ')';
+      var n1 = stepEls.length - 1;
+      for (var si = 0; si < stepEls.length; si++) {
+        stepEls[si].classList.toggle('on', sp >= si / n1 - 0.001);
+      }
+    }
+
     // проявление текста по прокрутке
     if (scrubSlide && scrubParts.length) {
       var range = scrubSlide.offsetHeight - h;
@@ -167,6 +181,11 @@
   var stepsList = document.querySelector('.steps');
   var stepsWrap = stepsList && stepsList.parentElement;
 
+  var stepEls = Array.prototype.slice.call(document.querySelectorAll('.step'));
+  var stepDots = stepEls.map(function (s) { return s.querySelector('.step__dot'); });
+  var stepsLine = document.querySelector('.steps-line');
+  var stepsFill = document.querySelector('.steps-line__fill');
+  var stepsVertical = true;
   Array.prototype.forEach.call(document.querySelectorAll('.step'), function (s, i) {
     s.style.setProperty('--si', i);
   });
@@ -176,8 +195,25 @@
       var shift = Math.min(0, wireView.clientHeight - wirePage.scrollHeight);
       wirePage.style.setProperty('--wire-shift', shift + 'px');
     }
-    if (stepsList && stepsWrap) {
-      stepsWrap.style.setProperty('--steps-top', stepsList.offsetTop + 'px');
+    if (stepsList && stepsWrap && stepDots.length > 1) {
+      // offsetTop/offsetLeft не учитывают сдвиг анимации появления
+      var c = stepEls.map(function (st, i) {
+        var d = stepDots[i];
+        return {
+          x: stepsList.offsetLeft + st.offsetLeft + d.offsetLeft + d.offsetWidth / 2,
+          y: stepsList.offsetTop + st.offsetTop + d.offsetTop + d.offsetHeight / 2
+        };
+      });
+      var first = c[0], last = c[c.length - 1];
+      stepsVertical = Math.abs(last.y - first.y) > Math.abs(last.x - first.x);
+      var ls = stepsLine.style;
+      ls.top = first.y + 'px';
+      ls.left = first.x + 'px';
+      ls.right = 'auto';
+      ls.bottom = 'auto';
+      ls.width = stepsVertical ? '1px' : (last.x - first.x) + 'px';
+      ls.height = stepsVertical ? (last.y - first.y) + 'px' : '1px';
+      stepsFill.style.transformOrigin = '0 0';
     }
     update();
   }
