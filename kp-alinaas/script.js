@@ -87,6 +87,9 @@
   }
 
   var parallaxImg = document.querySelector('.parallax');
+  var parEls = Array.prototype.map.call(document.querySelectorAll('[data-par]'), function (el) {
+    return { el: el, off: +el.getAttribute('data-par'), slide: el.closest('.slide') };
+  });
   var cover = document.querySelector('.slide--cover');
 
   /* ---------- Скролл ---------- */
@@ -102,6 +105,16 @@
     // параллакс фото на обложке
     if (parallaxImg && !reduceMotion.matches && top < cover.offsetHeight) {
       parallaxImg.style.transform = 'translate3d(0,' + (top * 0.18).toFixed(1) + 'px,0) scale(1.02)';
+    }
+
+    // разная высота карточек выравнивается к центру экрана
+    if (!reduceMotion.matches) {
+      for (var q = 0; q < parEls.length; q++) {
+        var pe = parEls[q];
+        var sc = pe.slide.offsetTop + pe.slide.offsetHeight / 2 - top;
+        var d = clamp01((sc - h / 2) / h);
+        pe.el.style.transform = 'translate3d(0,' + (pe.off * d).toFixed(1) + 'px,0)';
+      }
     }
 
     // проявление текста по прокрутке
@@ -122,7 +135,7 @@
       finalSlide.style.setProperty('--fin-bg', mix(C_BG_FROM, C_BG_TO, t));
       finalSlide.style.setProperty('--fin-fg', mix(C_FG_FROM, C_FG_TO, t));
       finalSlide.style.setProperty('--fin-muted', mix(C_MU_FROM, C_MU_TO, t));
-      document.body.style.background = t > 0.5 ? 'rgb(15,15,15)' : '';
+      document.body.style.background = t > 0.5 ? '#000' : '';
     }
 
     // активная точка
@@ -172,43 +185,6 @@
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
   layout();
 
-  /* ---------- Клавиатура ---------- */
-  var KEYS_NEXT = { ArrowDown: 1, PageDown: 1, ' ': 1, Spacebar: 1 };
-  var KEYS_PREV = { ArrowUp: 1, PageUp: 1 };
-
-  document.addEventListener('keydown', function (e) {
-    if (e.altKey || e.ctrlKey || e.metaKey) return;
-    var t = e.target;
-    var tag = t && t.tagName;
-    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (t && t.isContentEditable)) return;
-    var isSpace = e.key === ' ' || e.key === 'Spacebar';
-    if (isSpace && (tag === 'BUTTON' || tag === 'A')) return;
-
-    var dir = 0;
-    if (KEYS_NEXT[e.key]) dir = e.shiftKey && isSpace ? -1 : 1;
-    else if (KEYS_PREV[e.key]) dir = -1;
-    if (!dir) return;
-
-    e.preventDefault();
-
-    var top = deck.scrollTop;
-    var h = deck.clientHeight;
-    var slide = slides[current];
-    var sTop = slide.offsetTop;
-    var sBottom = sTop + slide.offsetHeight;
-
-    // длинный слайд: сначала дочитываем его, потом листаем дальше
-    if (dir > 0 && sBottom > top + h + 4) {
-      deck.scrollTo({ top: Math.min(top + h * 0.85, sBottom - h), behavior: behavior() });
-      return;
-    }
-    if (dir < 0 && top > sTop + 4) {
-      deck.scrollTo({ top: Math.max(top - h * 0.85, sTop), behavior: behavior() });
-      return;
-    }
-    goTo(current + dir);
-  });
-
   /* ---------- Появление каскадом ---------- */
   slides.forEach(function (slide) {
     var items = slide.querySelectorAll('.reveal');
@@ -251,6 +227,18 @@
       });
     }, { root: deck, threshold: 0, rootMargin: '0px 0px -20% 0px' });
     slides.forEach(function (s) { io.observe(s); });
+    var io2 = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io2.unobserve(entry.target);
+        }
+      });
+    }, { root: deck, threshold: 0, rootMargin: '0px 0px -12% 0px' });
+    Array.prototype.forEach.call(document.querySelectorAll('.slide--long .reveal'), function (el) {
+      el.style.transitionDelay = '0ms';
+      io2.observe(el);
+    });
   } else {
     slides.forEach(function (s) { s.classList.add('is-visible'); });
   }
