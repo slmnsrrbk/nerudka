@@ -108,7 +108,9 @@
     }
 
     // разная высота карточек выравнивается к центру экрана
-    if (!reduceMotion.matches) {
+    var parOn = !reduceMotion.matches && window.innerWidth >= 768;
+    if (!parOn) for (var z = 0; z < parEls.length; z++) parEls[z].el.style.transform = '';
+    if (parOn) {
       for (var q = 0; q < parEls.length; q++) {
         var pe = parEls[q];
         var sc = pe.slide.offsetTop + pe.slide.offsetHeight / 2 - top;
