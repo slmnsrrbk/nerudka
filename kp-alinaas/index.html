@@ -10,12 +10,12 @@
   <meta property="og:title" content="Коммерческое предложение: редизайн сайта mrs.alinaas">
   <meta property="og:description" content="Сайт, который показывает ценность каждого продукта и помогает выбрать, с чего начать. Для Алины, автора проекта MRS ALINAAS.">
   <meta property="og:image" content="img/alina.webp">
-  <meta name="theme-color" content="#F2EEE6">
+  <meta name="theme-color" content="#FFFFFF">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A4%8D%3C/text%3E%3C/svg%3E">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oranienbaum&family=Manrope:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oranienbaum&family=Inter:wght@400;500;600&display=swap">
   <link rel="preload" as="image" href="img/alina.webp" fetchpriority="high">
   <link rel="stylesheet" href="style.css">
   <script>document.documentElement.classList.add('js');</script>
@@ -27,50 +27,58 @@
     <ol class="dots__list"></ol>
   </nav>
 
+  <!-- Иконки -->
+  <svg width="0" height="0" class="sr-only" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-store" viewBox="0 0 24 24"><path d="M4 10v9a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-9M3 10l1.6-5.2A1 1 0 0 1 5.6 4h12.8a1 1 0 0 1 1 .8L21 10M3 10c0 1.7 1.3 3 3 3s3-1.3 3-3m-6 0h18M9 10c0 1.7 1.3 3 3 3s3-1.3 3-3m0 0c0 1.7 1.3 3 3 3s3-1.3 3-3M10 20v-5h4v5"/></symbol>
+      <symbol id="i-compare" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11M15 9v11"/></symbol>
+      <symbol id="i-layout" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></symbol>
+      <symbol id="i-faq" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.3a2.6 2.6 0 0 1 5 .9c0 1.7-2.5 2.3-2.5 3.8M12 17.2v.1"/></symbol>
+      <symbol id="i-style" viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16v4Z"/><path d="m13.5 6.5 4 4"/></symbol>
+      <symbol id="i-send" viewBox="0 0 24 24"><path d="m21 3-9.5 9.5M21 3l-6.5 18-3-8.5L3 9.5 21 3Z"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M4 12.5 9 17.5 20 6.5"/></symbol>
+      <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="m10.8 12.2 8.7-8.7M17 6l2.5 2.5M14.5 8.5 17 11"/></symbol>
+      <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10Z"/></symbol>
+      <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></symbol>
+    </defs>
+  </svg>
+
   <main class="deck" id="deck" tabindex="-1">
 
     <!-- 1. Обложка -->
     <section class="slide slide--cover" id="s1" aria-labelledby="h-s1" data-title="Обложка">
-      <div class="cover">
+      <div class="cover g6">
         <div class="cover__head">
-          <p class="mono reveal">mrs.alinaas / 2026</p>
           <h1 id="h-s1" class="split">Коммерческое предложение: редизайн сайта mrs.alinaas</h1>
         </div>
-
-        <figure class="cover__photo curtain">
-          <img src="img/alina.webp" width="1000" height="1250" alt="Алина в белом халате с букетом белых тюльпанов, селфи в зеркале" fetchpriority="high">
-          <figcaption class="mono cover__fig" aria-hidden="true">fig. 01</figcaption>
-        </figure>
-
         <div class="cover__desc">
           <p class="lead reveal">Сайт, который показывает ценность каждого продукта и помогает выбрать, с чего начать</p>
           <p class="cover__for reveal">Для Алины, автора проекта MRS ALINAAS</p>
         </div>
+        <figure class="cover__photo curtain">
+          <img class="parallax" src="img/alina.webp" width="1000" height="1250" alt="Алина в белом халате с букетом белых тюльпанов, селфи в зеркале" fetchpriority="high">
+        </figure>
       </div>
     </section>
 
     <!-- 2. Что для вас важно -->
-    <section class="slide slide--dark" id="s2" aria-labelledby="h-s2" data-title="Что для вас важно">
-      <div class="container">
-        <h2 id="h-s2" class="split">Что для вас важно</h2>
-        <div class="grid grid--2">
-          <article class="card reveal">
-            <span class="num" aria-hidden="true">01</span>
+    <section class="slide" id="s2" aria-labelledby="h-s2" data-title="Что для вас важно">
+      <div class="wrap">
+        <h2 id="h-s2" class="split split--corners" data-corners="Что для вас|важно">Что для вас важно</h2>
+        <div class="g6 chess">
+          <article class="chess__item reveal">
             <h3>Instagram как главный источник трафика</h3>
             <p>Сайт должен продолжать вашу эстетику и идеально работать с телефона.</p>
           </article>
-          <article class="card reveal">
-            <span class="num" aria-hidden="true">02</span>
+          <article class="chess__item reveal">
             <h3>Знакомство начинается с «Магии 5 утра»</h3>
             <p>Это входной продукт, сайт должен вести к нему.</p>
           </article>
-          <article class="card reveal">
-            <span class="num" aria-hidden="true">03</span>
+          <article class="chess__item reveal">
             <h3>Ответы до обращения в отдел заботы</h3>
             <p>Что внутри, чем продукты отличаются, формат, срок доступа, есть ли тренировки.</p>
           </article>
-          <article class="card reveal">
-            <span class="num" aria-hidden="true">04</span>
+          <article class="chess__item reveal">
             <h3>Ноябрь: закрытый Telegram-канал</h3>
             <p>Сайту нужно место под комьюнити с рецептами, которых нет в Instagram.</p>
           </article>
@@ -78,43 +86,36 @@
       </div>
     </section>
 
-    <!-- 3. Компьютер: белый экран -->
-    <section class="slide slide--alert" id="s3" aria-labelledby="h-s3" data-title="Белый экран на компьютере">
-      <div class="container split-2">
-        <div class="split-2__text">
-          <p class="label label--alert reveal">Самое критичное</p>
+    <!-- 3. Белый экран на компьютере -->
+    <section class="slide" id="s3" aria-labelledby="h-s3" data-title="Белый экран на компьютере">
+      <div class="wrap g6 alert">
+        <div class="alert__text">
+          <p class="label reveal">Самое критичное</p>
           <h2 id="h-s3" class="split">Каждый третий посетитель главной видит белый экран</h2>
-          <p class="reveal">Вы говорили, что клиенты заходят с телефона. По статистике Tilda за месяц на главную с компьютера пришли 33% посетителей, на страницу после оплаты 40%, на оферту 50%. На компьютере главная сейчас не показывает ничего, кроме шаблонной шапки «SITENAME».</p>
-          <p class="reveal">Даже если сайт собран только под телефон, мобильный дизайн можно продублировать на компьютер, а не оставлять пустой экран. Это нужно исправить первым делом.</p>
-
-          <div class="stats reveal">
-            <table>
-              <caption class="mono">Посетители с компьютера, 4 сентября – 4 октября 2026</caption>
-              <thead>
-                <tr><th scope="col">Страница</th><th scope="col">Посетители</th><th scope="col">С компьютера</th></tr>
-              </thead>
-              <tbody>
-                <tr class="is-hot"><th scope="row">Главная</th><td>289</td><td><span class="bar" style="--v:33%"></span>33%</td></tr>
-                <tr class="is-hot"><th scope="row">/afterpay</th><td>88</td><td><span class="bar" style="--v:40%"></span>40%</td></tr>
-                <tr class="is-hot"><th scope="row">/oferta</th><td>18</td><td><span class="bar" style="--v:50%"></span>50%</td></tr>
-                <tr><th scope="row">/selfbody</th><td>17</td><td><span class="bar" style="--v:32%"></span>32%</td></tr>
-                <tr><th scope="row">/cookbook</th><td>483</td><td><span class="bar" style="--v:11%"></span>11%</td></tr>
-                <tr><th scope="row">/guide</th><td>1067</td><td><span class="bar" style="--v:7%"></span>7%</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <p class="source reveal">Источники: статистика Tilda, раздел «Популярные страницы»; скриншоты mrs-alinaas.com в Chrome, 1440×900 и 390×844, 4 октября 2026.</p>
+          <p class="reveal">Вы говорили, что клиенты заходят с телефона. Но по статистике Tilda за месяц на главную с компьютера пришёл каждый третий посетитель, на страницу после оплаты 40%, на оферту половина. Все они видят пустой экран с шаблонной шапкой «SITENAME».</p>
+          <p class="reveal">Даже если сайт собран только под телефон, мобильный дизайн можно продублировать для компьютера. Это нужно исправить первым делом.</p>
+          <table class="stats reveal">
+            <caption>Посетители с компьютера, 4 сентября – 4 октября 2026</caption>
+            <thead><tr><th scope="col">Страница</th><th scope="col">Посетителей</th><th scope="col">С компьютера</th></tr></thead>
+            <tbody>
+              <tr class="is-hot"><th scope="row">Главная</th><td>289</td><td><span class="bar" style="--v:33"></span>33%</td></tr>
+              <tr class="is-hot"><th scope="row">/afterpay</th><td>88</td><td><span class="bar" style="--v:40"></span>40%</td></tr>
+              <tr class="is-hot"><th scope="row">/oferta</th><td>18</td><td><span class="bar" style="--v:50"></span>50%</td></tr>
+              <tr><th scope="row">/guide</th><td>1067</td><td><span class="bar" style="--v:7"></span>7%</td></tr>
+            </tbody>
+          </table>
+          <p class="source reveal">Источники: статистика Tilda, «Популярные страницы»; скриншоты mrs-alinaas.com в Chrome, 1440×900 и 390×844, 4 октября 2026.</p>
         </div>
 
         <div class="devices">
-          <figure class="device device--desktop curtain">
-            <div class="device__bar" aria-hidden="true"><i></i><i></i><i></i><span>mrs-alinaas.com</span></div>
-            <img src="img/site-desktop.webp" width="960" height="600" loading="lazy" alt="Главная mrs-alinaas.com на компьютере: пустой белый экран с надписью SITENAME и иконкой меню">
-            <figcaption class="mono">Компьютер: пусто</figcaption>
+          <figure class="device device--desktop">
+            <div class="browser-bar" aria-hidden="true"><i></i><i></i><i></i><span>mrs-alinaas.com</span></div>
+            <div class="curtain"><img src="img/site-desktop.webp" width="960" height="600" loading="lazy" alt="Главная mrs-alinaas.com на компьютере: пустой белый экран с надписью SITENAME и иконкой меню"></div>
+            <figcaption>Компьютер</figcaption>
           </figure>
-          <figure class="device device--phone curtain">
-            <img src="img/site-mobile.webp" width="390" height="844" loading="lazy" alt="Главная mrs-alinaas.com на телефоне: фотографии и блок гайда «Магия 5 утра»">
-            <figcaption class="mono">Телефон: работает</figcaption>
+          <figure class="device device--phone">
+            <div class="curtain"><img src="img/site-mobile.webp" width="390" height="844" loading="lazy" alt="Главная mrs-alinaas.com на телефоне: фотографии и блок гайда «Магия 5 утра»"></div>
+            <figcaption>Телефон</figcaption>
           </figure>
         </div>
       </div>
@@ -122,112 +123,113 @@
 
     <!-- 4. Что я увидел -->
     <section class="slide" id="s4" aria-labelledby="h-s4" data-title="Что я увидел на сайте">
-      <div class="container">
+      <div class="wrap">
         <h2 id="h-s4" class="split">Что я увидел на сайте сейчас</h2>
-        <ol class="issues">
+        <ul class="g6 issues">
           <li class="issue reveal">
-            <span class="num" aria-hidden="true">01</span>
-            <p><strong>Первый экран не объясняет, с чего начать.</strong> Нет понятного оффера и пути к первому продукту.</p>
-            <p class="proof"><span class="proof__url">mrs-alinaas.com</span>Первый экран: подпись «Про заботу о себе, мотивацию и полезные рецепты» и три вкладки на английском, кнопки к продукту нет. В шапке на компьютере шаблонное «Sitename».</p>
+            <h3>Первый экран не объясняет, с чего начать</h3>
+            <p>Нет понятного оффера и пути к первому продукту.</p>
+            <p class="proof">На сайте: подпись «Про заботу о себе, мотивацию и полезные рецепты» и вкладки на английском, кнопки к продукту нет. В шапке на компьютере шаблонное «Sitename».</p>
           </li>
           <li class="issue reveal">
-            <span class="num" aria-hidden="true">02</span>
-            <p><strong>На главной не хватает информации о вас.</strong> Посетитель из Instagram должен сразу увидеть, кто автор продуктов и почему вам можно доверять.</p>
-            <p class="proof"><span class="proof__url">mrs-alinaas.com</span>Об авторе на главной только строка в подвале: «food blogger | sport | self-care».</p>
+            <h3>На главной не хватает информации о вас</h3>
+            <p>Посетитель из Instagram должен сразу увидеть, кто автор продуктов и почему вам можно доверять.</p>
+            <p class="proof">На сайте: об авторе только строка в подвале «food blogger | sport | self-care».</p>
           </li>
           <li class="issue reveal">
-            <span class="num" aria-hidden="true">03</span>
-            <p><strong>Продукты сложно сравнить.</strong> Цены и старые цены поданы по-разному, у SELFBODY сразу четыре суммы, названия в каталоге и в наборе не совпадают.</p>
-            <p class="proof"><span class="proof__url">mrs-alinaas.com</span>SELFBODY: 6&nbsp;499, 4&nbsp;999, 3&nbsp;999 и 5&nbsp;999&nbsp;₽ в одной карточке. В каталоге «Сборник завтраков», в наборе «Полезные завтраки». В меню «Магия 5 утра», в карточке «Путеводитель по здоровому образу жизни».</p>
+            <h3>Продукты сложно сравнить</h3>
+            <p>Цены и старые цены поданы по-разному, у SELFBODY сразу четыре суммы, названия в каталоге и в наборе не совпадают.</p>
+            <p class="proof">На сайте: SELFBODY за 6&nbsp;499, 4&nbsp;999, 3&nbsp;999 и 5&nbsp;999&nbsp;₽ в одной карточке. «Сборник завтраков» в каталоге и «Полезные завтраки» в наборе.</p>
           </li>
           <li class="issue reveal">
-            <span class="num" aria-hidden="true">04</span>
-            <p><strong>Нет блоков доверия на главной.</strong> Отзывов, блока «обо мне» и FAQ.</p>
-            <p class="proof"><span class="proof__url">mrs-alinaas.com</span>Отзывы есть только на страницах продуктов. Предупреждение про почты iCloud и Hotmail есть только внутри формы оплаты.</p>
+            <h3>Нет блоков доверия на главной</h3>
+            <p>Отзывов, блока «обо мне» и FAQ.</p>
+            <p class="proof">На сайте: отзывы есть только на страницах продуктов, предупреждение про почты iCloud и Hotmail спрятано в форме оплаты.</p>
           </li>
           <li class="issue reveal">
-            <span class="num" aria-hidden="true">05</span>
-            <p><strong>Технические огрехи снижают доверие.</strong> Опечатки в ключевых фразах, разные цены на главной и на странице книги, ссылки в подвале ведут не туда.</p>
-            <p class="proof"><span class="proof__url">/cookbook</span>Alina CookBook: 3&nbsp;499&nbsp;₽ на главной, 2&nbsp;999&nbsp;₽ в кнопке оплаты на странице книги. Кнопка «Хочу узнать все секреты» там же оформляет заказ путеводителя. Опечатки: «соё здоровье», «Политика конфидециальности». «Отдел заботы», ИНН и ОГРНИП в подвале ведут в тот же Telegram, что и «Разработка сайта».</p>
+            <h3>Технические огрехи снижают доверие</h3>
+            <p>Опечатки в ключевых фразах, разные цены на главной и на странице книги, ссылки в подвале ведут не туда.</p>
+            <p class="proof">На сайте: CookBook за 3&nbsp;499&nbsp;₽ на главной и 2&nbsp;999&nbsp;₽ в кнопке на /cookbook. «Соё здоровье», «конфидециальности». «Отдел заботы» и ИНН ведут в Telegram разработчика.</p>
           </li>
           <li class="issue reveal">
-            <span class="num" aria-hidden="true">06</span>
-            <p><strong>Страницы выглядят по-разному.</strong> Сайт похож на набор отдельных лендингов, а не на единый бренд.</p>
-            <p class="proof"><span class="proof__url">/cookbook</span>Логотип «MRS.ALINAAS» на главной и «MRS.ALINA» на странице книги. Свои шрифты и кнопки на каждой странице, примеры на следующем слайде.</p>
+            <h3>Страницы выглядят по-разному</h3>
+            <p>Сайт похож на набор отдельных лендингов, а не на единый бренд.</p>
+            <p class="proof">На сайте: логотип «MRS.ALINAAS» на главной и «MRS.ALINA» на /cookbook, на каждой странице свои шрифты и кнопки.</p>
           </li>
-        </ol>
+        </ul>
         <p class="source reveal">Цитаты из кода страниц <a href="https://mrs-alinaas.com" target="_blank" rel="noopener">mrs-alinaas.com</a>, <a href="https://mrs-alinaas.com/guide" target="_blank" rel="noopener">/guide</a>, <a href="https://mrs-alinaas.com/cookbook" target="_blank" rel="noopener">/cookbook</a>, <a href="https://mrs-alinaas.com/breakfasts" target="_blank" rel="noopener">/breakfasts</a> на 4 октября 2026.</p>
       </div>
     </section>
 
-    <!-- 4b. Разные страницы -->
-    <section class="slide" id="s4b" aria-labelledby="h-s4b" data-title="Три страницы, три стиля">
-      <div class="container">
-        <h2 id="h-s4b" class="split">Три страницы, три разных сайта</h2>
-        <div class="shots">
-          <figure class="shot shot--phone reveal">
+    <!-- 5. Три страницы -->
+    <section class="slide" id="s5" aria-labelledby="h-s5" data-title="Три страницы, три стиля">
+      <div class="wrap">
+        <h2 id="h-s5" class="split">Три страницы, три разных сайта</h2>
+        <div class="g6 shots">
+          <figure class="shot reveal">
             <div class="curtain"><img src="img/ev-home.webp" width="390" height="640" loading="lazy" alt="Главная на телефоне: сетка фотографий и вкладки wellness, motivation, recipes"></div>
-            <figcaption><span class="mono">mrs-alinaas.com</span>Тонкий гротеск, вкладки на английском, фото без подписей</figcaption>
+            <figcaption><b>Главная</b>Тонкий гротеск, вкладки на английском, фото без подписей</figcaption>
           </figure>
-          <figure class="shot shot--wide reveal">
+          <figure class="shot shot--left reveal">
             <div class="curtain"><img src="img/ev-guide.webp" width="720" height="384" loading="lazy" alt="Страница гайда на компьютере: заголовок капсом жирным гротеском и рукописная надпись"></div>
-            <figcaption><span class="mono">/guide</span>Жирный капс, рукописный шрифт, своё меню</figcaption>
+            <figcaption><b>/guide</b>Жирный капс, рукописный шрифт, своё меню</figcaption>
           </figure>
-          <figure class="shot shot--phone reveal">
+          <figure class="shot reveal">
             <div class="curtain"><img src="img/ev-breakfasts.webp" width="390" height="640" loading="lazy" alt="Страница сборника завтраков на телефоне: антиква капсом поверх фото и зелёная кнопка"></div>
-            <figcaption><span class="mono">/breakfasts</span>Антиква, зелёная кнопка, логотип другим шрифтом</figcaption>
+            <figcaption><b>/breakfasts</b>Антиква, зелёная кнопка, логотип другим шрифтом</figcaption>
           </figure>
         </div>
-        <p class="source reveal">Скриншоты первых экранов в Chrome, 4 октября 2026.</p>
       </div>
     </section>
 
-    <!-- 5. Продукты -->
-    <section class="slide" id="s5" aria-labelledby="h-s5" data-title="Ваши продукты">
-      <div class="container">
-        <h2 id="h-s5" class="split">Ваши продукты сейчас</h2>
-        <p class="lead lead--tight reveal">Пять продуктов и набор. На новой главной они встанут в одну витрину с понятными ценами и сравнением.</p>
-        <ul class="products">
+    <!-- 6. Продукты -->
+    <section class="slide" id="s6" aria-labelledby="h-s6" data-title="Ваши продукты">
+      <div class="wrap">
+        <div class="g6 head-row">
+          <h2 id="h-s6" class="split">Ваши продукты сейчас</h2>
+          <p class="lead reveal">Пять продуктов и набор. На новой главной они встанут в одну витрину с понятными ценами и сравнением.</p>
+        </div>
+        <ul class="g6 products">
           <li class="product reveal">
             <div class="product__img curtain"><img src="img/p-magic.webp" width="520" height="520" loading="lazy" alt="Утро в спальне, кадр к гайду «Магия 5 утра»"></div>
-            <span class="product__tag mono">Входной продукт</span>
+            <p class="product__tag">Входной продукт</p>
             <h3>Магия 5 утра</h3>
-            <p>Путеводитель по здоровому образу жизни: сон, ранние подъёмы, питание, тренировки</p>
+            <p class="product__desc">Путеводитель по здоровому образу жизни: сон, подъёмы, питание</p>
             <p class="product__price">3&nbsp;299&nbsp;₽ <s>3&nbsp;699&nbsp;₽</s></p>
           </li>
           <li class="product reveal">
             <div class="product__img curtain"><img src="img/p-cookbook.webp" width="520" height="520" loading="lazy" alt="Обложка книги Alina CookBook"></div>
-            <span class="product__tag mono">PDF</span>
+            <p class="product__tag">PDF</p>
             <h3>Alina CookBook</h3>
-            <p>85+ рецептов: завтраки, обеды, салаты, десерты и смузи</p>
+            <p class="product__desc">85+ рецептов: завтраки, обеды, салаты, десерты, смузи</p>
             <p class="product__price">3&nbsp;499&nbsp;₽ <s>3&nbsp;899&nbsp;₽</s></p>
           </li>
           <li class="product reveal">
             <div class="product__img curtain"><img src="img/p-breakfasts.webp" width="520" height="520" loading="lazy" alt="Обложка сборника «Полезные завтраки»"></div>
-            <span class="product__tag mono">PDF</span>
+            <p class="product__tag">PDF</p>
             <h3>Сборник завтраков</h3>
-            <p>45+ рецептов: яйца, тосты, вафли, панкейки, каши</p>
+            <p class="product__desc">45+ рецептов: яйца, тосты, вафли, панкейки, каши</p>
             <p class="product__price">1&nbsp;699&nbsp;₽ <s>1&nbsp;999&nbsp;₽</s></p>
           </li>
           <li class="product reveal">
             <div class="product__img curtain"><img src="img/p-detox.webp" width="520" height="520" loading="lazy" alt="Бутылочки свежевыжатого сока на деревянной доске"></div>
-            <span class="product__tag mono">PDF</span>
+            <p class="product__tag">PDF</p>
             <h3>Сборник Detox</h3>
-            <p>35+ детокс-рецептов, пошагово и из понятных продуктов</p>
+            <p class="product__desc">35+ детокс-рецептов из понятных продуктов</p>
             <p class="product__price">1&nbsp;399&nbsp;₽ <s>1&nbsp;699&nbsp;₽</s></p>
           </li>
           <li class="product reveal">
             <div class="product__img curtain"><img src="img/p-selfbody.webp" width="520" height="520" loading="lazy" alt="Алина на тренировке в зале"></div>
-            <span class="product__tag mono">Приложение</span>
+            <p class="product__tag">Приложение</p>
             <h3>SELFBODY</h3>
-            <p>Комплекс тренировок в приложении</p>
-            <p class="product__price">от 3&nbsp;999&nbsp;₽ <small>(на странице 4 суммы)</small></p>
+            <p class="product__desc">Комплекс тренировок, на странице четыре разные суммы</p>
+            <p class="product__price">от 3&nbsp;999&nbsp;₽</p>
           </li>
-          <li class="product product--set reveal">
-            <div class="product__img product__img--set" aria-hidden="true"><span>3</span></div>
-            <span class="product__tag mono">Набор −20%</span>
+          <li class="product reveal">
+            <div class="product__img product__img--set" aria-hidden="true"><span>−20%</span></div>
+            <p class="product__tag">Набор</p>
             <h3>Три сборника</h3>
-            <p>Alina CookBook, «Полезные завтраки» и «Магия 5 утра»</p>
+            <p class="product__desc">Alina CookBook, «Полезные завтраки», «Магия 5 утра»</p>
             <p class="product__price">5&nbsp;999&nbsp;₽ <s>8&nbsp;699&nbsp;₽</s></p>
           </li>
         </ul>
@@ -235,77 +237,59 @@
       </div>
     </section>
 
-    <!-- 6. Что предлагаю -->
-    <section class="slide slide--dark" id="s6" aria-labelledby="h-s6" data-title="Единая витрина бренда">
-      <div class="container">
-        <h2 id="h-s6" class="split">Единая витрина бренда</h2>
-        <ol class="timeline">
-          <li class="timeline__item reveal">
-            <span class="num" aria-hidden="true">01</span>
-            <p><strong>Главная как витрина:</strong> понятный первый экран, блок «обо мне», «Магия 5 утра» на первом месте.</p>
-          </li>
-          <li class="timeline__item reveal">
-            <span class="num" aria-hidden="true">02</span>
-            <p><strong>Блок «Какой продукт выбрать»:</strong> сравнение всех продуктов в одной таблице (для кого, что внутри, объём, формат).</p>
-          </li>
-          <li class="timeline__item reveal">
-            <span class="num" aria-hidden="true">03</span>
-            <p><strong>Единый шаблон страницы продукта:</strong> для кого, что внутри (с превью страниц), результат, отзывы, цена, FAQ.</p>
-          </li>
-          <li class="timeline__item reveal">
-            <span class="num" aria-hidden="true">04</span>
-            <p><strong>FAQ на каждой странице:</strong> формат PDF, куда приходит файл, бессрочный доступ, оплата, что делать, если письмо не пришло.</p>
-          </li>
-          <li class="timeline__item reveal">
-            <span class="num" aria-hidden="true">05</span>
-            <p><strong>Единая визуальная система:</strong> шрифты, палитра, кнопки, фото.</p>
-          </li>
-          <li class="timeline__item reveal">
-            <span class="num" aria-hidden="true">06</span>
-            <p><strong>Блок под закрытый Telegram-канал с ноября.</strong></p>
-          </li>
-          <li class="timeline__item reveal">
-            <span class="num" aria-hidden="true">07</span>
-            <p><strong>Наведение порядка:</strong> опечатки, ссылки, единые цены и названия, превью ссылок для соцсетей, проверка оплаты.</p>
-          </li>
-        </ol>
+    <!-- 7. Единая витрина -->
+    <section class="slide" id="s7" aria-labelledby="h-s7" data-title="Единая витрина бренда">
+      <div class="wrap g6 showcase">
+        <div class="showcase__head">
+          <h2 id="h-s7" class="split">Единая витрина бренда</h2>
+          <p class="lead reveal">Семь изменений, которые превратят набор лендингов в один понятный сайт.</p>
+        </div>
+        <ul class="showcase__list">
+          <li class="feat reveal"><svg class="icon" aria-hidden="true"><use href="#i-store"/></svg><h3>Главная как витрина</h3><p>Понятный первый экран, блок «обо мне», «Магия 5 утра» на первом месте.</p></li>
+          <li class="feat reveal"><svg class="icon" aria-hidden="true"><use href="#i-compare"/></svg><h3>Блок «Какой продукт выбрать»</h3><p>Сравнение всех продуктов в одной таблице (для кого, что внутри, объём, формат).</p></li>
+          <li class="feat reveal"><svg class="icon" aria-hidden="true"><use href="#i-layout"/></svg><h3>Единый шаблон страницы продукта</h3><p>Для кого, что внутри (с превью страниц), результат, отзывы, цена, FAQ.</p></li>
+          <li class="feat reveal"><svg class="icon" aria-hidden="true"><use href="#i-faq"/></svg><h3>FAQ на каждой странице</h3><p>Формат PDF, куда приходит файл, бессрочный доступ, оплата, что делать, если письмо не пришло.</p></li>
+          <li class="feat reveal"><svg class="icon" aria-hidden="true"><use href="#i-style"/></svg><h3>Единая визуальная система</h3><p>Шрифты, палитра, кнопки, фото.</p></li>
+          <li class="feat reveal"><svg class="icon" aria-hidden="true"><use href="#i-send"/></svg><h3>Закрытый Telegram-канал</h3><p>Блок под канал с ноября.</p></li>
+          <li class="feat reveal"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><h3>Наведение порядка</h3><p>Опечатки, ссылки, единые цены и названия, превью ссылок для соцсетей, проверка оплаты.</p></li>
+        </ul>
       </div>
     </section>
 
-    <!-- 7. Прототип структуры -->
-    <section class="slide" id="s7" aria-labelledby="h-s7" data-title="Структура новой главной">
-      <div class="container proto">
+    <!-- 8. Структура новой главной -->
+    <section class="slide" id="s8" aria-labelledby="h-s8" data-title="Структура новой главной">
+      <div class="wrap g6 proto">
         <div class="proto__text">
-          <h2 id="h-s7" class="split">Структура новой главной</h2>
-          <p class="reveal">Прототип: что увидит посетитель, листая главную сверху вниз. Одинаково на телефоне и на компьютере.</p>
+          <h2 id="h-s8" class="split">Структура новой главной</h2>
+          <p class="reveal">Что увидит посетитель, листая главную сверху вниз. Одинаково на телефоне и на компьютере.</p>
           <ol class="proto__legend">
-            <li class="reveal"><span class="mono">01</span> Шапка: логотип, меню продуктов, Instagram</li>
-            <li class="reveal"><span class="mono">02</span> Первый экран: оффер, ваше фото, кнопка к «Магии 5 утра»</li>
-            <li class="reveal"><span class="mono">03</span> «Магия 5 утра»: входной продукт крупно</li>
-            <li class="reveal"><span class="mono">04</span> Обо мне: ваша история, цифры, фото</li>
-            <li class="reveal"><span class="mono">05</span> Какой продукт выбрать: таблица сравнения</li>
-            <li class="reveal"><span class="mono">06</span> Каталог: все продукты и единые цены</li>
-            <li class="reveal"><span class="mono">07</span> Набор трёх сборников со скидкой 20%</li>
-            <li class="reveal"><span class="mono">08</span> Отзывы</li>
-            <li class="reveal"><span class="mono">09</span> Закрытый Telegram-канал</li>
-            <li class="reveal"><span class="mono">10</span> FAQ и подвал: оплата, доступ, отдел заботы, оферта</li>
+            <li class="reveal">Шапка: логотип, меню продуктов, Instagram</li>
+            <li class="reveal">Первый экран: оффер, ваше фото, кнопка к «Магии 5 утра»</li>
+            <li class="reveal">«Магия 5 утра»: входной продукт крупно</li>
+            <li class="reveal">Обо мне: ваша история, цифры, фото</li>
+            <li class="reveal">Какой продукт выбрать: таблица сравнения</li>
+            <li class="reveal">Каталог: все продукты и единые цены</li>
+            <li class="reveal">Набор трёх сборников со скидкой 20%</li>
+            <li class="reveal">Отзывы</li>
+            <li class="reveal">Закрытый Telegram-канал</li>
+            <li class="reveal">FAQ и подвал: оплата, доступ, отдел заботы, оферта</li>
           </ol>
         </div>
 
         <div class="wire reveal" aria-hidden="true">
-          <div class="wire__bar"><i></i><i></i><i></i><span>mrs-alinaas.com</span></div>
+          <div class="browser-bar"><i></i><i></i><i></i><span>mrs-alinaas.com</span></div>
           <div class="wire__viewport">
             <div class="wire__page">
-              <div class="wb wb--nav"><b>01</b><span class="w-logo"></span><span class="w-links"><i></i><i></i><i></i><i></i></span></div>
-              <div class="wb wb--hero"><b>02</b><div class="w-col"><span class="w-h w-h--xl"></span><span class="w-h w-h--xl w-60"></span><span class="w-t"></span><span class="w-t w-80"></span><span class="w-btn"></span></div><div class="w-photo w-photo--tall"></div></div>
-              <div class="wb wb--feature"><b>03</b><div class="w-photo"></div><div class="w-col"><span class="w-tag"></span><span class="w-h"></span><span class="w-t"></span><span class="w-t w-70"></span><span class="w-btn"></span></div></div>
-              <div class="wb wb--about"><b>04</b><div class="w-circle"></div><div class="w-col"><span class="w-h w-50"></span><span class="w-t"></span><span class="w-t"></span><span class="w-t w-60"></span><div class="w-nums"><i></i><i></i><i></i></div></div></div>
-              <div class="wb wb--table"><b>05</b><span class="w-h w-40 w-center"></span><div class="w-table"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
-              <div class="wb wb--catalog"><b>06</b><div class="w-cards"><i></i><i></i><i></i><i></i><i></i></div></div>
-              <div class="wb wb--set"><b>07</b><span class="w-h w-50"></span><span class="w-btn"></span></div>
-              <div class="wb wb--reviews"><b>08</b><div class="w-cards w-cards--3"><i></i><i></i><i></i></div></div>
-              <div class="wb wb--tg"><b>09</b><span class="w-h w-50 w-light"></span><span class="w-btn w-btn--light"></span></div>
-              <div class="wb wb--faq"><b>10</b><span class="w-row"></span><span class="w-row"></span><span class="w-row"></span><span class="w-row"></span></div>
+              <div class="wb wb--nav"><span class="w-logo"></span><span class="w-links"><i></i><i></i><i></i><i></i></span></div>
+              <div class="wb wb--hero"><div class="w-col"><span class="w-h w-h--xl"></span><span class="w-h w-h--xl w-60"></span><span class="w-t"></span><span class="w-t w-80"></span><span class="w-btn"></span></div><div class="w-photo w-photo--tall"></div></div>
+              <div class="wb"><div class="w-photo"></div><div class="w-col"><span class="w-tag"></span><span class="w-h"></span><span class="w-t"></span><span class="w-t w-70"></span><span class="w-btn"></span></div></div>
+              <div class="wb"><div class="w-circle"></div><div class="w-col"><span class="w-h w-50"></span><span class="w-t"></span><span class="w-t"></span><span class="w-t w-60"></span><div class="w-nums"><i></i><i></i><i></i></div></div></div>
+              <div class="wb wb--col"><span class="w-h w-40"></span><div class="w-table"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+              <div class="wb"><div class="w-cards"><i></i><i></i><i></i><i></i><i></i></div></div>
+              <div class="wb wb--col wb--accent"><span class="w-h w-50"></span><span class="w-btn"></span></div>
+              <div class="wb"><div class="w-cards w-cards--3"><i></i><i></i><i></i></div></div>
+              <div class="wb wb--col wb--dark"><span class="w-h w-50"></span><span class="w-btn w-btn--light"></span></div>
+              <div class="wb wb--col"><span class="w-row"></span><span class="w-row"></span><span class="w-row"></span><span class="w-row"></span></div>
               <div class="wb wb--footer"><span class="w-t w-30"></span><span class="w-t w-20"></span></div>
             </div>
           </div>
@@ -313,41 +297,25 @@
       </div>
     </section>
 
-    <!-- 8. Визуальное направление -->
-    <section class="slide" id="s8" aria-labelledby="h-s8" data-title="Каким будет сайт">
-      <div class="container split-2 split-2--even">
-        <div class="split-2__text">
-          <h2 id="h-s8" class="split">Каким будет сайт</h2>
-          <p class="lead reveal">Светлые оттенки, много воздуха, крупные фотографии, аккуратная типографика, минимум визуального шума. Современно и дорого, но тепло и понятно.</p>
-        </div>
-
-        <div class="style-preview card reveal">
-          <div class="palette" role="list" aria-label="Палитра">
-            <span class="swatch" role="listitem" style="--c: var(--bg)"><i></i><small>Фон</small></span>
-            <span class="swatch" role="listitem" style="--c: var(--bg-soft)"><i></i><small>Песок</small></span>
-            <span class="swatch" role="listitem" style="--c: var(--accent)"><i></i><small>Акцент</small></span>
-            <span class="swatch" role="listitem" style="--c: var(--text-muted)"><i></i><small>Графит</small></span>
-            <span class="swatch" role="listitem" style="--c: var(--accent-deep)"><i></i><small>Кнопки</small></span>
-          </div>
-          <div class="type-sample">
-            <p class="type-sample__head">mrs.alinaas</p>
-            <p class="type-sample__body">Сайт, который показывает ценность каждого продукта и помогает выбрать, с чего начать</p>
-            <small class="type-sample__meta mono">Oranienbaum / Manrope</small>
-          </div>
+    <!-- 9. Каким будет сайт: фиксированный заголовок, проявление при скролле -->
+    <section class="slide slide--scrub" id="s9" aria-labelledby="h-s9" data-title="Каким будет сайт">
+      <div class="scrub">
+        <div class="wrap scrub__inner">
+          <h2 id="h-s9" class="scrub__title">Каким будет сайт</h2>
+          <p class="scrub__text">Светлые оттенки, много воздуха, крупные фотографии, аккуратная типографика, минимум визуального шума. Современно и дорого, но тепло и понятно.</p>
         </div>
       </div>
     </section>
 
-    <!-- 9. Тарифы -->
-    <section class="slide slide--pricing" id="s9" aria-labelledby="h-s9" data-title="Два варианта работы">
-      <div class="container">
-        <div class="center">
-          <h2 id="h-s9" class="split">Два варианта работы</h2>
+    <!-- 10. Тарифы -->
+    <section class="slide" id="s10" aria-labelledby="h-s10" data-title="Два варианта работы">
+      <div class="wrap">
+        <div class="g6 head-row">
+          <h2 id="h-s10" class="split">Два варианта работы</h2>
           <p class="lead reveal">Выберите объём, который подходит сейчас</p>
         </div>
-
-        <div class="plans">
-          <article class="card plan reveal" aria-labelledby="plan-1">
+        <div class="g6 plans">
+          <article class="plan reveal" aria-labelledby="plan-1">
             <h3 id="plan-1" class="plan__name">Минимальный необходимый</h3>
             <p class="plan__price">65&nbsp;000&nbsp;₽</p>
             <p class="plan__term">Срок: около 2 недель</p>
@@ -355,72 +323,100 @@
               <li>Новая главная с каталогом, сравнением продуктов и FAQ</li>
               <li>Страница «Магия 5 утра» по новому шаблону</li>
               <li>Единый стиль и мобильная версия</li>
+              <li>Версия для компьютера: вместо белого экрана посетитель видит полноценный сайт</li>
               <li>Исправление ошибок и цен на остальных страницах без их редизайна</li>
             </ul>
           </article>
-
-          <article class="card plan plan--featured reveal" aria-labelledby="plan-2">
-            <span class="badge">Рекомендую</span>
+          <article class="plan plan--featured reveal" aria-labelledby="plan-2">
             <h3 id="plan-2" class="plan__name">Полноценный</h3>
-            <p class="plan__price">120&nbsp;000&nbsp;₽</p>
+            <p class="plan__price">130&nbsp;000&nbsp;₽</p>
             <p class="plan__term">Срок: около 4 недель</p>
             <ul class="plan__list">
               <li>Всё из минимального</li>
               <li>Редизайн всех страниц продуктов по единому шаблону</li>
               <li>Блок отзывов и блок для закрытого Telegram-канала</li>
-              <li>Аналитика и цели (видно, откуда приходят и что покупают)</li>
-              <li>2 недели поддержки после запуска</li>
+              <li>Месяц поддержки после запуска</li>
             </ul>
           </article>
         </div>
-
         <p class="note reveal">Если стартуем в ближайшие дни, полноценный вариант успеет к ноябрю. Минимальный можно запустить раньше, а остальные страницы доделать следом, без потери продаж.</p>
       </div>
     </section>
 
-    <!-- 10. Как работаем -->
-    <section class="slide slide--dark" id="s10" aria-labelledby="h-s10" data-title="Пять шагов до запуска">
-      <div class="container">
-        <h2 id="h-s10" class="split">Пять шагов до запуска</h2>
+    <!-- 11. Этапы -->
+    <section class="slide" id="s11" aria-labelledby="h-s11" data-title="Пять шагов до запуска">
+      <div class="wrap">
+        <h2 id="h-s11" class="split">Пять шагов до запуска</h2>
+        <div class="steps-line" aria-hidden="true"><span class="steps-line__fill"></span></div>
         <ol class="steps">
-          <li class="step reveal"><span class="num" aria-hidden="true">01</span><h3>Созвон</h3><p>(20 минут, референсы)</p></li>
-          <li class="step reveal"><span class="num" aria-hidden="true">02</span><h3>Структура</h3><p>(прототип главной)</p></li>
-          <li class="step reveal"><span class="num" aria-hidden="true">03</span><h3>Дизайн</h3><p>(макеты в Figma, правки)</p></li>
-          <li class="step reveal"><span class="num" aria-hidden="true">04</span><h3>Сборка</h3><p>(в Tilda, старый сайт работает до переключения)</p></li>
-          <li class="step reveal"><span class="num" aria-hidden="true">05</span><h3>Запуск</h3><p>(проверка оплаты и публикация)</p></li>
+          <li class="step reveal" tabindex="0">
+            <span class="step__dot" aria-hidden="true"></span>
+            <h3>Брифинг</h3>
+            <p class="step__meta">20 минут, референсы</p>
+            <p>Созваниваемся, обсуждаем цели, продукты и сайты, которые вам нравятся. После фиксирую задачи и сроки.</p>
+          </li>
+          <li class="step reveal" tabindex="0">
+            <span class="step__dot" aria-hidden="true"></span>
+            <h3>Интерактивный прототип</h3>
+            <p class="step__meta">Структура главной</p>
+            <p>Кликабельная схема: какие блоки, в каком порядке, куда ведут кнопки. Утверждаем структуру до дизайна.</p>
+          </li>
+          <li class="step reveal" tabindex="0">
+            <span class="step__dot" aria-hidden="true"></span>
+            <h3>Дизайн</h3>
+            <p class="step__meta">Макеты в Figma, правки</p>
+            <p>Макеты для телефона и компьютера в едином стиле. Вносим правки до согласования.</p>
+          </li>
+          <li class="step reveal" tabindex="0">
+            <span class="step__dot" aria-hidden="true"></span>
+            <h3>Сборка</h3>
+            <p class="step__meta">В Tilda</p>
+            <p>Собираю сайт по макетам. Старый сайт работает до переключения, продажи не останавливаются.</p>
+          </li>
+          <li class="step reveal" tabindex="0">
+            <span class="step__dot" aria-hidden="true"></span>
+            <h3>Запуск</h3>
+            <p class="step__meta">Проверка и публикация</p>
+            <p>Проверяю оплату, письма с файлами, ссылки и отображение на разных устройствах, затем публикую.</p>
+          </li>
         </ol>
-        <p class="pill reveal">Оплата: 50% перед стартом, 50% после сдачи</p>
       </div>
     </section>
 
-    <!-- 11. Что нужно для старта -->
-    <section class="slide" id="s11" aria-labelledby="h-s11" data-title="Что понадобится от вас">
-      <div class="container">
-        <h2 id="h-s11" class="split">Что мне понадобится от вас</h2>
-        <div class="grid grid--3">
-          <article class="card need reveal"><span class="num" aria-hidden="true">01</span><h3>Доступ к Tilda</h3></article>
-          <article class="card need reveal"><span class="num" aria-hidden="true">02</span><h3>2-3 референса сайтов, которые нравятся</h3></article>
-          <article class="card need reveal"><span class="num" aria-hidden="true">03</span><h3>Материалы: фото, отзывы, развороты гайдов</h3></article>
-        </div>
-      </div>
-    </section>
-
-    <!-- 12. Финал -->
-    <section class="slide slide--dark slide--final" id="s12" aria-labelledby="h-s12" data-title="Созвон">
-      <div class="container center">
-        <h2 id="h-s12" class="split">Давайте обсудим на коротком созвоне</h2>
-        <p class="lead reveal">20 минут, и я уточню точную стоимость под ваш вариант 🤍</p>
-
-        <!-- заменить: USERNAME на ваш ник в Telegram -->
-        <a class="btn reveal" href="https://t.me/USERNAME" target="_blank" rel="noopener">Назначить созвон</a>
-
-        <ul class="contacts reveal">
-          <li><!-- заменить --><a href="https://t.me/USERNAME" target="_blank" rel="noopener">Telegram: @USERNAME</a></li>
-          <li><!-- заменить --><a href="tel:+79000000000">+7 900 000-00-00</a></li>
-          <li><!-- заменить --><a href="mailto:hello@example.com">hello@example.com</a></li>
+    <!-- 12. Что нужно -->
+    <section class="slide" id="s12" aria-labelledby="h-s12" data-title="Что понадобится от вас">
+      <div class="wrap">
+        <h2 id="h-s12" class="split">Что мне понадобится от вас</h2>
+        <ul class="g6 needs">
+          <li class="need reveal"><svg class="icon icon--lg" aria-hidden="true"><use href="#i-key"/></svg><h3>Доступ к Tilda</h3></li>
+          <li class="need reveal"><svg class="icon icon--lg" aria-hidden="true"><use href="#i-heart"/></svg><h3>2-3 референса сайтов, которые нравятся</h3></li>
+          <li class="need reveal"><svg class="icon icon--lg" aria-hidden="true"><use href="#i-image"/></svg><h3>Материалы: фото, отзывы, развороты гайдов</h3></li>
         </ul>
+      </div>
+    </section>
 
-        <p class="signature reveal">Салмон, веб-дизайнер и разработчик. Работаю с Tilda около 6 лет.</p>
+    <!-- 13. Оплата -->
+    <section class="slide slide--pay" id="s13" aria-labelledby="h-s13" data-title="Оплата">
+      <div class="wrap pay">
+        <div class="pay__top">
+          <h2 id="h-s13" class="split split--dot">Оплата</h2>
+          <a class="pay__site reveal" href="https://slmn2.ru" target="_blank" rel="noopener">slmn2.ru</a>
+        </div>
+        <p class="pay__text reveal">Оплату можно разбить на две части: 50% предоплата, остальные 50% после сдачи проекта. Можно перевести на Сбербанк или Тинькофф, а также на расчётный счёт, так как я зарегистрирован как ИП.</p>
+      </div>
+    </section>
+
+    <!-- 14. Контакты -->
+    <section class="slide slide--final" id="s14" aria-labelledby="h-s14" data-title="Контакты">
+      <div class="wrap final">
+        <h2 id="h-s14" class="split">Давайте обсудим проект</h2>
+        <ul class="contacts">
+          <li class="reveal"><span>Сайт</span><a href="https://slmn2.ru" target="_blank" rel="noopener">slmn2.ru</a></li>
+          <!-- заменить: USERNAME на ник в Telegram -->
+          <li class="reveal"><span>Telegram</span><a href="https://t.me/USERNAME" target="_blank" rel="noopener">@USERNAME</a></li>
+          <li class="reveal"><span>Телефон</span><a href="tel:+79612170654">+7 961 217-06-54</a></li>
+          <li class="reveal"><span>Почта</span><a href="mailto:slmnsrrbk@gmail.com">slmnsrrbk@gmail.com</a></li>
+        </ul>
       </div>
     </section>
 

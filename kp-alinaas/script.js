@@ -5,9 +5,7 @@
   var slides = Array.prototype.slice.call(deck.querySelectorAll('.slide'));
   var bar = document.querySelector('.progress__bar');
   var dotsList = document.querySelector('.dots__list');
-  var cover = document.querySelector('.slide--cover');
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  var mobile = window.matchMedia('(max-width: 767px)');
   var current = 0;
 
   function behavior() {
@@ -19,37 +17,52 @@
     deck.scrollTo({ top: slides[index].offsetTop, behavior: behavior() });
   }
 
-  function pad(n) {
-    return ('00' + n).slice(-3);
+  function clamp01(v) {
+    return Math.min(1, Math.max(0, v));
   }
 
-  /* ---------- Якорные метки: номер слайда, линия, кресты ---------- */
-  slides.forEach(function (slide, i) {
-    if (slide.classList.contains('slide--cover')) return;
-    var a = document.createElement('div');
-    a.className = 'anchors';
-    a.setAttribute('aria-hidden', 'true');
-    a.innerHTML =
-      '<span class="anchors__line"></span>' +
-      '<span class="anchors__idx mono">' + pad(i + 1) + '</span>' +
-      '<span class="anchors__name mono">' + (slide.getAttribute('data-title') || '') + '</span>' +
-      '<i class="cross cross--a"></i><i class="cross cross--b"></i><i class="cross cross--c"></i>';
-    slide.insertBefore(a, slide.firstChild);
-  });
-
-  /* ---------- Заголовки по буквам ---------- */
-  Array.prototype.forEach.call(document.querySelectorAll('.split'), function (el) {
-    var text = el.textContent.trim();
-    el.setAttribute('aria-label', text);
-    var ci = 0;
-    var html = text.split(/\s+/).map(function (word) {
+  /* ---------- Разбивка текста на буквы ---------- */
+  var ci = 0;
+  function splitWords(text, cls) {
+    return text.split(/\s+/).filter(Boolean).map(function (word) {
       var chars = Array.prototype.map.call(word, function (ch) {
-        return '<span class="ch" style="--ci:' + (ci++) + '">' + ch + '</span>';
+        return '<span class="ch ' + (cls || '') + '" style="--ci:' + (ci++) + '">' + ch + '</span>';
       }).join('');
       return '<span class="w" aria-hidden="true">' + chars + '</span>';
     }).join(' ');
-    el.innerHTML = html;
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('.split'), function (el) {
+    var text = el.textContent.trim();
+    el.setAttribute('aria-label', text + (el.classList.contains('split--dot') ? '.' : ''));
+    ci = 0;
+    var corners = el.getAttribute('data-corners');
+    if (corners) {
+      el.innerHTML = corners.split('|').map(function (part) {
+        return '<span>' + splitWords(part) + '</span>';
+      }).join('');
+    } else {
+      el.innerHTML = splitWords(text);
+    }
+    if (el.classList.contains('split--dot')) {
+      el.lastElementChild.insertAdjacentHTML('beforeend',
+        '<span class="ch dot-accent" style="--ci:' + ci + '">.</span>');
+    }
   });
+
+  /* «Каким будет сайт»: буквы заголовка и слова текста проявляются от прокрутки */
+  var scrubSlide = document.querySelector('.slide--scrub');
+  var scrubParts = [];
+  if (scrubSlide) {
+    var st = scrubSlide.querySelector('.scrub__title');
+    var sx = scrubSlide.querySelector('.scrub__text');
+    st.setAttribute('aria-label', st.textContent.trim());
+    st.innerHTML = splitWords(st.textContent.trim());
+    sx.innerHTML = sx.textContent.trim().split(/\s+/).map(function (w) {
+      return '<span class="wd">' + w + '</span>';
+    }).join(' ');
+    scrubParts = Array.prototype.slice.call(scrubSlide.querySelectorAll('.ch, .wd'));
+  }
 
   /* ---------- Точки ---------- */
   var dots = slides.map(function (slide, i) {
@@ -64,7 +77,19 @@
     return btn;
   });
 
-  /* ---------- Прогресс, активный слайд, затемнение обложки ---------- */
+  /* ---------- Цвета финала: плавно от белого к тёмному ---------- */
+  var finalSlide = document.querySelector('.slide--final');
+  var C_BG_FROM = [255, 255, 255], C_BG_TO = [15, 15, 15];
+  var C_FG_FROM = [17, 17, 17], C_FG_TO = [242, 242, 242];
+  var C_MU_FROM = [98, 98, 98], C_MU_TO = [163, 163, 163];
+  function mix(a, b, t) {
+    return 'rgb(' + a.map(function (v, i) { return Math.round(v + (b[i] - v) * t); }).join(',') + ')';
+  }
+
+  var parallaxImg = document.querySelector('.parallax');
+  var cover = document.querySelector('.slide--cover');
+
+  /* ---------- Скролл ---------- */
   var ticking = false;
 
   function update() {
@@ -74,18 +99,39 @@
     var max = deck.scrollHeight - h;
     bar.style.transform = 'scaleX(' + (max > 0 ? top / max : 0) + ')';
 
-    if (cover) {
-      var dim = Math.min(1, Math.max(0, top / cover.offsetHeight));
-      cover.style.setProperty('--dim', (dim * 0.92).toFixed(3));
+    // параллакс фото на обложке
+    if (parallaxImg && !reduceMotion.matches && top < cover.offsetHeight) {
+      parallaxImg.style.transform = 'translate3d(0,' + (top * 0.18).toFixed(1) + 'px,0) scale(1.02)';
     }
 
+    // проявление текста по прокрутке
+    if (scrubSlide && scrubParts.length) {
+      var range = scrubSlide.offsetHeight - h;
+      var p = range > 0 ? clamp01((top - scrubSlide.offsetTop + h * 0.35) / (range + h * 0.35)) : 1;
+      if (reduceMotion.matches) p = 1;
+      var n = Math.round(p * scrubParts.length * 1.08);
+      for (var k = 0; k < scrubParts.length; k++) {
+        scrubParts[k].classList.toggle('on', k < n);
+      }
+    }
+
+    // финал темнеет по мере появления
+    if (finalSlide) {
+      var t = clamp01(1 - (finalSlide.offsetTop - top) / h);
+      t = t * t * (3 - 2 * t);
+      finalSlide.style.setProperty('--fin-bg', mix(C_BG_FROM, C_BG_TO, t));
+      finalSlide.style.setProperty('--fin-fg', mix(C_FG_FROM, C_FG_TO, t));
+      finalSlide.style.setProperty('--fin-muted', mix(C_MU_FROM, C_MU_TO, t));
+      document.body.style.background = t > 0.5 ? 'rgb(15,15,15)' : '';
+    }
+
+    // активная точка
     var probe = top + h * 0.4;
     var idx = 0;
     for (var i = 0; i < slides.length; i++) {
       if (slides[i].offsetTop <= probe) idx = i;
     }
     if (top >= max - 2) idx = slides.length - 1;
-
     if (idx !== current || !dots[idx].hasAttribute('aria-current')) {
       dots.forEach(function (d) { d.removeAttribute('aria-current'); });
       dots[idx].setAttribute('aria-current', 'true');
@@ -100,17 +146,23 @@
     }
   }, { passive: true });
 
-  /* ---------- Мягкий снап на телефоне, если слайд выше экрана ---------- */
+  /* ---------- Размеры: прототип, линия этапов ---------- */
   var wirePage = document.querySelector('.wire__page');
   var wireView = document.querySelector('.wire__viewport');
+  var stepsList = document.querySelector('.steps');
+  var stepsWrap = stepsList && stepsList.parentElement;
+
+  Array.prototype.forEach.call(document.querySelectorAll('.step'), function (s, i) {
+    s.style.setProperty('--si', i);
+  });
 
   function layout() {
-    var h = deck.clientHeight;
-    var tall = slides.some(function (s) { return s.offsetHeight > h + 2; });
-    deck.classList.toggle('snap-loose', mobile.matches && tall);
     if (wirePage && wireView) {
       var shift = Math.min(0, wireView.clientHeight - wirePage.scrollHeight);
       wirePage.style.setProperty('--wire-shift', shift + 'px');
+    }
+    if (stepsList && stepsWrap) {
+      stepsWrap.style.setProperty('--steps-top', stepsList.offsetTop + 'px');
     }
     update();
   }
@@ -161,7 +213,7 @@
   slides.forEach(function (slide) {
     var items = slide.querySelectorAll('.reveal');
     for (var i = 0; i < items.length; i++) {
-      items[i].style.transitionDelay = (300 + i * 80) + 'ms';
+      items[i].style.transitionDelay = (250 + i * 80) + 'ms';
     }
   });
 
