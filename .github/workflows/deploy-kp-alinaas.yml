@@ -96,7 +96,7 @@ jobs:
           code=$(curl -s -o /dev/null -w '%{http_code}' -H "Host: $DOMAIN" "http://$SSH_HOST/img/alina.webp")
           echo "img/alina.webp -> $code"; test "$code" = "200"
 
-      - name: HTTPS, если DNS уже смотрит на сервер
+      - name: HTTPS (напрямую или через прокси Cloudflare)
         env:
           SSHPASS: ${{ secrets.SSH_PASSWORD }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
@@ -104,17 +104,28 @@ jobs:
         run: |
           server_ip=$(getent ahostsv4 "$SSH_HOST" | awk 'NR==1{print $1}')
           dns_ip=$(getent ahostsv4 "$DOMAIN" | awk 'NR==1{print $1}' || true)
-          echo "IP сервера: $server_ip, $DOMAIN -> ${dns_ip:-нет A-записи}"
-          if [ -z "$dns_ip" ] || [ "$dns_ip" != "$server_ip" ]; then
-            echo "::warning::$DOMAIN пока не указывает на сервер. Добавьте A-запись $DOMAIN -> $server_ip и перезапустите workflow."
+          via_cf=$(curl -s -o /dev/null -D - --max-time 10 "http://$DOMAIN/" | grep -ci '^server: cloudflare' || true)
+          echo "$DOMAIN -> ${dns_ip:-нет A-записи}, через Cloudflare: $via_cf"
+          if [ -z "$dns_ip" ]; then
+            echo "::warning::У $DOMAIN нет A-записи. В Cloudflare добавьте запись A kp -> IP сервера и перезапустите workflow."
             exit 0
           fi
-          $SSH_CMD "$SSH_USER@$SSH_HOST" bash -s <<REMOTE
+          if [ "$dns_ip" = "$server_ip" ]; then
+            REDIRECT="--redirect"      # домен смотрит прямо на сервер
+          elif [ "$via_cf" != "0" ]; then
+            REDIRECT=""                # за прокси Cloudflare редирект на https делает сам Cloudflare
+          else
+            echo "::warning::$DOMAIN указывает не на этот сервер ($dns_ip). Проверьте A-запись."
+            exit 0
+          fi
+          # Через прокси выпуск может не пройти, если в Cloudflare включено Always Use HTTPS;
+          # тогда сайт всё равно работает в режиме SSL Flexible, поэтому не роняем деплой.
+          $SSH_CMD "$SSH_USER@$SSH_HOST" bash -s <<REMOTE || echo "::warning::Сертификат не выпущен. Для прокси Cloudflare поставьте SSL/TLS: Flexible или временно включите DNS only и перезапустите."
           set -e
           export DEBIAN_FRONTEND=noninteractive
           command -v certbot >/dev/null 2>&1 || { apt-get update -y -qq; apt-get install -y -qq certbot python3-certbot-nginx; }
-          certbot --nginx -d "$DOMAIN" --non-interactive --agree-tos --register-unsafely-without-email --redirect --keep-until-expiring
+          certbot --nginx -d "$DOMAIN" --non-interactive --agree-tos --register-unsafely-without-email $REDIRECT --keep-until-expiring
           nginx -t && systemctl reload nginx
           REMOTE
-          code=$(curl -s -o /dev/null -w '%{http_code}' "https://$DOMAIN/")
+          code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 15 "https://$DOMAIN/" || true)
           echo "https://$DOMAIN/ -> $code"
