@@ -898,3 +898,17 @@ a { color: inherit; text-underline-offset: 3px; text-decoration-thickness: 1px; 
   .js .icon.is-drawn > * { stroke-dashoffset: 0 !important; }
 }
 .icons-prep .icon.is-drawn > * { transition: none !important; }
+
+/* v10: финал всегда чёрный, переход мягким градиентом сверху, без полосы и серой середины */
+.slide--final {
+  --fin-bg: var(--dark);
+  --fin-fg: var(--on-dark);
+  --fin-muted: var(--on-dark-muted);
+  margin-top: 0;
+  padding: 45vh 0 var(--section);
+  padding-top: 45svh;
+  background: linear-gradient(180deg, var(--bg) 0, var(--dark) 40vh, var(--dark) 100%);
+  background: linear-gradient(180deg, var(--bg) 0, var(--dark) 40svh, var(--dark) 100%);
+  color: var(--on-dark);
+}
+.slide--final .frame { min-height: calc(100svh - var(--section)); }

@@ -106,7 +106,7 @@
   });
 
   /* ---------- Цвета финала: плавно от белого к тёмному ---------- */
-  var finalSlide = document.querySelector('.slide--final');
+  var finalSlide = null; // финал оформлен градиентом в CSS
   var C_BG_FROM = [244, 243, 238], C_BG_TO = [15, 15, 15];
   var C_FG_FROM = [17, 17, 17], C_FG_TO = [242, 242, 242];
   var C_MU_FROM = [92, 90, 85], C_MU_TO = [163, 163, 163];
