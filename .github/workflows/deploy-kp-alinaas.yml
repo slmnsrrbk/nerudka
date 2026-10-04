@@ -1,0 +1,120 @@
+# Деплой КП mrs.alinaas (папка kp-alinaas/) на свой сервер, на отдельный поддомен.
+# Использует те же секреты, что и deploy-jino.yml:
+#   SSH_HOST, SSH_USER и SSH_KEY или SSH_PASSWORD.
+# Домен задаётся переменной репозитория KP_DOMAIN (Settings -> Secrets and variables
+# -> Actions -> Variables), по умолчанию kp.slmn2.ru. Для домена нужна A-запись на IP сервера.
+# Прототип завода (/var/www/beton-prototype и его конфиг nginx) не трогаем.
+name: Deploy KP alinaas
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/blissful-brown-puzd0b, main]
+    paths:
+      - 'kp-alinaas/**'
+      - 'deploy/nginx-kp-alinaas.conf'
+      - '.github/workflows/deploy-kp-alinaas.yml'
+
+concurrency:
+  group: kp-alinaas-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      HAS_HOST: ${{ secrets.SSH_HOST != '' && secrets.SSH_USER != '' }}
+      HAS_KEY: ${{ secrets.SSH_KEY != '' }}
+      HAS_PASSWORD: ${{ secrets.SSH_PASSWORD != '' }}
+      DOMAIN: ${{ vars.KP_DOMAIN || 'kp.slmn2.ru' }}
+      TARGET: /var/www/kp-alinaas
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Проверить файлы КП
+        run: |
+          test -f kp-alinaas/index.html
+          test -f kp-alinaas/style.css
+          test -f kp-alinaas/script.js
+          ! grep -n '—' kp-alinaas/index.html
+
+      - name: Нет секретов
+        if: env.HAS_HOST != 'true' || (env.HAS_KEY != 'true' && env.HAS_PASSWORD != 'true')
+        run: |
+          echo "Деплой пропущен: нужны SSH_HOST, SSH_USER и SSH_KEY или SSH_PASSWORD."
+          exit 1
+
+      - name: Подготовить доступ к серверу
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          if [ -n "$SSH_KEY" ]; then
+            printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
+            chmod 600 ~/.ssh/deploy_key
+            echo 'SSH_CMD=ssh -i ~/.ssh/deploy_key' >> "$GITHUB_ENV"
+          else
+            sudo apt-get update -qq && sudo apt-get install -y -qq sshpass
+            echo 'SSH_CMD=sshpass -e ssh' >> "$GITHUB_ENV"
+          fi
+
+      - name: Настроить nginx для поддомена
+        env:
+          SSHPASS: ${{ secrets.SSH_PASSWORD }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+        run: |
+          sed "s#KP_DOMAIN#$DOMAIN#" deploy/nginx-kp-alinaas.conf > /tmp/kp.conf
+          $SSH_CMD "$SSH_USER@$SSH_HOST" "command -v rsync >/dev/null 2>&1 || apt-get install -y -qq rsync; mkdir -p $TARGET"
+          # Если сертификат уже выпущен, certbot дописал в конфиг блоки 443; не затираем их.
+          if $SSH_CMD "$SSH_USER@$SSH_HOST" "grep -q 'managed by Certbot' /etc/nginx/sites-available/kp-alinaas 2>/dev/null"; then
+            echo "Конфиг с HTTPS уже есть, оставляю как есть"
+          else
+            rsync -az -e "$SSH_CMD" /tmp/kp.conf "$SSH_USER@$SSH_HOST:/etc/nginx/sites-available/kp-alinaas"
+          fi
+          $SSH_CMD "$SSH_USER@$SSH_HOST" "ln -sf /etc/nginx/sites-available/kp-alinaas /etc/nginx/sites-enabled/kp-alinaas && nginx -t"
+
+      - name: Залить КП
+        env:
+          SSHPASS: ${{ secrets.SSH_PASSWORD }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+        run: |
+          # --delete чистит только каталог КП.
+          rsync -az --delete -e "$SSH_CMD" kp-alinaas/ "$SSH_USER@$SSH_HOST:$TARGET/"
+          $SSH_CMD "$SSH_USER@$SSH_HOST" "chown -R www-data:www-data $TARGET 2>/dev/null || true; systemctl reload nginx"
+
+      - name: Проверить, что КП отвечает
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+        run: |
+          body=$(curl -s -H "Host: $DOMAIN" "http://$SSH_HOST/")
+          echo "$body" | grep -q 'mrs.alinaas'
+          echo "КП отдаётся сервером для $DOMAIN"
+          code=$(curl -s -o /dev/null -w '%{http_code}' -H "Host: $DOMAIN" "http://$SSH_HOST/img/alina.webp")
+          echo "img/alina.webp -> $code"; test "$code" = "200"
+
+      - name: HTTPS, если DNS уже смотрит на сервер
+        env:
+          SSHPASS: ${{ secrets.SSH_PASSWORD }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+        run: |
+          server_ip=$(getent ahostsv4 "$SSH_HOST" | awk 'NR==1{print $1}')
+          dns_ip=$(getent ahostsv4 "$DOMAIN" | awk 'NR==1{print $1}' || true)
+          echo "IP сервера: $server_ip, $DOMAIN -> ${dns_ip:-нет A-записи}"
+          if [ -z "$dns_ip" ] || [ "$dns_ip" != "$server_ip" ]; then
+            echo "::warning::$DOMAIN пока не указывает на сервер. Добавьте A-запись $DOMAIN -> $server_ip и перезапустите workflow."
+            exit 0
+          fi
+          $SSH_CMD "$SSH_USER@$SSH_HOST" bash -s <<REMOTE
+          set -e
+          export DEBIAN_FRONTEND=noninteractive
+          command -v certbot >/dev/null 2>&1 || { apt-get update -y -qq; apt-get install -y -qq certbot python3-certbot-nginx; }
+          certbot --nginx -d "$DOMAIN" --non-interactive --agree-tos --register-unsafely-without-email --redirect --keep-until-expiring
+          nginx -t && systemctl reload nginx
+          REMOTE
+          code=$(curl -s -o /dev/null -w '%{http_code}' "https://$DOMAIN/")
+          echo "https://$DOMAIN/ -> $code"
