@@ -21,6 +21,34 @@
     return Math.min(1, Math.max(0, v));
   }
 
+  /* ---------- Иконки: вставляем символы в разметку и меряем длину линий ---------- */
+  document.documentElement.classList.add('icons-prep');
+  Array.prototype.forEach.call(document.querySelectorAll('svg.icon'), function (svg) {
+    var use = svg.querySelector('use');
+    if (!use) return;
+    var id = (use.getAttribute('href') || use.getAttribute('xlink:href') || '').slice(1);
+    var sym = document.getElementById(id);
+    if (!sym) return;
+    svg.setAttribute('viewBox', sym.getAttribute('viewBox'));
+    Array.prototype.forEach.call(sym.children, function (node) {
+      var el = node.cloneNode(true);
+      el.removeAttribute('pathLength');
+      svg.appendChild(el);
+    });
+    svg.removeChild(use);
+    Array.prototype.forEach.call(svg.children, function (el, k) {
+      var len = 0;
+      try { len = el.getTotalLength(); } catch (e) { len = 0; }
+      el.style.setProperty('--len', (Math.ceil(len) + 1) + 'px');
+      el.style.setProperty('--k', k);
+    });
+    svg.classList.add('is-drawn');
+  });
+  document.body.getBoundingClientRect();
+  requestAnimationFrame(function () {
+    requestAnimationFrame(function () { document.documentElement.classList.remove('icons-prep'); });
+  });
+
   /* ---------- Разбивка текста на буквы ---------- */
   var ci = 0;
   function splitWords(text, cls) {
