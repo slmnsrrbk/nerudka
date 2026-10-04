@@ -79,9 +79,9 @@
 
   /* ---------- Цвета финала: плавно от белого к тёмному ---------- */
   var finalSlide = document.querySelector('.slide--final');
-  var C_BG_FROM = [255, 255, 255], C_BG_TO = [15, 15, 15];
+  var C_BG_FROM = [244, 243, 238], C_BG_TO = [15, 15, 15];
   var C_FG_FROM = [17, 17, 17], C_FG_TO = [242, 242, 242];
-  var C_MU_FROM = [98, 98, 98], C_MU_TO = [163, 163, 163];
+  var C_MU_FROM = [92, 90, 85], C_MU_TO = [163, 163, 163];
   function mix(a, b, t) {
     return 'rgb(' + a.map(function (v, i) { return Math.round(v + (b[i] - v) * t); }).join(',') + ')';
   }
@@ -217,11 +217,35 @@
     }
   });
 
+  /* ---------- Цифры набегают от нуля, полосы заполняются ---------- */
+  function fmt(n) {
+    return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0');
+  }
+  function countUp(slide) {
+    Array.prototype.forEach.call(slide.querySelectorAll('.count'), function (el, i) {
+      var to = +el.getAttribute('data-count');
+      var suffix = (el.getAttribute('data-suffix') || '').replace('&nbsp;', '\u00a0');
+      var delay = 250 + i * 60, dur = 1400, start = null;
+      el.textContent = '0' + suffix;
+      function step(ts) {
+        if (start === null) start = ts + delay;
+        var t = Math.min(1, Math.max(0, (ts - start) / dur));
+        el.textContent = fmt(Math.round(to * (1 - Math.pow(1 - t, 3)))) + suffix;
+        if (t < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+    Array.prototype.forEach.call(slide.querySelectorAll('.bar__fill'), function (b, i) {
+      b.style.transitionDelay = (250 + i * 80) + 'ms';
+    });
+  }
+
   if ('IntersectionObserver' in window && !reduceMotion.matches) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
           entry.target.classList.add('is-visible');
+          if (entry.target.querySelector('.count')) countUp(entry.target);
           io.unobserve(entry.target);
         }
       });
