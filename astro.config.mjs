@@ -18,5 +18,8 @@ export default defineConfig({
   ],
   vite: {
     plugins: [tailwindcss()],
+    // Старые Safari (iOS до 18) понимают размытие стекла только с префиксом -webkit-:
+    // цель сборки заставляет минификатор CSS оставить его.
+    build: { cssTarget: ['safari14', 'ios14', 'chrome100', 'firefox100', 'edge100'] },
   },
 });

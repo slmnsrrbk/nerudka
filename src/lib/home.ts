@@ -85,7 +85,7 @@ export const DISCOUNTS = [
 export const PLANTS = [1, 2, 3, 4, 5, 6].map((n, i) => {
   const set = ['plant-dosing', 'plant-silos', 'plant-aggregates', 'plant-mixers', 'plant-inside', 'hero', 'plant-pour', 'lab-press'];
   const photos = [0, 1, 2, 3, 4].map((k) => set[(i + k) % set.length]);
-  return { n, name: '[Название узла — заглушка]', address: '[адрес — заглушка]', power: '[заглушка] м³/ч', mode: 'Отгрузка круглосуточно', photos };
+  return { n, name: `Бетонный узел № ${n}`, address: '[адрес — заглушка]', power: '[заглушка] м³/ч', mode: 'Отгрузка круглосуточно', photos };
 });
 
 export const OBJECTS = [
