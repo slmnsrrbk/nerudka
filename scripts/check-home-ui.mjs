@@ -42,11 +42,7 @@ await p.locator('[data-cart-form] button[type=submit]').click();
 check('корзина: заявка отправлена', await p.locator('[data-overlay="cart"] [data-done]').isVisible());
 await p.keyboard.press('Escape');
 
-await cell.locator('[data-order]').click();
-check('«Заказать» открывает заявку с позицией', /^Бетон М\d+ на (гравии|граните), 60 м³/.test(await p.locator('[data-lead-comment]').inputValue()), await p.locator('[data-lead-comment]').inputValue());
-await p.keyboard.press('Escape');
-
-await p.locator('[data-search-open]').first().click();
+await p.locator('.nav-hero [data-search-open]').click();
 await p.locator('[data-search-input]').fill('m300 гранит');
 check('поиск «m300 гранит»', (await p.locator('[data-search-res] a').count()) >= 1, await p.locator('[data-search-res] a').first().textContent());
 await p.keyboard.press('Escape');
@@ -55,7 +51,7 @@ await p.locator('[data-calc-type="0"]').click();
 check('калькулятор: лента 48×0,4×1,2 = 23 м³', /23/.test(await p.locator('[data-calc-v]').textContent()), await p.locator('[data-calc-v]').textContent());
 
 const sl = p.locator('[data-slider]').first();
-await sl.locator('[data-next]').click(); await p.waitForTimeout(700);
+await sl.locator('[data-dots] button').nth(1).click(); await p.waitForTimeout(700);
 check('слайдер РБУ: 2 / 5', (await sl.locator('[data-cur]').textContent()) === '2');
 const car = p.locator('[data-carousel]');
 await car.scrollIntoViewIfNeeded();

@@ -375,8 +375,8 @@ $$('[data-slider]').forEach((sl) => {
   const n = track.children.length;
   const idx = () => Math.round(track.scrollLeft / track.clientWidth);
   const go = (i: number) => track.scrollTo({ left: ((i + n) % n) * track.clientWidth, behavior: 'smooth' });
-  $('[data-prev]', sl)!.addEventListener('click', () => go(idx() - 1));
-  $('[data-next]', sl)!.addEventListener('click', () => go(idx() + 1));
+  $('[data-prev]', sl)?.addEventListener('click', () => go(idx() - 1));
+  $('[data-next]', sl)?.addEventListener('click', () => go(idx() + 1));
   dots.forEach((d, i) => d.addEventListener('click', () => go(i)));
   let raf = 0;
   track.addEventListener('scroll', () => {
@@ -438,35 +438,35 @@ const CALCS: Calc[] = [
     fields: [{ k: 'l', label: 'Общая длина ленты, м', v: 48, step: 1 }, { k: 'w', label: 'Ширина, м', v: 0.4, step: 0.05 }, { k: 'h', label: 'Высота, м', v: 1.2, step: 0.1 }],
     volume: (f) => f.l * f.w * f.h,
     grade: 'Марка для ленточного фундамента — обычно М250 В20',
-    svg: (f) => `<svg viewBox="0 0 320 220"><rect x="40" y="30" width="240" height="150" rx="2" fill="none" stroke="#1C2438" stroke-width="18" stroke-opacity=".18"/><rect x="31" y="21" width="258" height="168" fill="none" stroke="#1C2438" stroke-width="1.5"/><rect x="49" y="39" width="222" height="132" fill="none" stroke="#1C2438" stroke-width="1.5"/><text x="160" y="110" text-anchor="middle">длина ленты ${n1(f.l)} м</text><text x="160" y="212" text-anchor="middle">ширина ${n1(f.w)} м · высота ${n1(f.h)} м</text></svg>`,
+    svg: (f) => `<svg viewBox="0 0 360 260"><rect x="50" y="70" width="260" height="150" rx="6" fill="none" stroke="#DCE3EE" stroke-width="22"/><rect x="39" y="59" width="282" height="172" rx="8" fill="none" stroke="#1C2438" stroke-width="1.5"/><rect x="61" y="81" width="238" height="128" rx="4" fill="none" stroke="#1C2438" stroke-width="1.5"/><text x="180" y="150" text-anchor="middle" font-family="Onest, sans-serif" font-size="13" font-weight="500" fill="#6B7593">длина ${n1(f.l)} м</text><text x="180" y="252" text-anchor="middle" font-family="Onest, sans-serif" font-size="13" font-weight="500" fill="#6B7593">ширина ${n1(f.w)} м · высота ${n1(f.h)} м</text></svg>`,
   },
   {
     name: 'Плита',
     fields: [{ k: 'l', label: 'Длина, м', v: 16, step: 0.5 }, { k: 'w', label: 'Ширина, м', v: 12, step: 0.5 }, { k: 'h', label: 'Толщина, м', v: 0.3, step: 0.05 }],
     volume: (f) => f.l * f.w * f.h,
     grade: 'Марка для плиты под дом — М300 В22,5',
-    svg: (f) => `<svg viewBox="0 0 320 220"><rect x="50" y="30" width="220" height="140" rx="4" fill="#DCE3EE" stroke="#1C2438" stroke-width="1.5"/><text x="160" y="198" text-anchor="middle">${n1(f.l)} м</text><text x="282" y="104" text-anchor="start">${n1(f.w)} м</text><text x="40" y="104" text-anchor="end">${n1(f.h)} м</text></svg>`,
+    svg: (f) => `<svg viewBox="0 0 360 260"><rect x="50" y="110" width="260" height="110" rx="6" fill="#DCE3EE" stroke="#1C2438" stroke-width="1.5"/><text x="180" y="245" text-anchor="middle" font-family="Onest, sans-serif" font-size="13" font-weight="500" fill="#6B7593">${n1(f.l)} м</text><text x="318" y="169" font-family="Onest, sans-serif" font-size="13" font-weight="500" fill="#6B7593">${n1(f.w)} м</text><text x="24" y="169" font-family="Onest, sans-serif" font-size="13" font-weight="500" fill="#6B7593">${n1(f.h)} м</text></svg>`,
   },
   {
     name: 'Стяжка',
     fields: [{ k: 's', label: 'Площадь пола, м²', v: 60, step: 1 }, { k: 't', label: 'Толщина, см', v: 5, step: 0.5 }],
     volume: (f) => f.s * f.t / 100,
     grade: 'Марка для стяжки — обычно М200 В15',
-    svg: (f) => `<svg viewBox="0 0 320 220"><path d="M40 150 160 90 280 150 160 210Z" fill="#DCE3EE" stroke="#1C2438" stroke-width="1.5"/><path d="M40 150v-14l120-60 120 60v14" fill="none" stroke="#1C2438" stroke-width="1.5"/><text x="160" y="155" text-anchor="middle">${n1(f.s)} м²</text><text x="160" y="40" text-anchor="middle">толщина ${n1(f.t)} см</text></svg>`,
+    svg: (f) => `<svg viewBox="0 0 360 260"><path d="M60 170 180 110 300 170 180 230Z" fill="#DCE3EE" stroke="#1C2438" stroke-width="1.5"/><path d="M60 170v-14l120-60 120 60v14" fill="none" stroke="#1C2438" stroke-width="1.5"/><text x="180" y="175" text-anchor="middle" font-family="Onest, sans-serif" font-size="13" font-weight="500" fill="#6B7593">${n1(f.s)} м²</text><text x="180" y="80" text-anchor="middle" font-family="Onest, sans-serif" font-size="13" font-weight="500" fill="#6B7593">толщина ${n1(f.t)} см</text></svg>`,
   },
   {
     name: 'Столбы и сваи',
     fields: [{ k: 'n', label: 'Количество, шт.', v: 12, step: 1 }, { k: 'd', label: 'Диаметр, м', v: 0.3, step: 0.05 }, { k: 'h', label: 'Глубина, м', v: 2, step: 0.1 }],
     volume: (f) => f.n * Math.PI * (f.d / 2) ** 2 * f.h,
     grade: 'Марку для свай и столбов подскажет технолог по проекту и грунтам',
-    svg: (f) => `<svg viewBox="0 0 320 220">${[60, 130, 200, 270].map((x) => `<rect x="${x - 14}" y="50" width="28" height="130" rx="4" fill="#DCE3EE" stroke="#1C2438" stroke-width="1.5"/><ellipse cx="${x}" cy="50" rx="14" ry="5" fill="#fff" stroke="#1C2438" stroke-width="1.5"/>`).join('')}<text x="160" y="28" text-anchor="middle">${n1(f.n)} шт. · ⌀ ${n1(f.d)} м</text><text x="160" y="208" text-anchor="middle">глубина ${n1(f.h)} м</text></svg>`,
+    svg: (f) => `<svg viewBox="0 0 360 260">${[90, 150, 210, 270].map((x) => `<rect x="${x - 14}" y="90" width="28" height="130" rx="4" fill="#DCE3EE" stroke="#1C2438" stroke-width="1.5"/><ellipse cx="${x}" cy="90" rx="14" ry="5" fill="#fff" stroke="#1C2438" stroke-width="1.5"/>`).join('')}<text x="180" y="70" text-anchor="middle" font-family="Onest, sans-serif" font-size="13" font-weight="500" fill="#6B7593">${n1(f.n)} шт. · ⌀ ${n1(f.d)} м</text><text x="180" y="245" text-anchor="middle" font-family="Onest, sans-serif" font-size="13" font-weight="500" fill="#6B7593">глубина ${n1(f.h)} м</text></svg>`,
   },
   {
     name: 'Отмостка',
     fields: [{ k: 'p', label: 'Периметр дома, м', v: 40, step: 1 }, { k: 'w', label: 'Ширина, м', v: 1, step: 0.1 }, { k: 'h', label: 'Толщина, м', v: 0.1, step: 0.05 }],
     volume: (f) => f.p * f.w * f.h,
     grade: 'Марка для отмостки — обычно М200 В15',
-    svg: (f) => `<svg viewBox="0 0 320 220"><rect x="60" y="30" width="200" height="150" fill="#DCE3EE" stroke="#1C2438" stroke-width="1.5"/><rect x="88" y="58" width="144" height="94" fill="#fff" stroke="#1C2438" stroke-width="1.5"/><text x="160" y="110" text-anchor="middle">дом</text><text x="160" y="205" text-anchor="middle">периметр ${n1(f.p)} м · ширина ${n1(f.w)} м</text></svg>`,
+    svg: (f) => `<svg viewBox="0 0 360 260"><rect x="80" y="80" width="200" height="140" rx="6" fill="#DCE3EE" stroke="#1C2438" stroke-width="1.5"/><rect x="106" y="106" width="148" height="88" rx="4" fill="#fff" stroke="#1C2438" stroke-width="1.5"/><text x="180" y="155" text-anchor="middle" font-family="Onest, sans-serif" font-size="13" font-weight="500" fill="#6B7593">дом</text><text x="180" y="245" text-anchor="middle" font-family="Onest, sans-serif" font-size="13" font-weight="500" fill="#6B7593">периметр ${n1(f.p)} м · ширина ${n1(f.w)} м</text></svg>`,
   },
 ];
 const calc = $('[data-calc]');
@@ -489,6 +489,7 @@ function calcUpdate() {
   $('[data-calc-s]', calc)!.textContent = `С запасом 5 % — ${n1(Math.round(v * 1.05 * 10) / 10)} м³`;
   $('[data-calc-grade]', calc)!.textContent = c.grade;
   $('[data-calc-fig]', calc)!.innerHTML = c.svg(vals);
+  $('[data-calc-cap]', calc)!.textContent = `Схема: ${c.name.toLowerCase()}`;
 }
 function calcSummary() {
   const c = CALCS[calcType];
@@ -506,3 +507,11 @@ if (calc) {
 }
 
 saveCart();
+
+/* ---------- Выбор марки в форме первого экрана: текст поля + «▾» как в макете ---------- */
+$$<HTMLSelectElement>('[data-sel]').forEach((sel) => {
+  const v = sel.parentElement!.querySelector('[data-sel-v]')!;
+  const sync = () => (v.textContent = sel.value);
+  sel.addEventListener('change', sync);
+  sync();
+});
