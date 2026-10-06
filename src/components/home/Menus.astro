@@ -4,11 +4,6 @@ import Icon from './Icon.astro';
 import NavBar from './NavBar.astro';
 import { MENU, NAV } from '../../lib/menu';
 import { site } from '../../lib/home-site';
-const extra = [
-  { label: 'Прайс-лист', href: '#price', icon: 'receipt' },
-  { label: 'Калькулятор', href: '#calc', icon: 'calculator' },
-  { label: 'Доставка', href: '#delivery', icon: 'truck' },
-];
 ---
 <div class="sticky-bar" data-sticky aria-hidden="true">
   <div class="wrap"><NavBar variant="sticky" /></div>
@@ -21,10 +16,6 @@ const extra = [
       <button type="button" class:list={['rail-item', { on: i === 0 }]} role="tab" aria-selected={i === 0 ? 'true' : 'false'} data-mega-tab={s.id}>
         <Icon name={s.icon} size={20} /><span>{s.label}</span><Icon name="chevron-right" size={16} class="rail-ch" />
       </button>
-    ))}
-    <span class="rail-sep"></span>
-    {extra.map((l) => (
-      <a class="rail-item" href={l.href}><Icon name={l.icon} size={20} /><span>{l.label}</span><Icon name="chevron-right" size={16} class="rail-ch" /></a>
     ))}
   </div>
   <div class="mega-body">
