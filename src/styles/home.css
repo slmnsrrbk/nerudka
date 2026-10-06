@@ -75,7 +75,11 @@ ul, ol { list-style: none; }
 .logo { display: inline-flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 600; white-space: nowrap; }
 .logo-dot { width: 18px; height: 18px; border-radius: 50%; background: currentColor; }
 .nav-links { display: flex; align-items: center; gap: clamp(12px, 1.53vw, 22px); margin-left: clamp(4px, .85vw, 12px); }
-.nav-mail { margin-left: clamp(8px, 2.85vw, 41px); }
+/* Почта — в правой группе, вплотную к поиску и корзине */
+@media (min-width: 1241px) {
+  .nav-mail { margin-left: auto; }
+  .nav-mail + .nav-tools { margin-left: 0; }
+}
 .nav-link { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 500; letter-spacing: .575px; text-transform: uppercase; white-space: nowrap; opacity: .92; transition: opacity .15s; }
 .nav-link:hover, .nav-link[aria-expanded='true'] { opacity: 1; text-decoration: underline; text-underline-offset: 6px; }
 .nav-link[aria-expanded='true'] .ic { transform: rotate(180deg); }
