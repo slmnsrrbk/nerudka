@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Прототип mrs.alinaas в рамке устройства</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A4%8D%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+<style>
+  :root { --ink: #141414; --mut: #6b6b6b; --bg: #ececea; --tag: #ffe7a3; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.4 "Inter", system-ui, sans-serif; height: 100vh; display: flex; flex-direction: column; }
+  .bar { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; padding: 12px 20px; background: #fff; border-bottom: 1px solid #dcdcdc; }
+  .bar b { font-size: 15px; }
+  .seg { display: inline-flex; background: #f2f2f0; border-radius: 999px; padding: 3px; }
+  .seg button { border: 0; background: none; font: 500 13px "Inter", sans-serif; padding: 8px 14px; border-radius: 999px; cursor: pointer; color: var(--ink); }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+  select { font: 500 13px "Inter", sans-serif; padding: 8px 10px; border-radius: 10px; border: 1px solid #dcdcdc; background: #fff; }
+  .bar a { color: var(--mut); }
+  .stage { flex: 1; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 24px; }
+  .device { background: #fff; border: 10px solid var(--ink); border-radius: 36px; overflow: hidden; transition: width .25s, height .25s; box-shadow: 0 20px 60px rgba(0,0,0,.15); max-width: 100%; }
+  .device.is-desktop { border-width: 6px; border-radius: 12px; }
+  iframe { display: block; width: 100%; height: 100%; border: 0; }
+  @media (prefers-reduced-motion: reduce) { .device { transition: none; } }
+</style>
+</head>
+<body>
+  <div class="bar">
+    <b>Прототип mrs.alinaas</b>
+    <div class="seg" role="group" aria-label="Устройство">
+      <button type="button" data-w="390" data-h="844" aria-pressed="true">Телефон 390</button>
+      <button type="button" data-w="768" data-h="1024" aria-pressed="false">Планшет 768</button>
+      <button type="button" data-w="1440" data-h="900" aria-pressed="false">Компьютер 1440</button>
+    </div>
+    <label>Страница
+      <select id="page">
+        <option value="index.html">Главная</option>
+        <option value="magiya-5-utra.html">Магия 5 утра</option>
+        <option value="cookbook.html">Alina CookBook</option>
+        <option value="zavtraki.html">Полезные завтраки</option>
+        <option value="detox.html">Detox</option>
+        <option value="selfbody.html">SELFBODY</option>
+        <option value="spasibo.html">Спасибо за покупку</option>
+        <option value="oferta.html">Документы</option>
+      </select>
+    </label>
+    <a href="index.html">Открыть без рамки</a>
+  </div>
+  <div class="stage"><div class="device" id="device"><iframe id="frame" title="Прототип сайта" src="index.html?frame=1"></iframe></div></div>
+<script>
+(function () {
+  var device = document.getElementById('device');
+  var frame = document.getElementById('frame');
+  var sel = document.getElementById('page');
+  var btns = document.querySelectorAll('.seg button');
+  var params = new URLSearchParams(location.search);
+  function size(w, h) {
+    device.style.width = (Number(w) + 20) + 'px';
+    device.style.height = (Number(h) + 20) + 'px';
+    device.classList.toggle('is-desktop', Number(w) > 1000);
+  }
+  btns.forEach(function (b) {
+    b.addEventListener('click', function () {
+      btns.forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      size(b.dataset.w, b.dataset.h);
+    });
+  });
+  sel.addEventListener('change', function () { frame.src = sel.value + '?frame=1'; });
+  var start = params.get('page');
+  if (start && /^[a-z0-9-]+\.html$/.test(start)) { sel.value = start; frame.src = start + '?frame=1'; }
+  size(390, 844);
+})();
+</script>
+</body>
+</html>
