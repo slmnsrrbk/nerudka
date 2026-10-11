@@ -1,0 +1,15 @@
+---
+// Реквизиты компании (О компании). Значения — из site.json, пока с пометкой [заглушка].
+import Icon from '../home/Icon.astro';
+import data from '../../data/site.json';
+const r = data.requisites;
+const rows = [['Наименование', data.legalName], ['ИНН / КПП', `${r.inn.replace(' [заглушка]', '')} / ${r.kpp}`], ['ОГРН', r.ogrn], ['Банк', r.bank], ['Р/с', r.account], ['БИК', r.bik], ['Адрес', data.address]];
+---
+<div class="req card-w" id="rekvizity">
+  <div class="req-l">
+    <p class="h3">Реквизиты</p>
+    <p class="small muted">Для договора и счёта. Карточку предприятия пришлём на почту по запросу.</p>
+    <button type="button" class="btn btn-grey btn-sm" data-modal="lead" data-topic="Карточка предприятия">Запросить карточку<Icon name="download" size={16} /></button>
+  </div>
+  <dl class="req-t">{rows.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
+</div>

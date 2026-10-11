@@ -1,0 +1,22 @@
+---
+// Раздел главной, общий для внутренних страниц.
+import Icon from '../home/Icon.astro';
+import SectionHead from '../home/SectionHead.astro';
+import Hook from '../home/Hook.astro';
+import { site } from '../../lib/home-site';
+import { FAQ } from '../../lib/home';
+---
+<!-- 11 · FAQ -->
+<section class="sec" id="faq" aria-labelledby="faq-h">
+  <div class="wrap">
+    <SectionHead id="faq-h" label="Вопросы" title="Вопросы о бетоне" sub="и доставке — коротко" desc="Самое частое, что спрашивают перед заказом. Ответы видны сразу. Не нашли свой — напишите на почту, в Telegram или MAX." />
+    <div class="stack">
+      <div class="faq">
+        {FAQ.map(([q, a]) => <div class="card qa"><p class="qa-q"><Icon name="circle-help" size={20} />{q}</p><p class="small muted">{a}</p></div>)}
+      </div>
+      <Hook icon="circle-help" title="Не нашли свой вопрос? Спросите диспетчера" sub="Ответим по телефону или на почту" btn="Задать вопрос" />
+    </div>
+  </div>
+</section>
+
+

@@ -27,7 +27,8 @@ type PageData = (typeof pagesData)[number] & {
 
 export function getStaticPaths() {
   return [
-    ...pagesData.map((p) => ({ params: { page: p.slug }, props: { data: p as PageData | null } })),
+    // «О компании» — отдельная страница в новом дизайне: src/pages/o-zavode/index.astro.
+    ...pagesData.filter((p) => p.slug !== 'o-zavode').map((p) => ({ params: { page: p.slug }, props: { data: p as PageData | null } })),
     { params: { page: '_prototype' }, props: { data: null } },
   ];
 }

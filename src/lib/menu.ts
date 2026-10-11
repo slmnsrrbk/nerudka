@@ -92,7 +92,7 @@ export const MENU: MenuSection[] = [
         { title: 'По типу и виду', kind: 'list', items: TYPES.map((t) => ({ label: KEEP_FULL.has(t) ? t : short(t), href: categoryHref(t, CATALOG_BETON) })) },
       ],
     ],
-    footer: [{ label: 'Весь каталог бетона', href: CATALOG_BETON }, { label: 'Прайс-лист', href: '#price' }],
+    footer: [{ label: 'Весь каталог бетона', href: CATALOG_BETON }, { label: 'Прайс-лист', href: '/#price' }],
   },
   {
     id: 'rastvor', label: 'Растворы и смеси', icon: 'cylinder',
@@ -107,7 +107,7 @@ export const MENU: MenuSection[] = [
         { title: 'Подвижность', kind: 'chips', items: [{ label: 'Пк 1–4', href: categoryHref('Цементный раствор', CATALOG_RASTVOR) }] },
       ],
     ],
-    footer: [{ label: 'Все растворы и смеси', href: CATALOG_RASTVOR }, { label: 'Прайс-лист', href: '#price' }],
+    footer: [{ label: 'Все растворы и смеси', href: CATALOG_RASTVOR }, { label: 'Прайс-лист', href: '/#price' }],
   },
   {
     id: 'uslugi', label: 'Услуги', icon: 'hard-hat',
@@ -130,10 +130,10 @@ export const MENU: MenuSection[] = [
 ];
 
 export const NAV: MenuLink[] = [
-  { label: 'Прайс-лист', href: '#price' },
+  { label: 'Прайс-лист', href: '/#price' },
   { label: 'О компании', href: '/o-zavode/' },
-  { label: 'Завод', href: '#plants' },
-  { label: 'Калькулятор', href: '#calc' },
-  { label: 'FAQ', href: '#faq' },
-  { label: 'Контакты', href: '#contacts' },
+  { label: 'Завод', href: '/#plants' },
+  { label: 'Калькулятор', href: '/#calc' },
+  { label: 'FAQ', href: '/#faq' },
+  { label: 'Контакты', href: '/kontakty/' },
 ];

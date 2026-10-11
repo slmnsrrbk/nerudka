@@ -5,6 +5,10 @@ const $$ = <T extends Element = HTMLElement>(s: string, r: ParentNode = document
 const fmt = (n: number, d = 0) => n.toLocaleString('ru-RU', { minimumFractionDigits: d, maximumFractionDigits: d }).replace(/ /g, ' ');
 const rub = (n: number) => `${fmt(Math.round(n))} ₽`;
 const vol = (n: number) => `${fmt(n, n % 1 ? 1 : 0)} м³`;
+const pl = (n: number, one: string, few: string, many: string) => {
+  const a = n % 10, b = n % 100;
+  return a === 1 && b !== 11 ? one : a >= 2 && a <= 4 && (b < 10 || b >= 20) ? few : many;
+};
 const mq = (q: string) => window.matchMedia(q).matches;
 
 /* ---------- Блокировка прокрутки и фокус ---------- */
@@ -126,21 +130,23 @@ document.addEventListener('submit', (e) => {
     form.reset();
     return;
   }
-  const host = form.closest('.ov-card, .side-body')!;
+  const host = form.closest('.ov-card, .side-body, [data-form-host]')!;
   form.hidden = true;
   $('[data-done]', host)!.hidden = false;
   form.reset();
   if (form.matches('[data-cart-form]')) { cart = {}; saveCart(); renderCart(true); }
+  if (form.matches('[data-kform]')) { cart = {}; saveCart(true); }
 });
 
 /* ---------- Корзина ---------- */
 type Item = { name: string; price: number; href: string; qty: number };
 let cart: Record<string, Item> = {};
 try { cart = JSON.parse(localStorage.getItem('beton-cart') || '{}'); } catch { cart = {}; }
-function saveCart() {
+function saveCart(sent = false) {
   try { localStorage.setItem('beton-cart', JSON.stringify(cart)); } catch { /* приватный режим */ }
   const n = Object.keys(cart).length;
   $$('[data-cart-count]').forEach((b) => (b.textContent = String(n)));
+  renderCartPage(sent);
 }
 const DISC = [{ from: 500, p: 20 }, { from: 200, p: 15 }, { from: 50, p: 10 }];
 function renderCart(keepDone = false) {
@@ -205,6 +211,81 @@ document.addEventListener('change', (e) => {
   if (t.matches('[data-cqty]')) setQty(t.closest<HTMLElement>('.cart-item')!.dataset.id!, readQ(t));
 });
 
+
+/* ---------- Страница корзины /korzina/ ---------- */
+let kSpec: Record<string, string> = {};
+try { kSpec = JSON.parse($('#kspec')?.textContent || '{}'); } catch { kSpec = {}; }
+function renderCartPage(sent = false) {
+  const page = $('[data-kpage]');
+  if (!page) return;
+  const items = Object.entries(cart);
+  const done = $('[data-done]', page)!;
+  if (sent) {
+    // Заявка ушла: оставляем только сообщение «Заявка принята».
+    $$('.ktable, .kdisc, .kart-side', page).forEach((el) => (el.hidden = true));
+    $('[data-kfull]', page)!.classList.add('kart-done');
+    return;
+  }
+  if (!done.hidden) return;
+  $('[data-kfull]', page)!.hidden = !items.length;
+  $('[data-kempty]', page)!.hidden = items.length > 0;
+  const volume = items.reduce((s, [, it]) => s + it.qty, 0);
+  const subtotal = items.reduce((s, [, it]) => s + it.qty * it.price, 0);
+  const d = DISC.find((x) => volume >= x.from);
+  const disc = d ? subtotal * d.p / 100 : 0;
+  const sub = $('.phero-sub');
+  if (sub) sub.textContent = items.length
+    ? `${items.length} ${pl(items.length, 'позиция', 'позиции', 'позиций')} · ${vol(volume)}${d ? ` · скидка ${d.p} % от объёма уже учтена` : ''}`
+    : 'Добавьте позиции из прайса — посчитаем скидку от объёма';
+  const list = $('[data-klist]', page)!;
+  const focusId = (document.activeElement as HTMLElement | null)?.closest<HTMLElement>('.krow')?.dataset.id;
+  list.innerHTML = '';
+  for (const [id, it] of items) {
+    const li = document.createElement('li');
+    li.className = 'krow';
+    li.dataset.id = id;
+    li.innerHTML = `<div class="prow-name"><a></a><span></span></div><span class="kp"><span class="kl">Цена за м³</span>${rub(it.price)}</span>
+      <span class="kq"><span class="kl">Объём, м³</span><span class="stepper"><button type="button" class="st-b" data-kdec aria-label="Меньше">−</button><input class="st-q" value="${fmt(it.qty, it.qty % 1 ? 1 : 0)}" inputmode="decimal" data-kqty aria-label="Объём, м³"><button type="button" class="st-b" data-kinc aria-label="Больше">+</button></span></span>
+      <b class="ks">${rub(it.price * it.qty)}</b><button type="button" class="kdel" data-kdel aria-label="Удалить">×</button>`;
+    const a = $<HTMLAnchorElement>('a', li)!;
+    a.href = it.href; a.textContent = it.name;
+    $('.prow-name span', li)!.textContent = kSpec[id] ?? '';
+    list.appendChild(li);
+  }
+  if (focusId) $<HTMLInputElement>(`.krow[data-id="${CSS.escape(focusId)}"] [data-kqty]`, list)?.focus();
+  $('[data-ksum-l]', page)!.textContent = `Бетон и растворы · ${vol(volume)}`;
+  $('[data-ksub]', page)!.textContent = rub(subtotal);
+  $('[data-kdrow]', page)!.hidden = !d;
+  $('[data-kdl]', page)!.textContent = d ? `Скидка ${d.p} % от объёма` : 'Скидка';
+  $('[data-kd]', page)!.textContent = `−${rub(disc)}`;
+  $('[data-ktotal]', page)!.textContent = rub(subtotal - disc);
+  const next = [...DISC].reverse().find((x) => volume < x.from);
+  $('[data-kdisc-t]', page)!.textContent = d ? `Скидка ${d.p} % от объёма уже учтена` : `Скидка от ${next!.from} м³ — ${next!.p} %`;
+  $('[data-kdisc-s]', page)!.textContent = next ? `Добавьте ещё ${vol(next.from - volume)} — скидка ${d ? 'вырастет до' : ''} ${next.p} %`.replace('  ', ' ') : 'Максимальная скидка учтена';
+  $('[data-kbar]', page)!.style.width = `${Math.min(100, volume / 500 * 100)}%`;
+  $$('[data-kmark]', page).forEach((m) => m.classList.toggle('on', volume >= Number(m.dataset.kmark)));
+  ($('[data-kitems]', page) as HTMLInputElement).value = items.map(([, it]) => `${it.name} — ${vol(it.qty)}`).join('; ');
+}
+const kPage = $('[data-kpage]');
+if (kPage) {
+  renderCartPage();
+  kPage.addEventListener('click', (e) => {
+    const t = e.target as HTMLElement;
+    if (t.closest('[data-kclear]')) { cart = {}; saveCart(); return; }
+    const row = t.closest<HTMLElement>('.krow');
+    if (!row?.dataset.id) return;
+    const id = row.dataset.id;
+    if (t.closest('[data-kdel]')) setQty(id, 0);
+    else if (t.closest('[data-kinc]')) setQty(id, clampQ(cart[id].qty + 1));
+    else if (t.closest('[data-kdec]')) setQty(id, clampQ(cart[id].qty - 1));
+  });
+  kPage.addEventListener('change', (e) => {
+    const t = e.target as HTMLInputElement;
+    if (t.matches('[data-kqty]')) setQty(t.closest<HTMLElement>('.krow')!.dataset.id!, readQ(t));
+  });
+  document.addEventListener('cart-change', () => renderCartPage());
+}
+
 /* ---------- Прайс: вкладки, счётчики, заказ ---------- */
 const price = $('[data-price]');
 if (price) {
@@ -219,28 +300,96 @@ if (price) {
       if (mq('(max-width: 1080px)')) $('.price-panel', price)!.scrollIntoView({ block: 'start', behavior: 'smooth' });
       return;
     }
-    const cell = t.closest<HTMLElement>('.pcell[data-item]');
-    if (!cell) return;
-    const input = $<HTMLInputElement>('[data-qty]', cell)!;
-    let q = readQ(input);
-    if (t.closest('[data-inc]')) { q = clampQ(q + 1); input.value = fmt(q, q % 1 ? 1 : 0); }
-    if (t.closest('[data-dec]')) { q = clampQ(q - 1); input.value = fmt(q, q % 1 ? 1 : 0); }
-    const { item: id, name, href } = cell.dataset as { item: string; name: string; href: string };
-    const p = Number(cell.dataset.price);
-    if (t.closest('[data-add]')) {
-      cart[id] = { name, price: p, href, qty: (cart[id]?.qty ?? 0) + q };
-      saveCart();
-      const btn = $('[data-add]', cell)!;
-      btn.classList.add('added');
-      setTimeout(() => btn.classList.remove('added'), 900);
-      toast(`В корзине: ${name}, ${vol(cart[id].qty)}`);
-    }
-    if (t.closest('[data-order]')) openLead(`Заказ: ${name}`, `${name}, ${vol(q)} по ${rub(p)} за м³`);
   });
-  price.addEventListener('change', (e) => {
-    const t = e.target as HTMLInputElement;
-    if (t.matches('[data-qty]')) { const q = readQ(t); t.value = fmt(q, q % 1 ? 1 : 0); }
-  });
+}
+/* Счётчик и «в корзину» — в прайсе, карточках товара и на странице позиции. */
+document.addEventListener('click', (e) => {
+  const t = e.target as HTMLElement;
+  const cell = t.closest<HTMLElement>('[data-item]');
+  if (!cell || !t.closest('[data-inc],[data-dec],[data-add],[data-order],[data-preset]')) return;
+  const input = $<HTMLInputElement>('[data-qty]', cell);
+  if (!input) return;
+  let q = readQ(input);
+  const preset = t.closest<HTMLElement>('[data-preset]');
+  if (preset) { q = clampQ(Number(preset.dataset.preset)); $$('[data-preset]', cell).forEach((b) => b.classList.toggle('on', b === preset)); }
+  if (t.closest('[data-inc]')) q = clampQ(q + 1);
+  if (t.closest('[data-dec]')) q = clampQ(q - 1);
+  input.value = fmt(q, q % 1 ? 1 : 0);
+  cell.dispatchEvent(new CustomEvent('qty', { detail: q }));
+  const { item: id, name, href } = cell.dataset as { item: string; name: string; href: string };
+  const p = Number(cell.dataset.price);
+  if (t.closest('[data-add]')) {
+    cart[id] = { name, price: p, href, qty: (cart[id]?.qty ?? 0) + q };
+    saveCart();
+    const btn = t.closest<HTMLElement>('[data-add]')!;
+    btn.classList.add('added');
+    setTimeout(() => btn.classList.remove('added'), 900);
+    toast(`В корзине: ${name}, ${vol(cart[id].qty)}`);
+    document.dispatchEvent(new CustomEvent('cart-change'));
+  }
+  if (t.closest('[data-order]')) openLead(`Заказ: ${name}`, `${name}, ${vol(q)} по ${rub(p)} за м³`);
+});
+document.addEventListener('change', (e) => {
+  const t = e.target as HTMLInputElement;
+  if (!t.matches('[data-qty]')) return;
+  const q = readQ(t); t.value = fmt(q, q % 1 ? 1 : 0);
+  t.closest<HTMLElement>('[data-item]')?.dispatchEvent(new CustomEvent('qty', { detail: q }));
+});
+
+/* «Показать ещё» в прайс-таблице категории. */
+document.addEventListener('click', (e) => {
+  const btn = (e.target as HTMLElement).closest<HTMLElement>('[data-pmore]');
+  if (!btn) return;
+  const table = btn.closest('[data-ptable]')!;
+  $$('[data-pgroup][hidden]', table).forEach((g) => (g.hidden = false));
+  btn.remove();
+});
+
+/* Карточка позиции: сумма по объёму и подсказка о скидке. */
+const buy = $('[data-buy]');
+if (buy) {
+  const p = Number(buy.dataset.price);
+  const upd = (q: number) => {
+    const d = DISC.find((x) => q >= x.from);
+    const sum = p * q * (1 - (d ? d.p / 100 : 0));
+    $('[data-buy-calc]', buy)!.textContent = `${vol(q)} × ${rub(p)}${d ? ` − ${d.p} %` : ''}`;
+    $('[data-buy-total]', buy)!.textContent = rub(sum);
+    const next = [...DISC].reverse().find((x) => q < x.from);
+    $('[data-buy-hint]', buy)!.textContent = d
+      ? `Скидка ${d.p} % от объёма учтена${next ? `, от ${next.from} м³ — ${next.p} %` : ''}. Доставка считается по зоне`
+      : `От ${next!.from} м³ — скидка ${next!.p} %, доставка считается по зоне`;
+    $$('[data-preset]', buy).forEach((b) => b.classList.toggle('on', Number(b.dataset.preset) === q));
+  };
+  buy.addEventListener('qty', (e) => upd((e as CustomEvent<number>).detail));
+}
+
+/* ---------- Фильтры списка позиций ---------- */
+const fForm = $<HTMLFormElement>('[data-filter]');
+const fList = $('[data-frows]');
+if (fForm && fList) {
+  const num = (s: string) => parseFloat(s.replace(/\s/g, '').replace(',', '.'));
+  const apply = () => {
+    const fd = new FormData(fForm);
+    const sel: Record<string, string[]> = {};
+    for (const [k, v] of fd.entries()) if (!['pmin', 'pmax'].includes(k)) (sel[k] ||= []).push(String(v));
+    const lo = num(String(fd.get('pmin') || '')) || 0;
+    const hi = num(String(fd.get('pmax') || '')) || Infinity;
+    let n = 0;
+    $$('[data-frow]', fList).forEach((r) => {
+      const ok = Object.entries(sel).every(([k, vs]) => vs.includes(r.dataset[`f${k[0].toUpperCase()}${k.slice(1)}`] ?? ''))
+        && Number(r.dataset.fPrice) >= lo && Number(r.dataset.fPrice) <= hi;
+      r.hidden = !ok;
+      if (ok) n++;
+    });
+    $$('[data-fgroup]', fList).forEach((g) => (g.hidden = !$$('[data-frow]:not([hidden])', g).length));
+    $('[data-fempty]', fList)!.hidden = n > 0;
+    const total = $('[data-ftotal]');
+    if (total) total.textContent = `Подходят ${n} ${pl(n, 'позиция', 'позиции', 'позиций')}`;
+    $('[data-fcount]', fForm)!.textContent = `Показано ${n}`;
+  };
+  fForm.addEventListener('change', apply);
+  fForm.addEventListener('input', (e) => { if ((e.target as HTMLInputElement).name?.startsWith('p')) apply(); });
+  fForm.addEventListener('reset', () => setTimeout(apply));
 }
 
 /* ---------- Мегаменю ---------- */
@@ -345,7 +494,8 @@ function runSearch() {
   const found = sPrepared.filter((x) => words.every((w) => x.n.includes(w)))
     .sort((a, b) => (a.k === 'Раздел' ? -1 : 0) - (b.k === 'Раздел' ? -1 : 0) || a.p - b.p).slice(0, 30);
   if (!found.length) { sRes.innerHTML = '<li class="search-empty">Ничего не нашли. Позвоните — подберём состав: +7 (495) 000-00-00</li>'; return; }
-  sRes.innerHTML = found.map((x, i) => `<li><a href="${x.h}" class="${i === 0 ? 'on' : ''}"><span class="r-t"><span>${esc(x.t)}</span><span class="r-k">${esc(x.k)}</span></span><span class="r-p">${x.k === 'Раздел' ? 'от ' : ''}${rub(x.p)}</span></a></li>`).join('');
+  const all = `<li><a href="/poisk/?q=${encodeURIComponent(sInput.value.trim())}" class="r-all"><span class="r-t"><span>Все результаты по запросу «${esc(sInput.value.trim())}»</span></span><span class="r-p">→</span></a></li>`;
+  sRes.innerHTML = found.map((x, i) => `<li><a href="${x.h}" class="${i === 0 ? 'on' : ''}"><span class="r-t"><span>${esc(x.t)}</span><span class="r-k">${esc(x.k)}</span></span><span class="r-p">${x.k === 'Раздел' ? 'от ' : ''}${rub(x.p)}</span></a></li>`).join('') + all;
 }
 if (sEl && sInput) {
   document.addEventListener('click', (e) => {
@@ -515,3 +665,106 @@ $$<HTMLSelectElement>('[data-sel]').forEach((sel) => {
   sel.addEventListener('change', sync);
   sync();
 });
+
+/* ---------- Страница поиска /poisk/ ---------- */
+const sPage = $('[data-spage]');
+if (sPage) {
+  type SP = { id: string; t: string; h: string; s: string; f: string; g: string; p: number };
+  type SS = { t: string; h: string; k: string; p: number; n: number };
+  type SA = { t: string; h: string; d: string; img: string };
+  const D = JSON.parse($('#spage-data')!.textContent || '{}') as { pos: SP[]; sections: SS[]; arts: SA[] };
+  const q = (new URLSearchParams(location.search).get('q') || '').trim().slice(0, 80);
+  const qInput = $<HTMLInputElement>('[data-sq]', sPage)!;
+  qInput.value = q;
+  if (q) {
+    const words = sNorm(q).split(/\s+/).filter(Boolean);
+    const hit = (txt: string) => { const n = sNorm(txt); return words.every((w) => n.includes(w)); };
+    const pos = D.pos.filter((x) => hit(`${x.t} ${x.s}`)).sort((a, b) => (a.g === b.g ? 0 : a.g === 'beton' ? -1 : 1) || a.p - b.p);
+    const secs = D.sections.filter((x) => hit(`${x.t} ${x.k}`)).sort((a, b) => b.n - a.n);
+    const arts = D.arts.filter((x) => hit(`${x.t} ${x.d}`));
+    const total = pos.length + secs.length + arts.length;
+    const sub = $('.phero-sub');
+    $('[data-shints]', sPage)!.hidden = total > 0;
+    if (!total) {
+      $('.phero h1')!.textContent = 'Ничего не нашли';
+      if (sub) sub.textContent = `По запросу «${q}» нет позиций, разделов и статей`;
+      $('[data-sempty-t]', sPage)!.textContent = `По запросу «${q}» ничего не нашли`;
+      $('[data-sempty]', sPage)!.hidden = false;
+      $('[data-sempty-more]', sPage)!.hidden = false;
+    } else {
+      if (sub) sub.textContent = `По запросу «${q}» — ${pos.length} ${pl(pos.length, 'позиция', 'позиции', 'позиций')} прайса, ${secs.length} ${pl(secs.length, 'раздел', 'раздела', 'разделов')} каталога и ${arts.length} ${pl(arts.length, 'статья', 'статьи', 'статей')}`;
+      document.title = `«${q}» — поиск по каталогу`;
+      const res = $('[data-sres]', sPage)!;
+      res.hidden = false;
+      $('[data-stabs]', sPage)!.hidden = false;
+      const counts: Record<string, number> = { all: total, pos: pos.length, sec: secs.length, art: arts.length };
+      $$('[data-sn]', sPage).forEach((el) => (el.textContent = String(counts[el.dataset.sn!])));
+      $$('[data-sg]', sPage).forEach((el) => (el.textContent = String(pos.filter((x) => x.g === el.dataset.sg).length)));
+      // Разделы и статьи
+      const tplSec = $<HTMLTemplateElement>('[data-tpl-sec]')!;
+      $('[data-ssec]', sPage)!.replaceChildren(...secs.slice(0, 9).map((x) => {
+        const a = tplSec.content.firstElementChild!.cloneNode(true) as HTMLAnchorElement;
+        a.href = x.h;
+        $('.tcard-h b', a)!.textContent = x.t;
+        $('.tcard-f b', a)!.textContent = `от ${rub(x.p)}`;
+        $('.tcard-f .small', a)!.textContent = `${x.n} ${pl(x.n, 'позиция', 'позиции', 'позиций')}`;
+        return a;
+      }));
+      $('[data-sart]', sPage)!.innerHTML = arts.map((x) => `<a class="card tip" href="${x.h}"><img src="${x.img}" alt="" width="560" height="560" loading="lazy" decoding="async"><div class="tip-c"><span class="tip-tx"><b class="tip-tt">${esc(x.t)}</b><span class="tip-d">${esc(x.d)}</span></span><span class="tip-more">Читать →</span></div></a>`).join('');
+      // Позиции: фильтр по разделу, заполнителю и цене, первые 8 + «Показать ещё»
+      const fillers = [...new Set(pos.map((x) => x.f).filter(Boolean))];
+      $('[data-sfill-box]', sPage)!.hidden = fillers.length < 2;
+      $('[data-sfill]', sPage)!.innerHTML = fillers.map((f) => `<label class="fchip"><input type="checkbox" name="f" value="${esc(f)}"><span>${esc(f[0].toUpperCase() + f.slice(1))}</span></label>`).join('');
+      if (pos.length) {
+        const ps = pos.map((x) => x.p);
+        ($('[name="pmin"]', sPage) as HTMLInputElement).placeholder = `от ${rub(Math.min(...ps))}`;
+        ($('[name="pmax"]', sPage) as HTMLInputElement).placeholder = `до ${rub(Math.max(...ps))}`;
+      }
+      const tplRow = $<HTMLTemplateElement>('[data-tpl-row]')!;
+      const list = $('[data-spos]', sPage)!;
+      const more = $('[data-smore]', sPage)!;
+      const ff = $<HTMLFormElement>('[data-sfilter]', sPage)!;
+      let showAll = false;
+      const renderPos = () => {
+        const fd = new FormData(ff);
+        const gs = fd.getAll('g').map(String), fs = fd.getAll('f').map(String);
+        const num = (k: string) => parseFloat(String(fd.get(k) || '').replace(/\s/g, ''));
+        const lo = num('pmin') || 0, hi = num('pmax') || Infinity;
+        const shown = pos.filter((x) => gs.includes(x.g) && (!fs.length || fs.includes(x.f)) && x.p >= lo && x.p <= hi);
+        const cut = showAll ? shown : shown.slice(0, 8);
+        list.replaceChildren(...cut.map((x) => {
+          const row = tplRow.content.firstElementChild!.cloneNode(true) as HTMLElement;
+          const a = $<HTMLAnchorElement>('.prow-name a', row)!;
+          a.href = x.h; a.textContent = x.t;
+          $('.prow-name span', row)!.textContent = x.s;
+          const cell = $('.pcell', row)!;
+          Object.assign(cell.dataset, { item: x.id, name: x.t, price: String(x.p), href: x.h });
+          $('.pcell-p', row)!.textContent = rub(x.p);
+          $<HTMLAnchorElement>('.more', row)!.href = x.h;
+          $('[data-add]', row)!.setAttribute('aria-label', `Добавить в корзину: ${x.t}`);
+          return row;
+        }));
+        if (!shown.length) list.innerHTML = '<p class="prlist-empty">Под фильтры ничего не подошло — сбросьте фильтры.</p>';
+        const rest = shown.length - cut.length;
+        more.hidden = rest <= 0;
+        more.textContent = `Показать ещё ${rest} ${pl(rest, 'позицию', 'позиции', 'позиций')}`;
+      };
+      more.addEventListener('click', () => { showAll = true; renderPos(); });
+      ff.addEventListener('change', renderPos);
+      ff.addEventListener('input', renderPos);
+      ff.addEventListener('reset', () => setTimeout(renderPos));
+      renderPos();
+      // Вкладки: все / позиции / разделы / статьи
+      const blocks = $$('[data-sblock]', sPage);
+      const side = $('.sres-side', sPage)!;
+      const setTab = (k: string) => {
+        $$('[data-stab]', sPage).forEach((b) => b.classList.toggle('on', b.dataset.stab === k));
+        blocks.forEach((b) => (b.hidden = !counts[b.dataset.sblock!] || (k !== 'all' && b.dataset.sblock !== k)));
+        side.hidden = !pos.length || (k !== 'all' && k !== 'pos');
+        res.classList.toggle('sres-wide', side.hidden);
+      };
+      $$('[data-stab]', sPage).forEach((b) => b.addEventListener('click', () => setTab(b.dataset.stab!)));
+      setTab('all');
+    }
+  }
+}

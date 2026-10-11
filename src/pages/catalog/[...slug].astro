@@ -1,7 +1,9 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import CategoryView from '../../components/pages/CategoryView.astro';
-import ProductView from '../../components/pages/ProductView.astro';
+// Категории и позиции каталога в дизайне «Внутренние страницы · после правок».
+import HomeLayout from '../../layouts/HomeLayout.astro';
+import CategoryPage from '../../components/site/CategoryPage.astro';
+import ProductPage from '../../components/site/ProductPage.astro';
+import SiteFooter from '../../components/site/SiteFooter.astro';
 import { categories, products, categoryPath, productPath } from '../../lib/catalog';
 import { seo } from '../../lib/seo';
 import type { Category, Product } from '../../lib/types';
@@ -23,33 +25,13 @@ type Props =
   | { kind: 'product'; product: Product };
 
 const props = Astro.props as Props;
-const meta =
-  props.kind === 'category'
-    ? seo.category(props.category.name, props.category.lead)
-    : seo.product(props.product.name);
-
-const jsonLd =
-  props.kind === 'product'
-    ? {
-        '@context': 'https://schema.org',
-        '@type': 'Product',
-        name: props.product.name,
-        description: props.product.note,
-        offers: {
-          '@type': 'Offer',
-          price: props.product.price,
-          priceCurrency: 'RUB',
-          availability: 'https://schema.org/InStock',
-        },
-      }
-    : undefined;
+const meta = props.kind === 'category' ? seo.category(props.category.name, props.category.lead) : seo.product(props.product.name);
+const jsonLd = props.kind === 'product'
+  ? [{ '@context': 'https://schema.org', '@type': 'Product', name: props.product.name, description: props.product.note,
+      offers: { '@type': 'Offer', price: props.product.price, priceCurrency: 'RUB', availability: 'https://schema.org/InStock' } }]
+  : [];
 ---
-<BaseLayout
-  title={meta.title}
-  description={meta.description}
-  template={props.kind === 'category' ? 'T03' : 'T04'}
-  templateName={props.kind === 'category' ? 'Категория каталога' : 'Карточка продукта'}
-  jsonLd={jsonLd}
->
-  {props.kind === 'category' ? <CategoryView category={props.category} /> : <ProductView product={props.product} />}
-</BaseLayout>
+<HomeLayout title={meta.title} description={meta.description} jsonLd={jsonLd}>
+  {props.kind === 'category' ? <CategoryPage category={props.category} /> : <ProductPage product={props.product} />}
+  <SiteFooter slot="footer" />
+</HomeLayout>

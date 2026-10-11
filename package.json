@@ -16,6 +16,7 @@
     "check:catalog": "node scripts/check-catalog.mjs",
     "check:concepts": "node scripts/check-concepts.mjs",
     "check:home": "node scripts/check-home.mjs",
+    "check:inner": "node scripts/check-inner-ui.mjs",
     "check:home-ui": "node scripts/check-home-ui.mjs"
   },
   "dependencies": {

@@ -1,0 +1,13 @@
+---
+// «Самые популярные виды бетона» — на всех страницах сайта (правки заказчика).
+import SectionHead from '../home/SectionHead.astro';
+import ProductCard from './ProductCard.astro';
+import { popular } from '../../lib/inner';
+const list = popular();
+---
+<section class="sec sec-pop" id="popular" aria-labelledby="popular-h">
+  <div class="wrap">
+    <SectionHead id="popular-h" label="Популярное" title="Самые популярные" sub="виды бетона" desc="Позиции с отметкой «Хит» — их берут чаще всего. Цена за м³ с завода." />
+    <div class="pgrid">{list.map((p) => <ProductCard product={p} />)}</div>
+  </div>
+</section>

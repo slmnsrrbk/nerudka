@@ -1,0 +1,126 @@
+---
+// Поиск (Figma «Поиск · десктоп» 264:790 и «Поиск · ничего не найдено» 265:1226).
+// Страница статическая: индекс позиций, разделов и статей лежит в JSON, результаты собирает scripts/home.ts по ?q=.
+import HomeLayout from '../../layouts/HomeLayout.astro';
+import PageHero from '../../components/site/PageHero.astro';
+import PopularBlock from '../../components/site/PopularBlock.astro';
+import SiteFooter from '../../components/site/SiteFooter.astro';
+import Icon from '../../components/home/Icon.astro';
+import { products, categories, childCategories, categoryPath, productPath, minPrice, specLine, purposes, purposeHref, purposeLabel, betonGrades, gradeHref, betonClasses, classHref, POST_IMG, img, typeCards } from '../../lib/inner';
+import { productsByGrade, productsByClass, productsByPurpose } from '../../lib/catalog';
+import { site } from '../../lib/home-site';
+import posts from '../../data/posts.json';
+
+const betonKids = new Set(childCategories('beton').map((c) => c.slug));
+const pos = products.map((p) => ({ id: p.id, t: p.name, h: productPath(p), s: [specLine(p).split(' · ').slice(0, 2).join(' · '), p.filler].filter(Boolean).join(' · '), f: p.filler, g: betonKids.has(p.category) ? 'beton' : 'rastvor', p: p.price }));
+const sec = (t: string, h: string, list: typeof products, k = '') => ({ t, h, k, p: minPrice(list), n: list.length });
+const sections = [
+  ...categories.filter((c) => c.parent).map((c) => sec(c.name, categoryPath(c), products.filter((p) => p.category === c.slug))),
+  ...betonGrades().map((g) => sec(`Бетон марки ${g}`, gradeHref(g), productsByGrade(g), `${g} марка`)),
+  ...betonClasses().map((c) => sec(`Бетон класса ${c}`, classHref(c), productsByClass(c), `${c} класс`)),
+  ...purposes.map((p) => sec(p.h1, purposeHref(p.slug), productsByPurpose(p.slug), `${p.recommended} ${purposeLabel(p.h1)}`)),
+].filter((s) => s.n);
+const arts = posts.map((p, i) => ({ t: p.title, h: `/blog/${p.slug}/`, d: p.excerpt, img: img(POST_IMG[i % POST_IMG.length], 560) }));
+const data = { pos, sections, arts };
+const popularSections = typeCards('beton').slice(0, 3);
+const hints = ['М300', 'B25', 'Керамзитобетон', 'Для фундамента', 'Раствор М150', 'Гранит'];
+---
+<HomeLayout title="Поиск по каталогу бетона и растворов" description="Поиск по маркам, классам, видам бетона и растворов: позиции прайса, разделы каталога и статьи.">
+  <PageHero h1="Результаты поиска" sub="Введите марку, класс или вид бетона" crumbs={[{ href: '/', label: 'Главная' }, { label: 'Поиск' }]} />
+  <section class="sec sec-first" aria-label="Поиск" data-spage>
+    <div class="wrap stack">
+      <form class="csearch card-w" action="/poisk/" method="get" role="search" data-sform>
+        <div class="csearch-row">
+          <label class="csearch-f"><Icon name="search" size={20} /><span class="sr">Что ищем</span><input name="q" type="search" placeholder="Марка, класс, вид бетона или раствора" autocomplete="off" data-sq /></label>
+          <button class="btn btn-dark" type="submit">Найти</button>
+        </div>
+        <div class="csearch-often" data-stabs hidden>
+          {[['all', 'Все'], ['pos', 'Позиции прайса'], ['sec', 'Разделы'], ['art', 'Статьи']].map(([k, t], i) => <button type="button" class:list={['chipb', { on: i === 0 }]} data-stab={k}>{t} · <span data-sn={k}>0</span></button>)}
+        </div>
+        <div class="csearch-often" data-shints><span class="small muted">Часто ищут:</span>{hints.map((q) => <a class="cloud-a" href={`/poisk/?q=${encodeURIComponent(q)}`}>{q}</a>)}</div>
+      </form>
+
+      <div class="sres" data-sres hidden>
+        <div class="sres-main">
+          <section class="sblock" data-sblock="pos" aria-labelledby="sp-h">
+            <div class="hub-head"><h2 class="h3 sblock-h" id="sp-h">Позиции прайса <span class="muted" data-sn="pos">0</span></h2><a class="ulink" href="/price/">Открыть прайс-лист<Icon name="arrow-right" size={16} /></a></div>
+            <div class="card-w sres-list">
+              <div class="prow prow-head"><span>Позиция</span><span>Цена · за м³</span></div>
+              <div class="prows" data-spos></div>
+              <button type="button" class="ulink sres-more" data-smore hidden></button>
+            </div>
+          </section>
+          <section class="sblock" data-sblock="sec" aria-labelledby="ss-h">
+            <h2 class="h3 sblock-h" id="ss-h">Разделы каталога <span class="muted" data-sn="sec">0</span></h2>
+            <div class="tcards" data-ssec></div>
+          </section>
+          <section class="sblock" data-sblock="art" aria-labelledby="sa-h">
+            <div class="hub-head"><h2 class="h3 sblock-h" id="sa-h">Статьи <span class="muted" data-sn="art">0</span></h2><a class="ulink" href="/blog/">Все статьи<Icon name="arrow-right" size={16} /></a></div>
+            <div class="sarts" data-sart></div>
+          </section>
+        </div>
+        <aside class="sres-side">
+          <form class="filters card-w" data-sfilter aria-label="Уточнить" onsubmit="return false">
+            <div class="filters-h"><p class="h3">Уточнить</p><button type="reset" class="ulink small">Сбросить</button></div>
+            <fieldset class="fgroup"><legend>Раздел</legend>
+              <div class="fchecks">{[['beton', 'Бетон'], ['rastvor', 'Растворы и смеси']].map(([v, t]) => <label class="fcheck"><input type="checkbox" name="g" value={v} checked /><span class="fbox" aria-hidden="true"></span><span class="fcheck-t">{t}</span><span class="muted" data-sg={v}>0</span></label>)}</div>
+            </fieldset>
+            <fieldset class="fgroup" data-sfill-box><legend>Заполнитель</legend><div class="fchips" data-sfill></div></fieldset>
+            <fieldset class="fgroup"><legend>Цена за м³</legend>
+              <div class="frange">
+                <label class="fld"><span class="sr">От</span><input name="pmin" inputmode="numeric" placeholder="от" /></label>
+                <label class="fld"><span class="sr">До</span><input name="pmax" inputmode="numeric" placeholder="до" /></label>
+              </div>
+            </fieldset>
+          </form>
+          <div class="hub-promo"><div class="hub-promo-t">
+            <b>Не нашли нужную позицию?</b>
+            <span class="small">Подберём состав под вашу задачу и рассчитаем цену с доставкой</span>
+            <a class="hub-phone" href={`tel:${site.phoneHref}`}>{site.phone}</a>
+            <button type="button" class="btn btn-light btn-sm" data-modal="lead" data-topic="Не нашли в поиске">Оставить заявку<Icon name="arrow-right" size={16} /></button>
+          </div></div>
+        </aside>
+      </div>
+
+      <div class="sempty card-w" data-sempty hidden>
+        <span class="tile tile-grey"><Icon name="search" /></span>
+        <p class="h3" data-sempty-t>Ничего не нашли</p>
+        <p class="muted">Проверьте написание или выберите из популярного</p>
+        <p class="small muted">Ищем по маркам (М300), классам (B25), видам бетона и растворов. Если нужной марки нет в прайсе — технолог подберёт состав под задачу.</p>
+      </div>
+      <div class="stack" data-sempty-more hidden>
+        <p class="h3">Популярные разделы</p>
+        <div class="tcards">{popularSections.map((t) => <a class="tcard" href={t.href}><span class="tcard-h"><b>{t.name}</b><span class="sq"><Icon name="arrow-right" size={16} /></span></span><span class="tcard-f"><span><b>{t.from}</b> за м³</span><span class="small muted">{t.count}</span></span></a>)}</div>
+        <div class="banner">
+          <div class="banner-t"><p class="banner-h">Не нашли нужную марку?</p><p>Подберём состав под вашу задачу и рассчитаем цену с доставкой</p></div>
+          <button type="button" class="btn btn-light" data-modal="lead" data-topic="Подбор состава: поиск без результата">Заказать консультацию<Icon name="arrow-right" size={16} /></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <template data-tpl-row>
+    <div class="prow">
+      <div class="prow-name"><a></a><span></span></div>
+      <div class="pcell">
+        <span class="pcell-l">Цена за м³</span>
+        <b class="pcell-p"></b>
+        <div class="pact">
+          <div class="stepper">
+            <button type="button" class="st-b" data-dec aria-label="Меньше"><Icon name="minus" size={14} /></button>
+            <input class="st-q" value="1" inputmode="decimal" data-qty aria-label="Объём, м³" />
+            <button type="button" class="st-b" data-inc aria-label="Больше"><Icon name="plus" size={14} /></button>
+            <button type="button" class="st-cart" data-add aria-label="Добавить в корзину"><Icon name="shopping-cart" size={16} /></button>
+          </div>
+          <a class="more">Подробнее<Icon name="arrow-right" size={16} /></a>
+        </div>
+      </div>
+    </div>
+  </template>
+  <template data-tpl-sec><a class="tcard"><span class="tcard-h"><b></b><span class="sq"><Icon name="arrow-right" size={16} /></span></span><span class="tcard-f"><span><b></b> за м³</span><span class="small muted"></span></span></a></template>
+  <script type="application/json" id="spage-data" set:html={JSON.stringify(data)} />
+
+  <PopularBlock />
+  <div class="sec-end"></div>
+  <SiteFooter slot="footer" />
+</HomeLayout>

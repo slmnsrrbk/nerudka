@@ -1,0 +1,18 @@
+---
+// Доставка по зонам от ближайшего РБУ.
+import SectionHead from '../home/SectionHead.astro';
+import Icon from '../home/Icon.astro';
+import { ZONES } from '../../lib/inner';
+interface Props { title?: string; sub?: string }
+const { title = 'Доставка по зонам', sub = 'от ближайшего РБУ' } = Astro.props;
+---
+<section class="sec sec-tight" id="delivery" aria-labelledby="delivery-h">
+  <div class="wrap">
+    <SectionHead id="delivery-h" label="Доставка" title={title} sub={sub} desc="Цены в таблице — с завода. Доставку считаем по зоне, разгрузка до 60 минут бесплатно." />
+    <div class="stack">
+      <div class="zgrid">{ZONES.map(([z, p]) => <div class="zcard"><span>{z}</span><p><b>{p} ₽</b> за м³</p></div>)}</div>
+      <div class="strip"><span class="tile tile-grey"><Icon name="truck" /></span><div><p class="strip-t">Дальше 50 км — 90 ₽ за км сверх зоны</p><p class="small muted">Разгрузка до 60 минут — бесплатно. Машина идёт с ближайшего из шести узлов</p></div></div>
+      <slot />
+    </div>
+  </div>
+</section>

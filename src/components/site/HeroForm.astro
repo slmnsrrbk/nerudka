@@ -1,0 +1,26 @@
+---
+// Форма «Рассчитать цену с учётом скидки» на фото первого экрана (главная и шапки категорий).
+import Icon from '../home/Icon.astro';
+import { products } from '../../lib/catalog';
+interface Props { selected?: string; options?: { id: string; label: string }[]; topic?: string }
+const tov = products.filter((p) => p.category === 'tovarnyj').map((p) => ({ id: p.id, label: p.name.replace('Бетон ', '').replace(' на ', ` ${p.class} на `) }));
+const { selected = 'beton-m300-gravij', options = tov, topic = 'Расчёт цены с первого экрана' } = Astro.props;
+const cur = options.find((o) => o.id === selected) ?? options[0];
+---
+<form class="hero-form lead-form" data-form data-hero-form novalidate>
+  <div class="hero-form-col">
+    <p class="hero-form-t">Рассчитать цену с учетом скидки</p>
+    <input type="hidden" name="topic" value={topic} />
+    <label class="fld fld-w"><span>Марка</span>
+      <span class="sel"><span class="sel-v" data-sel-v>{cur?.label}</span>&nbsp;▾<select name="grade" data-sel>{options.map((o) => <option selected={o.id === cur?.id}>{o.label}</option>)}</select></span>
+    </label>
+    <label class="fld fld-w"><span>Объём, м³</span><input name="volume" type="number" inputmode="decimal" min="1" step="0.5" value="10" /></label>
+    <div class="fld-row">
+      <label class="fld fld-w"><span>Имя</span><input name="name" autocomplete="name" placeholder="Ваше имя" required /></label>
+      <label class="fld fld-w"><span>Телефон</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" data-phone required /></label>
+    </div>
+  </div>
+  <label class="consent consent-w"><input type="checkbox" name="consent" required /><span class="box"><Icon name="check" size={14} stroke={2.5} /></span><span>Даю согласие на обработку своих персональных данных в соответствии с законом</span></label>
+  <p class="form-err" data-form-err hidden></p>
+  <button class="btn btn-dark" type="submit">Отправить заявку</button>
+</form>

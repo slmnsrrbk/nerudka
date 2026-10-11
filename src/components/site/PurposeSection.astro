@@ -1,0 +1,23 @@
+---
+// «Какую марку брать»: подсказки технолога по конструкциям (purposes.json).
+import SectionHead from '../home/SectionHead.astro';
+import Icon from '../home/Icon.astro';
+import { purposes } from '../../lib/catalog';
+import { activeGrades, gradeSlug } from '../../lib/catalog';
+const grades = new Set(activeGrades());
+const list = purposes.filter((p) => p.slug !== 'aerodromnyj').slice(0, 6);
+---
+<section class="sec" id="podbor" aria-labelledby="podbor-h">
+  <div class="wrap">
+    <SectionHead id="podbor-h" label="Подбор" title="Какую марку брать" sub="под вашу конструкцию" desc="Короткие подсказки технолога. Точную марку подберём по проекту и нагрузкам." />
+    <div class="pur-grid">
+      {list.map((p) => (
+        <a class="pur" href={`/beton/dlya-${p.slug}/`}>
+          <span class="pur-h"><b>{p.h1.replace('Бетон для', 'Для').replace('Бетон ', '')}</b><span class="pur-badge">берут {p.recommended}</span></span>
+          <span class="pur-d">{p.short}</span>
+          <span class="ulink">Показать {p.recommended}<Icon name="arrow-right" size={14} /></span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>

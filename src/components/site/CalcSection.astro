@@ -1,0 +1,37 @@
+---
+// Раздел главной, общий для внутренних страниц.
+import Icon from '../home/Icon.astro';
+import SectionHead from '../home/SectionHead.astro';
+import Hook from '../home/Hook.astro';
+import { site } from '../../lib/home-site';
+---
+<!-- 04 · Калькулятор -->
+<section class="sec" id="calc" aria-labelledby="calc-h">
+  <div class="wrap">
+    <SectionHead id="calc-h" label="Калькулятор" title="Калькулятор бетона:" sub="сколько кубов нужно" desc="Выберите конструкцию и размеры — посчитаем нужный объём с запасом 5 %." />
+    <div class="calc" data-calc>
+      <div class="card calc-l">
+        <div class="chips" role="tablist" aria-label="Конструкция">
+          {['Лента', 'Плита', 'Стяжка', 'Столбы и сваи', 'Отмостка'].map((c, i) => <button type="button" role="tab" class:list={['chipb', { on: i === 1 }]} aria-selected={i === 1 ? 'true' : 'false'} data-calc-type={i}>{c}</button>)}
+        </div>
+        <div class="calc-row">
+          <figure class="calc-fig" aria-hidden="true"><Icon name="ruler" size={24} class="calc-ruler" /><div class="calc-svg" data-calc-fig></div><figcaption data-calc-cap>Схема плиты</figcaption></figure>
+          <div class="calc-f">
+            <div class="calc-fields" data-calc-fields></div>
+            <p class="calc-grade" data-calc-grade></p>
+          </div>
+        </div>
+      </div>
+      <div class="calc-r">
+        <div>
+          <p class="muted-w">Нужно бетона</p>
+          <p class="calc-v" data-calc-v>57,6 м³</p>
+          <p class="calc-s" data-calc-s>С запасом 5 % — 60,5 м³</p>
+        </div>
+        <button type="button" class="btn btn-light" data-modal="lead" data-topic="Консультация по расчёту объёма" data-calc-order><span>Заказать консультацию</span><Icon name="arrow-right" size={16} /></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+

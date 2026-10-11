@@ -1,0 +1,52 @@
+---
+// Раздел главной, общий для внутренних страниц.
+import Icon from '../home/Icon.astro';
+import SectionHead from '../home/SectionHead.astro';
+import Hook from '../home/Hook.astro';
+import { site } from '../../lib/home-site';
+import { PLANTS } from '../../lib/home';
+const img = (name: string, w = 1024) => `/img/home/${name}${w <= 560 ? '-560' : ''}.webp`;
+interface Props { label?: string; title?: string; sub?: string; desc?: string; stats?: boolean }
+const {
+  label = 'Заводы', title = 'Данные о заводах', sub = 'шесть узлов в Москве и области', stats = true,
+  desc = 'Заявка уходит на ближайший к объекту узел: плечо доставки короче, себестоимость товара становится дешевле.',
+} = Astro.props;
+---
+<!-- 03 · Данные о заводах -->
+<section class="sec" id="plants" aria-labelledby="plants-h">
+  <div class="wrap">
+    <SectionHead id="plants-h" label={label} title={title} sub={sub} desc={desc} phone={stats} />
+    <div class="stack">
+      {stats && <div class="statbar">
+        {[['factory', '6 узлов', 'в Москве и области'], ['gauge', '2 500 м³', 'отгрузка в сутки'], ['truck', 'От 12 до 20 миксеров', 'на каждом РБУ'], ['flask-conical', 'Своя лаборатория', 'аккредитованная']].map(([i, t, d]) => (
+          <div class="stat"><span class="tile tile-grey"><Icon name={i} /></span><div><b>{t}</b><span class="small muted">{d}</span></div></div>
+        ))}
+      </div>}
+      <div class="plants">
+        {PLANTS.map((p) => (
+          <article class="plant">
+            <div class="slider" data-slider>
+              <div class="slides" data-track>
+                {p.photos.map((ph, k) => <img src={img(ph, 560)} alt={`РБУ ${p.n}, фото ${k + 1}`} width="560" height="560" loading="lazy" decoding="async" />)}
+              </div>
+              <span class="badge-dark">РБУ {p.n}</span>
+              <span class="sl-count"><Icon name="images" size={14} /><b data-cur>1</b> / {p.photos.length}</span>
+              <div class="sl-dots" data-dots>{p.photos.map((_, k) => <button type="button" aria-label={`Фото ${k + 1}`} class:list={[{ on: k === 0 }]}></button>)}</div>
+            </div>
+            <div class="plant-c">
+              <h3 class="h3">{p.name}</h3>
+              <dl class="fields">
+                <div><dt>Адрес</dt><dd>{p.address}</dd></div>
+                <div><dt>Мощность</dt><dd>{p.power}</dd></div>
+                <div><dt>Режим</dt><dd>{p.mode}</dd></div>
+              </dl>
+              <button type="button" class="btn btn-white" data-modal="lead" data-topic={`Диспетчер РБУ ${p.n}`}>Связаться с диспетчером РБУ<Icon name="headset" size={16} /></button>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+

@@ -1,90 +1,102 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
-import PageHead from '../../components/ui/PageHead.astro';
-import Block from '../../components/ui/Block.astro';
-import Container from '../../components/ui/Container.astro';
-import CatalogBrowser from '../../components/catalog/CatalogBrowser.astro';
-import FaqBlock from '../../components/blocks/FaqBlock.astro';
-import SeoText from '../../components/blocks/SeoText.astro';
-import CtaFinal from '../../components/blocks/CtaFinal.astro';
-import {
-  products, rootCategories, childCategories, categoryPath, productsOfCategory,
-  minPrice, activeGrades, activeClasses, gradeSlug, classSlug, purposes,
-} from '../../lib/catalog';
-import { formatPrice } from '../../lib/price';
+// Каталог (Figma «Каталог · десктоп» 262:38): поиск по каталогу, разделы слева, бетон по марке/классу/виду/заполнителю/назначению,
+// растворы и смеси, услуги, популярное.
+import HomeLayout from '../../layouts/HomeLayout.astro';
+import PageHero from '../../components/site/PageHero.astro';
+import PopularBlock from '../../components/site/PopularBlock.astro';
+import SiteFooter from '../../components/site/SiteFooter.astro';
+import Hook from '../../components/home/Hook.astro';
+import Icon from '../../components/home/Icon.astro';
+import { products, childCategories, categoryPath, minPrice, fmt, plural, typeCards, linkCloud, SERVICE_GROUPS, gradeHref, classHref, betonGrades, betonClasses, getCategory } from '../../lib/inner';
+import { site } from '../../lib/home-site';
+
+const count = (root: string) => {
+  const kids = new Set(childCategories(root).map((c) => c.slug));
+  const list = products.filter((p) => kids.has(p.category));
+  return `${list.length} ${plural(list.length, 'позиция', 'позиции', 'позиций')}, от ${fmt(minPrice(list))} ₽ за м³`;
+};
+const cloud = linkCloud();
+const fillers = cloud.find((r) => r.t === 'Заполнитель')!.links;
+const uses = cloud.find((r) => r.t === 'Назначение')!.links;
+const mixes = typeCards('rastvor').filter((t) => ['cps', 'bss', 'kladochnaya-smes'].includes(t.slug));
+const mortars = typeCards('rastvor').filter((t) => !['cps', 'bss', 'kladochnaya-smes'].includes(t.slug));
+const mortarGrades = (slug: string) => [...new Set(products.filter((p) => p.category === slug).map((p) => p.grade).filter(Boolean))];
+const mortarChips = [
+  { t: 'Раствор по марке', cat: 'cpr' },
+  { t: 'ЦПС по марке', cat: 'cps' },
+].map((g) => ({ t: g.t, href: categoryPath(getCategory(g.cat)!), v: mortarGrades(g.cat) }));
+const often = ['М200', 'М300', 'М350', 'B25', 'Для фундамента', 'Для стяжки пола', 'Керамзитобетон', 'Раствор М150'];
+const nav = [['beton', 'Бетон', 'layers'], ['rastvor', 'Растворы и смеси', 'package'], ['uslugi', 'Услуги', 'truck']];
 ---
-<BaseLayout
-  title="Каталог бетона и растворов: цены за м³ с доставкой"
-  description="Каталог завода: бетон по марке, классу, заполнителю, виду и назначению, растворы и смеси. Фильтр по характеристикам, цены за м³, доставка по Москве и области."
-  template="T02"
-  templateName="Каталог с фильтром"
->
-  <Breadcrumbs items={[{ label: 'Каталог' }]} />
-  <PageHead
-    h1="Каталог бетона и растворов"
-    lead={`${products.length} позиций в ${rootCategories().length} разделах. Фильтр подбирает смесь по марке, классу, заполнителю и задаче, ссылку с подборкой можно отправить коллеге.`}
-  />
+<HomeLayout title="Каталог бетонной продукции — бетон и растворы от производителя" description="Каталог бетона и растворов: марки, классы, виды, заполнитель и назначение. Единый прайс шести РБУ, бетон от 3 990 ₽ за м³.">
+  <PageHero h1="Каталог бетонной продукции" price="Бетон от 3 990 ₽ за м³" sub="Завод-производитель · 6 РБУ · Доставка в день заказа" crumbs={[{ href: '/', label: 'Главная' }, { label: 'Каталог' }]} />
 
-  <Block id="X-02" name="Разделы каталога" tone="block">
-    <Container class="py-10">
-      <div class="grid gap-6 lg:grid-cols-2">
-        {rootCategories().map((root) => (
-          <div class="rounded-md border border-line bg-white p-5">
-            <div class="flex flex-wrap items-baseline justify-between gap-2">
-              <h2 class="text-lg font-semibold">{root.name}</h2>
-              <a href={categoryPath(root)} class="text-sm text-accent underline-offset-2 hover:underline">Открыть раздел</a>
-            </div>
-            <p class="mt-1 text-sm text-ink-2">{root.lead}</p>
-            <div class="mt-4 grid gap-1.5 sm:grid-cols-2">
-              {childCategories(root.slug).map((c) => {
-                const list = productsOfCategory(c.slug);
-                return (
-                  <a href={categoryPath(c)} class="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0.5 rounded-md border border-line px-3 py-2 text-sm hover:border-accent">
-                    <span class="min-w-0">{c.name}</span>
-                    <span class="text-xs text-ink-2">{list.length} шт, от {formatPrice(minPrice(list))} ₽</span>
-                  </a>
-                );
-              })}
-            </div>
+  <section class="sec sec-first" aria-label="Поиск по каталогу">
+    <div class="wrap">
+      <form class="csearch card-w" action="/poisk/" method="get" role="search">
+        <div class="csearch-row">
+          <label class="csearch-f"><Icon name="search" size={20} /><span class="sr">Поиск по каталогу</span><input name="q" type="search" placeholder="Марка, класс, вид бетона или раствора" autocomplete="off" /></label>
+          <button class="btn btn-dark" type="submit">Найти</button>
+        </div>
+        <div class="csearch-often"><span class="small muted">Часто ищут:</span>{often.map((q) => <a class="cloud-a" href={`/poisk/?q=${encodeURIComponent(q)}`}>{q}</a>)}</div>
+      </form>
+    </div>
+  </section>
+
+  <section class="sec sec-tight" aria-label="Разделы каталога">
+    <div class="wrap hub">
+      <aside class="hub-side">
+        <nav class="hub-nav card-w" aria-label="Разделы">{nav.map(([id, t, ic]) => <a href={`#${id}`}><Icon name={ic} size={18} /><span>{t}</span><Icon name="chevron-right" size={16} /></a>)}</nav>
+        <div class="hub-promo">
+          <img src="/img/home/plant-inside-560.webp" alt="" width="560" height="560" loading="lazy" decoding="async" />
+          <div class="hub-promo-t">
+            <span class="small">Цена с завода</span>
+            <b>Единый прайс на все шесть РБУ</b>
+            <span class="small">От 50 м³ — скидка 10 %, от 200 — 15 %, от 500 — 20 %</span>
+            <a class="btn btn-light btn-sm" href="/price/">Открыть прайс-лист<Icon name="arrow-right" size={16} /></a>
+            <a class="hub-phone" href={`tel:${site.phoneHref}`}>{site.phone}</a>
           </div>
-        ))}
-      </div>
-    </Container>
-  </Block>
-
-  <Block id="X-03" name="Быстрые входы: марка, класс, задача">
-    <Container class="grid gap-6 py-10 lg:grid-cols-3">
-      <div>
-        <p class="text-sm font-medium">По марке</p>
-        <div class="mt-3 flex flex-wrap gap-1.5">
-          {activeGrades().map((g) => (
-            <a href={`/beton/${gradeSlug(g)}/`} class="rounded-md border border-line px-2.5 py-1.5 text-sm hover:border-accent hover:text-accent">{g}</a>
-          ))}
         </div>
-      </div>
-      <div>
-        <p class="text-sm font-medium">По классу прочности</p>
-        <div class="mt-3 flex flex-wrap gap-1.5">
-          {activeClasses().map((c) => (
-            <a href={`/beton/klass-${classSlug(c)}/`} class="rounded-md border border-line px-2.5 py-1.5 text-sm hover:border-accent hover:text-accent">{c}</a>
-          ))}
-        </div>
-      </div>
-      <div>
-        <p class="text-sm font-medium">По задаче</p>
-        <div class="mt-3 grid gap-1.5">
-          {purposes.map((p) => (
-            <a href={`/beton/dlya-${p.slug}/`} class="rounded-md border border-line px-3 py-2 text-sm hover:border-accent hover:text-accent">{p.h1}</a>
-          ))}
-        </div>
-      </div>
-    </Container>
-  </Block>
+      </aside>
 
-  <CatalogBrowser items={products} id="X-04" />
+      <div class="hub-main">
+        <section class="hub-sec" id="beton" aria-labelledby="hb-h">
+          <div class="hub-head"><h2 class="h2" id="hb-h">Бетон<br /><span class="h2-sub">{count('beton')}</span></h2><a class="ulink" href="/catalog/beton/">Весь бетон в прайс-листе<Icon name="arrow-right" size={16} /></a></div>
+          <div class="hub-two">
+            <div><p class="prlist-h">По марке</p><div class="cloud-l">{betonGrades().map((g) => <a class="cloud-a" href={gradeHref(g)}>{g}</a>)}</div></div>
+            <div><p class="prlist-h">По классу</p><div class="cloud-l">{betonClasses().map((c) => <a class="cloud-a" href={classHref(c)}>{c}</a>)}</div></div>
+          </div>
+          <p class="prlist-h">По типу и виду</p>
+          <div class="tcards">{typeCards('beton').map((t) => <a class="tcard" href={t.href}><span class="tcard-h"><b>{t.name}</b><span class="sq"><Icon name="arrow-right" size={16} /></span></span><span class="tcard-f"><span><b>{t.from}</b> за м³</span><span class="small muted">{t.count}</span></span></a>)}</div>
+          <div class="hub-two">
+            <div><p class="prlist-h">По заполнителю</p><nav class="hlist card-w">{fillers.map((l) => <a href={l.href}>{l.label}<Icon name="chevron-right" size={16} /></a>)}</nav></div>
+            <div><p class="prlist-h">По назначению</p><nav class="hlist card-w">{uses.map((l) => <a href={l.href}>{l.label}<Icon name="chevron-right" size={16} /></a>)}</nav></div>
+          </div>
+        </section>
 
-  <FaqBlock id="X-05" scope="category" title="Вопросы по каталогу" limit={5} tone="block" />
-  <SeoText id="X-06" topic="каталог бетона и растворов: марки, классы, заполнители, назначение" />
-  <CtaFinal id="X-07" />
-</BaseLayout>
+        <section class="hub-sec" id="rastvor" aria-labelledby="hr-h">
+          <div class="hub-head"><h2 class="h2" id="hr-h">Растворы и смеси<br /><span class="h2-sub">{count('rastvor')}</span></h2><a class="ulink" href="/catalog/rastvor/">Все растворы в прайс-листе<Icon name="arrow-right" size={16} /></a></div>
+          <p class="prlist-h">Смеси</p>
+          <div class="tcards">{mixes.map((t) => <a class="tcard" href={t.href}><span class="tcard-h"><b>{t.name}</b><span class="sq"><Icon name="arrow-right" size={16} /></span></span><span class="tcard-f"><span><b>{t.from}</b> за м³</span><span class="small muted">{t.count}</span></span></a>)}</div>
+          <p class="prlist-h">Растворы</p>
+          <div class="tcards">{mortars.map((t) => <a class="tcard" href={t.href}><span class="tcard-h"><b>{t.name}</b><span class="sq"><Icon name="arrow-right" size={16} /></span></span><span class="tcard-f"><span><b>{t.from}</b> за м³</span><span class="small muted">{t.count}</span></span></a>)}</div>
+          <div class="hub-two">{mortarChips.filter((g) => g.v.length).map((g) => <div><p class="prlist-h">{g.t}</p><div class="cloud-l">{g.v.map((v) => <a class="cloud-a" href={g.href}>{v}</a>)}</div></div>)}</div>
+        </section>
+
+        <section class="hub-sec" id="uslugi" aria-labelledby="hu-h">
+          <div class="hub-head"><h2 class="h2" id="hu-h">Услуги<br /><span class="h2-sub">насосы, прогрев, лаборатория</span></h2><a class="ulink" href="/uslugi/">Все услуги<Icon name="arrow-right" size={16} /></a></div>
+          <div class="hub-two">{SERVICE_GROUPS.map((g) => <div class="hlist card-w"><p class="hlist-t">{g.t}</p>{g.links.map(([l, h]) => <a href={h}>{l}<Icon name="chevron-right" size={16} /></a>)}</div>)}</div>
+          <div class="banner">
+            <div class="banner-t"><p class="banner-h">Не нашли нужную марку?</p><p>Подберём состав под вашу задачу и рассчитаем цену с доставкой</p></div>
+            <button type="button" class="btn btn-light" data-modal="lead" data-topic="Подбор состава из каталога">Заказать консультацию<Icon name="arrow-right" size={16} /></button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <PopularBlock />
+  <section class="sec sec-tight" aria-label="Заявка"><div class="wrap"><Hook icon="headset" title="Поможем выбрать марку под вашу конструкцию" btn="Рассчитать цену" topic="Подбор марки из каталога" /></div></section>
+  <div class="sec-end"></div>
+  <SiteFooter slot="footer" />
+</HomeLayout>

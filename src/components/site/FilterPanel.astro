@@ -1,0 +1,44 @@
+---
+// Панель фильтров списка позиций: марка, заполнитель, подвижность, морозостойкость, водонепроницаемость, цена.
+// Работает в браузере (scripts/home.ts → [data-filter]) по data-f-* у строк списка.
+import { fmt, gradeNum } from '../../lib/inner';
+import type { Product } from '../../lib/types';
+interface Props { items: Product[] }
+const { items } = Astro.props;
+const uniq = (k: keyof Product, sort?: (a: string, b: string) => number) => {
+  const m = new Map<string, number>();
+  for (const p of items) { const v = String(p[k] ?? ''); if (v) m.set(v, (m.get(v) ?? 0) + 1); }
+  return [...m.entries()].sort(sort ? (a, b) => sort(a[0], b[0]) : (a, b) => b[1] - a[1]);
+};
+const num = (s: string) => parseFloat(s.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+const groups = [
+  { k: 'grade', t: 'Марка', v: uniq('grade', (a, b) => gradeNum(a) - gradeNum(b)), chips: true },
+  { k: 'filler', t: 'Заполнитель', v: uniq('filler'), chips: false },
+  { k: 'mob', t: 'Подвижность', v: uniq('mobility', (a, b) => num(a) - num(b)), chips: true },
+  { k: 'frost', t: 'Морозостойкость', v: uniq('frost', (a, b) => num(a) - num(b)), chips: true },
+  { k: 'water', t: 'Водонепроницаемость', v: uniq('water', (a, b) => num(a) - num(b)), chips: true },
+].filter((g) => g.v.length > 1);
+const prices = items.map((p) => p.price);
+const lo = Math.min(...prices), hi = Math.max(...prices);
+---
+<form class="filters card-w" data-filter aria-label="Фильтры" onsubmit="return false">
+  <div class="filters-h"><p class="h3">Фильтры</p><button type="reset" class="ulink small" data-freset>Сбросить</button></div>
+  {groups.map((g) => (
+    <fieldset class="fgroup">
+      <legend>{g.t}</legend>
+      {g.chips ? (
+        <div class="fchips">{g.v.map(([v]) => <label class="fchip"><input type="checkbox" name={g.k} value={v} /><span>{v}</span></label>)}</div>
+      ) : (
+        <div class="fchecks">{g.v.map(([v, n]) => <label class="fcheck"><input type="checkbox" name={g.k} value={v} /><span class="fbox" aria-hidden="true"></span><span class="fcheck-t">{v[0].toUpperCase() + v.slice(1)}</span><span class="muted">{n}</span></label>)}</div>
+      )}
+    </fieldset>
+  ))}
+  <fieldset class="fgroup">
+    <legend>Цена за м³</legend>
+    <div class="frange">
+      <label class="fld"><span class="sr">От</span><input name="pmin" inputmode="numeric" placeholder={`от ${fmt(lo)} ₽`} /></label>
+      <label class="fld"><span class="sr">До</span><input name="pmax" inputmode="numeric" placeholder={`до ${fmt(hi)} ₽`} /></label>
+    </div>
+  </fieldset>
+  <p class="small muted" data-fcount aria-live="polite">Показано {items.length}</p>
+</form>

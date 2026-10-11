@@ -1,0 +1,26 @@
+---
+// «Соседние марки»: слабее, эта страница (тёмная), прочнее — класс, морозостойкость, водонепроницаемость, цены на гравии и граните.
+import Icon from '../home/Icon.astro';
+import { products, fmt, gradeHref, betonGrades } from '../../lib/inner';
+interface Props { grade: string }
+const { grade } = Astro.props;
+const list = betonGrades();
+const i = list.indexOf(grade);
+const pick = [list[i - 1], grade, list[i + 1]].filter(Boolean) as string[];
+const card = (g: string) => {
+  const tov = products.filter((p) => p.category === 'tovarnyj' && p.grade === g);
+  const gr = tov.find((p) => p.filler === 'гравий');
+  const gn = tov.find((p) => p.filler === 'гранит');
+  const any = (gr ?? gn)!;
+  return { g, rows: [['Класс', any.class], ['Морозостойкость', any.frost], ['Водонепроницаемость', any.water], ['На гравии', gr ? `${fmt(gr.price)} ₽` : '—'], ['На граните', gn ? `${fmt(gn.price)} ₽` : '—']] };
+};
+---
+<div class="ngrid">
+  {pick.map(card).map((c) => (
+    <div class:list={['ncard', { 'ncard-on': c.g === grade }]}>
+      <div class="ncard-h"><b>Бетон {c.g}</b>{c.g === grade && <span class="tag">Эта страница</span>}</div>
+      <dl>{c.rows.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
+      {c.g !== grade && <a class="ulink" href={gradeHref(c.g)}>Перейти к {c.g}<Icon name="arrow-right" size={16} /></a>}
+    </div>
+  ))}
+</div>

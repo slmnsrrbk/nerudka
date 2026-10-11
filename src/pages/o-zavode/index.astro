@@ -1,0 +1,87 @@
+---
+// О компании (Figma «О компании · десктоп» 269:1922): цифры, свой бетон, все шесть РБУ, контроль качества, документы,
+// объекты, реквизиты, популярное. Факты без подтверждения — с пометкой [заглушка].
+import HomeLayout from '../../layouts/HomeLayout.astro';
+import PageHero from '../../components/site/PageHero.astro';
+import PlantsSection from '../../components/site/PlantsSection.astro';
+import PopularBlock from '../../components/site/PopularBlock.astro';
+import SiteFooter from '../../components/site/SiteFooter.astro';
+import Requisites from '../../components/site/Requisites.astro';
+import SectionHead from '../../components/home/SectionHead.astro';
+import Hook from '../../components/home/Hook.astro';
+import Icon from '../../components/home/Icon.astro';
+import { products, img, fmt } from '../../lib/inner';
+import { OBJECTS } from '../../lib/home';
+
+const stats = [['2 500', 'м³ отгружаем в сутки'], ['6', 'своих узлов в Москве и области'], [fmt(products.length), 'позиций в едином прайсе'], ['от 1 м³', 'минимальный заказ']];
+const quality = [
+  ['file-check', 'Паспорт качества на каждую партию', 'Объём подтверждаем весовой распечаткой'],
+  ['flask-conical', 'Пробы на 7 и 28 сутки', 'Лаборатория проверяет каждую партию'],
+  ['shield-check', 'ГОСТ 7473-2010', 'Товарный бетон на гравийном и гранитном щебне'],
+  ['flame', 'Зимой — до −25 °C', 'Противоморозные добавки и прогрев — от 350 ₽ за м³'],
+];
+const docs = [['Паспорт качества на бетонную смесь — образец', '/sertifikaty/'], ['Декларация соответствия на товарный бетон', '/sertifikaty/'], ['Типовой договор поставки', '/yurlicam/'], ['Карточка предприятия', '#rekvizity']];
+---
+<HomeLayout title="О компании — бетонный завод с шестью РБУ в Москве и области" description="Производим товарный бетон и растворы на шести собственных РБУ: 2 500 м³ в сутки, своя лаборатория, паспорт качества на каждую партию.">
+  <PageHero h1="О компании" sub="Производим и доставляем бетон и растворы с шести собственных РБУ в Москве и области" crumbs={[{ href: '/', label: 'Главная' }, { label: 'О компании' }]} />
+
+  <section class="sec sec-first" aria-label="Цифры">
+    <div class="wrap"><div class="numbers">{stats.map(([v, t]) => <div class="num card-w"><b>{v}</b><span class="muted">{t}</span></div>)}</div></div>
+  </section>
+
+  <section class="sec sec-tight" aria-labelledby="own-h">
+    <div class="wrap">
+      <SectionHead id="own-h" label="О компании" title="Свой бетон" sub="с собственных узлов" desc="Каждая машина выезжает с нашего РБУ. Заявка уходит на ближайший к объекту узел — плечо доставки короче." />
+      <div class="about">
+        <img class="about-ph" src={img('plant-inside')} alt="Операторы в пультовой бетонного узла" width="1024" height="1024" loading="lazy" decoding="async" />
+        <div class="about-t card-w">
+          <p>Производим товарный бетон и строительные растворы на шести собственных РБУ в Москве и Московской области. В прайсе 26 видов продукции и {products.length} позиций: товарный бетон марок М100–М600 на гравийном и гранитном щебне по ГОСТ 7473-2010, лёгкие и специальные бетоны, растворы и смеси.</p>
+          <p>Цены указаны за 1 м³ с завода. Прайс единый для всех РБУ: заявка уходит на ближайший к объекту узел — плечо доставки короче, себестоимость ниже.</p>
+          <p class="muted">[Заглушка: история компании — год запуска первого узла, ключевые объекты, люди. Пришлите факты — заменим.]</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <PlantsSection label="Производство" title="Шесть РБУ" sub="в Москве и области" desc="Все шесть узлов. Отгрузка круглосуточно, машина идёт с ближайшего к объекту." stats={false} />
+
+  <section class="sec sec-tight" aria-labelledby="q-h">
+    <div class="wrap">
+      <SectionHead id="q-h" label="Качество" title="Контроль" sub="каждой партии" desc="Лаборатория проверяет сырьё и готовую смесь, документы приходят с машиной." />
+      <div class="about about-r">
+        <ul class="qlist card">{quality.map(([i, t, d]) => <li><span class="tile tile-sm"><Icon name={i} size={18} /></span><div><b>{t}</b><span class="small muted">{d}</span></div></li>)}</ul>
+        <img class="about-ph" src={img('plant-silos')} alt="Силосы цемента бетонного узла" width="1024" height="1024" loading="lazy" decoding="async" />
+      </div>
+    </div>
+  </section>
+
+  <section class="sec sec-tight" aria-labelledby="d-h">
+    <div class="wrap">
+      <SectionHead id="d-h" label="Документы" title="Документы" sub="для закупки и приёмки" desc="Скачайте образцы заранее — пригодятся для тендера и технадзора." />
+      <div class="grid2">{docs.map(([d, h]) => <a class="doc doc-w" href={h}><Icon name="file-text" size={24} /><span>{d}</span><span class="fmt">DOCX</span><Icon name="download" size={24} /></a>)}</div>
+    </div>
+  </section>
+
+  <section class="sec sec-tight" aria-labelledby="o-h">
+    <div class="wrap">
+      <SectionHead id="o-h" label="Объекты" title="Где лили" sub="наш бетон" desc="Несколько объектов последних лет. Полный список — на странице объектов." />
+      <div class="objs">{OBJECTS.slice(0, 3).map((o) => (
+        <a class="objc card-w" href={`/proekty/${o.slug}/`}>
+          <img src={img(o.img, 560)} alt={o.name} width="560" height="560" loading="lazy" decoding="async" />
+          <span class="objc-t"><b>{o.name}</b><span class="small muted">{o.grade} · {o.volume}</span></span>
+        </a>
+      ))}</div>
+    </div>
+  </section>
+
+  <section class="sec sec-tight" aria-label="Реквизиты">
+    <div class="wrap stack">
+      <Requisites />
+      <Hook icon="factory" title="Приезжайте на узел — покажем производство" btn="Договориться о визите" topic="Экскурсия на РБУ" />
+    </div>
+  </section>
+
+  <PopularBlock />
+  <div class="sec-end"></div>
+  <SiteFooter slot="footer" />
+</HomeLayout>

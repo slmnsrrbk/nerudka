@@ -1,101 +1,115 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
-import PageHead from '../../components/ui/PageHead.astro';
-import Block from '../../components/ui/Block.astro';
-import Container from '../../components/ui/Container.astro';
-import LeadForm from '../../components/forms/LeadForm.astro';
-import site from '../../data/site.json';
+// Контакты (Figma «Контакты · десктоп» 270:2344): один телефон, почта, режим, мессенджеры, карта шести РБУ [заглушка],
+// адреса узлов, форма «Напишите нам», реквизиты. Кнопок «Построить маршрут» нет — по правкам заказчика.
+import HomeLayout from '../../layouts/HomeLayout.astro';
+import PageHero from '../../components/site/PageHero.astro';
+import PopularBlock from '../../components/site/PopularBlock.astro';
+import SiteFooter from '../../components/site/SiteFooter.astro';
+import SectionHead from '../../components/home/SectionHead.astro';
+import Icon from '../../components/home/Icon.astro';
+import { site } from '../../lib/home-site';
+import { PLANTS } from '../../lib/home';
+import data from '../../data/site.json';
 
-const ld = {
-  '@context': 'https://schema.org',
-  '@type': 'LocalBusiness',
-  name: site.name,
-  telephone: site.phone,
-  email: site.email,
-  address: { '@type': 'PostalAddress', streetAddress: site.address },
-  openingHours: 'Mo-Su 00:00-24:00',
-};
-const cards = [
-  { t: 'Адрес завода', v: site.address, note: 'самовывоз по пропуску' },
-  { t: 'Отдел продаж', v: site.phone, note: 'приём заявок круглосуточно', href: `tel:${site.phoneHref}` },
-  { t: 'Диспетчер', v: site.dispatcherPhone, note: 'график подачи и статус машины', href: `tel:${site.dispatcherPhoneHref}` },
-  { t: 'Почта', v: site.email, note: 'спецификации, документы, КП', href: `mailto:${site.email}` },
-  { t: 'Мессенджеры', v: 'Telegram, WhatsApp, MAX', note: 'отвечаем в рабочее время' },
-  { t: 'Режим работы', v: site.workHours, note: site.officeHours },
-];
+const r = data.requisites;
+const ld = [{
+  '@context': 'https://schema.org', '@type': 'LocalBusiness', name: data.name, telephone: data.phone, email: data.email,
+  address: { '@type': 'PostalAddress', streetAddress: data.address }, openingHours: 'Mo-Su 00:00-24:00',
+}];
+const pins = [[18, 22], [44, 36], [76, 20], [30, 62], [62, 56], [88, 72]];
 ---
-<BaseLayout
-  title="Контакты бетонного завода"
-  description="Телефон отдела продаж и диспетчера, адрес завода, почта, мессенджеры и реквизиты."
-  template="T18"
-  templateName="Контакты"
-  jsonLd={ld}
->
-  <Breadcrumbs items={[{ label: 'Контакты' }]} />
-  <PageHead id="CT-01" name="H1 контактов" h1="Контакты" lead="Заявки принимаем круглосуточно. Для самовывоза нужен пропуск, оформляем по звонку." />
+<HomeLayout title="Контакты бетонного завода — телефон, почта, адреса РБУ" description="Один телефон для заказа и расчёта цены, почта для счетов, адреса шести РБУ для самовывоза. Диспетчер на связи круглосуточно." jsonLd={ld}>
+  <PageHero h1="Контакты" sub={`Диспетчер на связи круглосуточно, без выходных. Заявка до ${data.orderDeadline} — бетон сегодня`} crumbs={[{ href: '/', label: 'Главная' }, { label: 'Контакты' }]} />
 
-  <Block id="CT-02" name="Карточки контактов">
-    <Container class="py-10">
-      <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-        {cards.map((c) => (
-          <div class="rounded-md border border-line bg-white p-4">
-            <div class="text-xs text-ink-2">{c.t}</div>
-            {c.href
-              ? <a href={c.href} class="mt-1 block text-[15px] font-medium hover:text-accent">{c.v}</a>
-              : <div class="mt-1 text-[15px] font-medium">{c.v}</div>}
-            <div class="mt-1 text-sm text-ink-2">{c.note}</div>
+  <section class="sec sec-first" aria-label="Связь">
+    <div class="wrap ctop">
+      <div class="cinfo">
+        <div class="cbox card-w">
+          <span class="tile tile-grey"><Icon name="phone" /></span>
+          <span class="small muted">Телефон — один для всех вопросов</span>
+          <a class="cbox-big" href={`tel:${site.phoneHref}`}>{site.phone}</a>
+          <span class="small muted">Заказ, расчёт цены, подача машин. Круглосуточно, без выходных</span>
+        </div>
+        <div class="cinfo-two">
+          <div class="cbox card-w">
+            <span class="tile tile-grey"><Icon name="mail" /></span>
+            <span class="small muted">Почта</span>
+            <a class="cbox-mid" href={`mailto:${site.email}`}>{site.email}</a>
+            <span class="small muted">Заявки, счета и закрывающие документы</span>
           </div>
-        ))}
+          <div class="cbox card-w">
+            <span class="tile tile-grey"><Icon name="clock" /></span>
+            <span class="small muted">Режим работы</span>
+            <b class="cbox-mid">Круглосуточно</b>
+            <span class="small muted">Отгрузка без выходных. {data.officeHours.replace('пн-пт', 'пн–пт')}</span>
+          </div>
+        </div>
+        <div class="cmsg">
+          <div><b>Напишите в мессенджер</b><span class="small">Пришлите проект или фото площадки — посчитаем</span></div>
+          <div class="cmsg-b">
+            <a class="glass-pill" href={site.tg} target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 25 25" aria-hidden="true"><circle cx="12.5" cy="12.5" r="12.5" fill="#2AABEE"/><path d="M5.456 11.938 17.644 7.25c.52-.208 1.041.104.833.938l-2.083 9.687c-.105.625-.521.833-1.042.52l-3.125-2.29-1.563 1.457c-.104.209-.312.313-.625.313l.209-3.23 5.937-5.312c.208-.208 0-.312-.416-.104l-7.292 4.583-3.125-.937c-.625-.208-.625-.73.104-.938Z" fill="#fff"/></svg>Telegram</a>
+            <a class="glass-pill" href={site.max} target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 25 25" aria-hidden="true"><defs><linearGradient id="mx-c" x1="6.25" y1="6.25" x2="18.75" y2="18.75" gradientUnits="userSpaceOnUse"><stop stop-color="#408CFF"/><stop offset=".55" stop-color="#6154FA"/><stop offset="1" stop-color="#A840F0"/></linearGradient></defs><rect width="25" height="25" rx="7.3" fill="url(#mx-c)"/><circle cx="12.5" cy="11.875" r="4.79" stroke="#fff" stroke-width="2.5" fill="none"/><path d="m5.833 15.208 3.542 1.459-2.708 2.291-.834-3.75Z" fill="#fff"/></svg>MAX</a>
+          </div>
+        </div>
       </div>
-    </Container>
-  </Block>
-
-  <Block id="CT-03" name="Карта" tone="block">
-    <Container class="py-12">
-      <div class="ph rounded-md" style="padding-top:42%">
-        <span class="absolute inset-0 grid place-items-center text-center text-xs text-ink-2">Карта: расположение завода и офиса · 21:9</span>
+      <div class="cmap" role="img" aria-label="Схема: шесть РБУ в Москве и области (карта — заглушка)">
+        {pins.map(([x, y], i) => <span class="cpin" style={`left:${x}%;top:${y}%`}><Icon name="map-pin" size={14} />РБУ {i + 1}</span>)}
+        <span class="cmap-note"><Icon name="map-pinned" size={16} />[Карта с шестью РБУ — заглушка: подключим после получения адресов]</span>
       </div>
-    </Container>
-  </Block>
+    </div>
+  </section>
 
-  <Block id="CT-04" name="Как проехать">
-    <Container class="py-12">
-      <h2 class="text-xl font-semibold tracking-tight">Как проехать на самовывоз</h2>
-      <ol class="mt-4 grid max-w-3xl gap-2">
-        <li class="rounded-md border border-line bg-white p-3 text-sm">1. Позвоните диспетчеру и назовите марку, объём и номер машины.</li>
-        <li class="rounded-md border border-line bg-white p-3 text-sm">2. Оплатите счёт или внесите оплату на месте, после этого оформляется пропуск.</li>
-        <li class="rounded-md border border-line bg-white p-3 text-sm">3. На въезде покажите пропуск, встаньте на весовой контроль, затем под загрузку.</li>
-        <li class="rounded-md border border-line bg-white p-3 text-sm">4. Получите ТТН и паспорт качества, после повторного взвешивания выезжайте.</li>
-      </ol>
-    </Container>
-  </Block>
+  <section class="sec sec-tight" aria-labelledby="rbu-h">
+    <div class="wrap">
+      <SectionHead id="rbu-h" label="Узлы" title="Адреса РБУ" sub="забрать самовывозом" desc="Приезжайте на отгрузку в любой день. Перед визитом позвоните диспетчеру." />
+      <div class="rbus">{PLANTS.map((p) => (
+        <div class="rbu card-w">
+          <span class="tile tile-grey tile-sm"><Icon name="factory" size={18} /></span>
+          <div><b>{p.name}</b><span class="small muted">{p.address}</span></div>
+          <div class="rbu-tags"><span class="tag">{p.mode}</span><span class="tag">{p.power}</span></div>
+        </div>
+      ))}</div>
+    </div>
+  </section>
 
-  <Block id="CT-05" name="Реквизиты" tone="block">
-    <Container class="py-12">
-      <h2 class="text-xl font-semibold tracking-tight">Реквизиты</h2>
-      <div class="table-scroll mt-4 max-w-3xl rounded-md border border-line bg-white">
-        <table class="w-full min-w-[420px] text-sm">
-          <tbody class="divide-y divide-line">
-            <tr><td class="w-1/3 px-4 py-3 text-ink-2">Наименование</td><td class="px-4 py-3">{site.legalName}</td></tr>
-            <tr><td class="px-4 py-3 text-ink-2">ИНН и КПП</td><td class="px-4 py-3">{site.requisites.inn}, {site.requisites.kpp}</td></tr>
-            <tr><td class="px-4 py-3 text-ink-2">ОГРН</td><td class="px-4 py-3">{site.requisites.ogrn}</td></tr>
-            <tr><td class="px-4 py-3 text-ink-2">Банк</td><td class="px-4 py-3">{site.requisites.bank}</td></tr>
-            <tr><td class="px-4 py-3 text-ink-2">Расчётный счёт</td><td class="px-4 py-3">{site.requisites.account}</td></tr>
-            <tr><td class="px-4 py-3 text-ink-2">Корр. счёт и БИК</td><td class="px-4 py-3">{site.requisites.korr}, {site.requisites.bik}</td></tr>
-          </tbody>
-        </table>
+  <section class="sec sec-tight" aria-labelledby="write-h">
+    <div class="wrap stack">
+      <div class="cwrite">
+        <div class="cwrite-l">
+          <h2 class="h2" id="write-h">Напишите нам</h2>
+          <p>Ответим в рабочее время офиса. Срочные вопросы — по телефону, круглосуточно.</p>
+          <a class="cwrite-ph" href={`tel:${site.phoneHref}`}>{site.phone}</a>
+        </div>
+        <div class="cwrite-f card-w" data-form-host>
+          <form class="lead-form kform-in" data-form novalidate>
+            <input type="hidden" name="topic" value="Сообщение со страницы контактов" />
+            <div class="fld-row">
+              <label class="fld"><span>Имя</span><input name="name" autocomplete="name" placeholder="Ваше имя" required /></label>
+              <label class="fld"><span>Телефон</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" data-phone required /></label>
+            </div>
+            <label class="fld"><span>Тема</span><select name="subject"><option>Заказ бетона</option><option>Расчёт цены с доставкой</option><option>Документы и счета</option><option>Сотрудничество</option></select></label>
+            <label class="fld"><span>Сообщение</span><textarea name="comment" rows="3" placeholder="Марка, объём, адрес объекта"></textarea></label>
+            <label class="consent"><input type="checkbox" name="consent" required /><span class="box"><Icon name="check" size={14} stroke={2.5} /></span><span>Даю согласие на <a href="/soglasie/" target="_blank">обработку своих персональных данных</a> в соответствии с законом</span></label>
+            <p class="form-err" data-form-err hidden></p>
+            <button class="btn btn-dark" type="submit">Отправить<Icon name="arrow-right" size={16} /></button>
+          </form>
+          <div class="done" data-done hidden>
+            <span class="tile tile-grey done-ic"><Icon name="check" size={24} /></span>
+            <p class="h3">Сообщение отправлено</p>
+            <p class="muted">Ответим в рабочее время офиса. Срочно — звоните {site.phone}.</p>
+            <p class="proto-note">Прототип: отправка пока не подключена к CRM.</p>
+          </div>
+        </div>
       </div>
-    </Container>
-  </Block>
-
-  <Block id="CT-06" name="Форма обратной связи">
-    <Container class="grid gap-6 py-12 md:grid-cols-2">
-      <div>
-        <h2 class="text-xl font-semibold tracking-tight">Написать нам</h2>
-        <p class="mt-3 text-ink-2">Опишите задачу: конструкция, объём, адрес и желаемая дата. Ответим с расчётом и графиком подачи.</p>
+      <div class="creq card-w" id="rekvizity">
+        <span class="tile tile-grey"><Icon name="landmark" /></span>
+        <div><b>{data.legalName}</b><span class="small muted">ИНН {r.inn.replace(' [заглушка]', '')} · КПП {r.kpp.replace(' [заглушка]', '')} · ОГРН {r.ogrn} · {data.address}</span></div>
+        <button type="button" class="btn btn-grey btn-sm" data-modal="lead" data-topic="Карточка предприятия">Карточка предприятия<Icon name="download" size={16} /></button>
       </div>
-      <LeadForm variant="default" title="Обратная связь" />
-    </Container>
-  </Block>
-</BaseLayout>
+    </div>
+  </section>
+
+  <PopularBlock />
+  <div class="sec-end"></div>
+  <SiteFooter slot="footer" />
+</HomeLayout>

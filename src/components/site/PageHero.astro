@@ -1,0 +1,30 @@
+---
+// Шапка внутренней страницы: фото завода как на главной, меню, H1, цена, оффер, форма справа.
+// Хлебные крошки — под блоком (правки заказчика).
+import NavBar from '../home/NavBar.astro';
+import HeroForm from './HeroForm.astro';
+interface Crumb { href?: string; label: string }
+interface Props { h1: string; price?: string; sub?: string; crumbs: Crumb[]; form?: boolean; formSelected?: string; formOptions?: { id: string; label: string }[]; formTopic?: string }
+const { h1, price, sub, crumbs, form = false, formSelected, formOptions, formTopic } = Astro.props;
+const ld = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: crumbs.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.label, ...(c.href ? { item: c.href } : {}) })) };
+---
+<section class:list={['phero', { 'phero-form': form }]} data-hero>
+  <div class="phero-in">
+    <img class="hero-bg" src="/img/home/hero.webp" alt="Бетонный завод: бетоносмесительный узел, силосы цемента и миксеры на отгрузке" width="2000" height="1125" fetchpriority="high" />
+    <div class="phero-grad"></div>
+    <NavBar variant="hero" />
+    <div class="phero-main">
+      <div class="phero-t">
+        <h1>{h1}</h1>
+        {price && <p class="phero-price">{price}</p>}
+        {sub && <p class="phero-sub">{sub}</p>}
+        <slot name="actions" />
+      </div>
+      {form && <HeroForm selected={formSelected} options={formOptions} topic={formTopic ?? `Расчёт цены: ${h1}`} />}
+    </div>
+  </div>
+</section>
+<nav class="crumbs wrap" aria-label="Хлебные крошки">
+  <ol>{crumbs.map((c, i) => <li>{c.href && i < crumbs.length - 1 ? <a href={c.href}>{c.label}</a> : <span aria-current="page">{c.label}</span>}</li>)}</ol>
+</nav>
+<script type="application/ld+json" set:html={JSON.stringify(ld)} />

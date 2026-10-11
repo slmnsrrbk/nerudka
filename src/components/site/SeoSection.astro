@@ -1,0 +1,60 @@
+---
+// Раздел главной, общий для внутренних страниц.
+import Icon from '../home/Icon.astro';
+import SectionHead from '../home/SectionHead.astro';
+import Hook from '../home/Hook.astro';
+import { site } from '../../lib/home-site';
+const img = (name: string, w = 1024) => `/img/home/${name}${w <= 560 ? '-560' : ''}.webp`;
+const useful = [
+  ['Бетон М300', '/beton/m300/', 'm300-slab'],
+  ['Бетон для фундамента', '/beton/dlya-fundament/', 'columns'],
+  ['Керамзитобетон', '/catalog/beton/keramzitobeton/', 'keramzit'],
+  ['Цементный раствор', '/catalog/rastvor/cementnyj-rastvor/', 'mortar'],
+];
+---
+<!-- 13 · SEO-текст с картинками -->
+<section class="sec" id="about" aria-labelledby="about-h">
+  <div class="wrap">
+    <SectionHead id="about-h" label="О бетоне" title="Бетон с доставкой в Москве" sub="и области от производителя" desc="Коротко о продукции, ценах и условиях поставки. Полный текст раскрывается по кнопке." />
+    <div class="stack">
+      <div class="card seo" data-seo>
+        <img class="seo-img" src={img('mixer-site')} alt="Миксер и автобетононасос на строительной площадке" width="1024" height="1024" loading="lazy" />
+        <div class="seo-t">
+          <div class="seo-text" data-seo-text>
+            <div class="seo-cols">
+              <div>
+                <p>Производим товарный бетон и строительные растворы на шести собственных РБУ в Москве и Московской области. В прайсе 26 видов продукции и 128 позиций: товарный бетон марок М100–М600 (классы B7,5–B45) на гравийном и гранитном щебне по ГОСТ 7473-2010, лёгкие и специальные бетоны, растворы и смеси.</p>
+                <p>Цены указаны за 1 м³ с завода, на условиях самовывоза. Прайс единый для всех РБУ: заявка уходит на ближайший к объекту узел — плечо доставки короче, себестоимость ниже. От 50 м³ — скидка 10 %, от 200 м³ — 15 %, от 500 м³ — 20 %.</p>
+              </div>
+              <div class="seo-r">
+                <div class="seo-b"><h3 class="seo-h">Какую марку выбрать</h3>
+                <p>Для ленточного фундамента обычно берут М250, для плитного — М300, для стяжки и отмостки — М200, для аэродромных покрытий — М400. Точную марку подскажет технолог по проекту и нагрузкам.</p></div>
+                <div class="seo-b"><h3 class="seo-h">Доставка и приёмка</h3>
+                <p>Возим миксерами от 9 до 16 м³ по всем районам и округам Москвы и Московской области. Разгрузка до 60 минут — бесплатно. На каждую партию — паспорт качества, объём подтверждаем весовой распечаткой.</p></div>
+              </div>
+            </div>
+            <div class="seo-more" data-seo-more>
+              <figure class="seo-fig"><img src={img('lab-press', 560)} alt="Испытание бетонных кубов на прессе в лаборатории" width="560" height="560" loading="lazy" /><figcaption class="small muted">Лаборатория проверяет каждую партию: пробы на 7 и 28 сутки.</figcaption></figure>
+              <div>
+                <h3 class="seo-h">Как проверяем качество</h3>
+                <p>[Заглушка: полный SEO-текст ~3000 знаков на этапе наполнения.] Структура: определение, применение, отличия от смежных решений, как выбрать, частые ошибки, условия поставки. Блок стоит один раз внизу страницы и не разрывает продающие блоки.</p>
+                <h3 class="seo-h">Зимнее бетонирование</h3>
+                <p>Льём до −25 °C: противоморозные добавки и прогрев — от 350 ₽ за м³. Технолог подскажет режим прогрева под вашу конструкцию.</p>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="ulink" data-seo-toggle aria-expanded="false"><span>Читать полностью</span><Icon name="chevrons-down" size={16} /></button>
+        </div>
+      </div>
+      <div>
+        <h3 class="useful-h">Полезные страницы</h3>
+        <div class="grid4 useful">
+          {useful.map(([t, h, im]) => (
+            <a class="ucard" href={h}><img src={img(im, 560)} alt="" width="560" height="560" loading="lazy" decoding="async" /><span class="ucard-t">{t}</span><span class="ucard-m">Подробнее<Icon name="arrow-right" size={16} /></span></a>
+          ))}
+        </div>
+      </div>
+      <Hook icon="phone" title="Оставьте заявку — перезвоним с расчётом" btn="Оставить заявку" />
+    </div>
+  </div>
+</section>

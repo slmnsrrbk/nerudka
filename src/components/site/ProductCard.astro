@@ -1,0 +1,30 @@
+---
+// Карточка товара: фото с надписью в центре (марка крупно + вид), характеристики, цена, счётчик с корзиной.
+import Icon from '../home/Icon.astro';
+import type { Product } from '../../lib/types';
+import { img, productPhoto, photoLabel, specLine, productPath, fmt } from '../../lib/inner';
+interface Props { product: Product; badge?: string; compact?: boolean }
+const { product: p, badge = p.badges?.[0], compact = false } = Astro.props;
+const lab = photoLabel(p);
+const href = productPath(p);
+---
+<article class:list={['pcard', { 'pcard-c': compact }]} data-item={p.id} data-name={p.name} data-price={p.price} data-href={href}>
+  <a class="pcard-ph" href={href} tabindex="-1" aria-hidden="true">
+    <img src={img(productPhoto(p), 560)} alt="" width="560" height="560" loading="lazy" decoding="async" />
+    <span class="pcard-lab"><b>{lab.big}</b><span>{lab.small}</span></span>
+    {badge && <span class="pcard-badge">{badge}</span>}
+  </a>
+  <div class="pcard-b">
+    <div class="pcard-t"><a class="pcard-n" href={href}>{p.name}</a><span class="pcard-s">{specLine(p)}</span></div>
+    <p class="pcard-p"><b>{fmt(p.price)} ₽</b><span>за м³</span></p>
+    <div class="pcard-a">
+      <div class="stepper">
+        <button type="button" class="st-b" data-dec aria-label="Меньше"><Icon name="minus" size={14} /></button>
+        <input class="st-q" value="1" inputmode="decimal" data-qty aria-label="Объём, м³" />
+        <button type="button" class="st-b" data-inc aria-label="Больше"><Icon name="plus" size={14} /></button>
+        <button type="button" class="st-cart" data-add aria-label={`Добавить в корзину: ${p.name}`}><Icon name="shopping-cart" size={16} /></button>
+      </div>
+      <a class="ulink pcard-more" href={href}>Подробнее<Icon name="arrow-right" size={16} /></a>
+    </div>
+  </div>
+</article>

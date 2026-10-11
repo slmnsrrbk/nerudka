@@ -1,0 +1,21 @@
+---
+// «Все подкатегории бетона»: облако ссылок по марке, классу, заполнителю, назначению и виду.
+import SectionHead from '../home/SectionHead.astro';
+import { linkCloud } from '../../lib/inner';
+interface Props { current?: string }
+const { current } = Astro.props;
+const rows = linkCloud();
+---
+<section class="sec sec-tight" aria-labelledby="cloud-h">
+  <div class="wrap">
+    <SectionHead id="cloud-h" label="Все разделы" title="Все подкатегории" sub="бетона" desc="Каждая ссылка — отдельная страница с ценами и подбором." />
+    <div class="cloud card-w">
+      {rows.map((r) => (
+        <div class="cloud-r">
+          <p class="cloud-t">{r.t}</p>
+          <div class="cloud-l">{r.links.map((l) => <a class:list={['cloud-a', { on: l.href === current }]} href={l.href}>{l.label}</a>)}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

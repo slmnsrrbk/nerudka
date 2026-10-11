@@ -1,0 +1,47 @@
+---
+// Подвал сайта (Figma: компонент «Подвал»).
+import { priceTabs } from '../../lib/home';
+import { site } from '../../lib/home-site';
+const tabs = priceTabs();
+const betonTabs = tabs.filter((t) => t.group === 'beton');
+const mortarTabs = tabs.filter((t) => t.group === 'rastvor');
+// Порядок растворов — как в макете.
+const footOrder = ['Цементный раствор', 'Цементно-песчаный раствор (ЦПР)', 'Кладочный раствор', 'Штукатурный раствор', 'Известковый раствор', 'Цементно-известковый раствор', 'Раствор для стяжки пола'];
+const footMortars = mortarTabs.filter((t) => /раствор/i.test(t.name)).sort((x, y) => (footOrder.indexOf(x.name) + 1 || 99) - (footOrder.indexOf(y.name) + 1 || 99));
+const footerGrades = ['М100 В7,5', 'М150 В12,5', 'М200 В15', 'М250 В20', 'М300 В22,5', 'М350 В25', 'М400 В30', 'М450 В35', 'М500 В40', 'М550 В45', 'М600 В45'];
+const docs = [
+  ['Сертификаты и декларации на бетон', '/sertifikaty/'],
+  ['Политика конфиденциальности', '/politika/'],
+  ['Согласие на обработку персональных данных', '/soglasie/'],
+  ['Перечень персональных данных', '/politika/'],
+  ['Инструкция по порядку учёта и уничтожения персональных данных', '/politika/'],
+  ['Инструкция пользователя информационных систем персональных данных', '/politika/'],
+  ['Приказ об утверждении документов по персональным данным [заглушка]', '/politika/'],
+  ['Правила публичной оферты', '/oferta/'],
+  ['Реквизиты', '/kontakty/#rekvizity'],
+];
+---
+<footer class="foot" id="contacts">
+  <div class="wrap">
+    <div class="foot-cols">
+      <div class="foot-c1"><p class="foot-h">Марки и классы</p><ul>{footerGrades.map((g) => <li><a href={`/beton/${g.split(' ')[0].replace('М', 'm')}/`}>{g}</a></li>)}</ul></div>
+      <div class="foot-c2"><p class="foot-h">Виды бетона</p><ul>{betonTabs.slice(0, 10).map((t) => <li><a href={t.href}>{t.name}</a></li>)}</ul></div>
+      <div class="foot-c3"><p class="foot-h">Растворы</p><ul>{footMortars.map((t) => <li><a href={t.href}>{t.name}</a></li>)}</ul></div>
+      <div class="foot-docs"><p class="foot-h">Документы</p><ul>{docs.map(([t, h]) => <li><a href={h}>{t}</a></li>)}</ul></div>
+      <div class="foot-contacts">
+        <a class="foot-phone" href={`tel:${site.phoneHref}`}>{site.phone}</a>
+        <button type="button" class="foot-call" data-modal="lead" data-topic="Обратный звонок">Заказать звонок →</button>
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+        <span class="foot-muted">{site.hours}</span>
+        <div class="foot-msg">
+          <a class="foot-sq" href={site.tg} aria-label="Telegram"><svg width="25" height="25" viewBox="0 0 25 25" aria-hidden="true"><circle cx="12.5" cy="12.5" r="12.5" fill="#2AABEE"/><path d="M5.456 11.938 17.644 7.25c.52-.208 1.041.104.833.938l-2.083 9.687c-.105.625-.521.833-1.042.52l-3.125-2.29-1.563 1.457c-.104.209-.312.313-.625.313l.209-3.23 5.937-5.312c.208-.208 0-.312-.416-.104l-7.292 4.583-3.125-.937c-.625-.208-.625-.73.104-.938Z" fill="#fff"/></svg></a>
+          <a class="foot-sq" href={site.max} aria-label="MAX"><svg width="25" height="25" viewBox="0 0 25 25" aria-hidden="true"><defs><linearGradient id="mx-foot" x1="6.25" y1="6.25" x2="18.75" y2="18.75" gradientUnits="userSpaceOnUse"><stop stop-color="#408CFF"/><stop offset=".55" stop-color="#6154FA"/><stop offset="1" stop-color="#A840F0"/></linearGradient></defs><rect width="25" height="25" rx="7.3" fill="url(#mx-foot)"/><circle cx="12.5" cy="11.875" r="4.79" stroke="#fff" stroke-width="2.5" fill="none"/><path d="m5.833 15.208 3.542 1.459-2.708 2.291-.834-3.75Z" fill="#fff"/></svg></a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <p>{site.legal}</p>
+      <p>Цены на сайте не являются публичной офертой.</p>
+    </div>
+  </div>
+</footer>

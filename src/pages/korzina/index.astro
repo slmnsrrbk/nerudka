@@ -1,0 +1,84 @@
+---
+// Корзина (Figma «Корзина · десктоп» 266:1520 и «Корзина · пусто» 267:1881): позиции, скидка от объёма, контакты, итог без доставки.
+// Содержимое — из localStorage ('beton-cart'), собирает scripts/home.ts.
+import HomeLayout from '../../layouts/HomeLayout.astro';
+import PageHero from '../../components/site/PageHero.astro';
+import PopularBlock from '../../components/site/PopularBlock.astro';
+import SiteFooter from '../../components/site/SiteFooter.astro';
+import Hook from '../../components/home/Hook.astro';
+import Icon from '../../components/home/Icon.astro';
+import { site } from '../../lib/home-site';
+import { products, specLine } from '../../lib/inner';
+const specs = Object.fromEntries(products.map((p) => [p.id, specLine(p)]));
+const marks = [[0, '0 м³'], [50, '50 м³ · 10 %'], [200, '200 м³ · 15 %'], [500, '500 м³ · 20 %']] as const;
+---
+<HomeLayout title="Корзина — заявка на бетон и растворы" description="Позиции заявки, скидка от объёма и контакты. Доставку посчитает диспетчер по адресу.">
+  <PageHero h1="Корзина" sub="Добавьте позиции из прайса — посчитаем скидку от объёма" crumbs={[{ href: '/', label: 'Главная' }, { label: 'Корзина' }]} />
+  <section class="sec sec-first" aria-label="Корзина" data-kpage>
+    <div class="wrap">
+      <div class="kart" data-kfull hidden>
+        <div class="kart-main">
+          <div class="card-w ktable">
+            <div class="krow krow-head"><span>Позиция</span><span>Цена за м³</span><span>Объём, м³</span><span>Сумма</span><span></span></div>
+            <ul class="klist" data-klist></ul>
+            <div class="ktable-f">
+              <a class="ulink" href="/price/"><Icon name="plus" size={16} />Добавить позицию из прайса</a>
+              <button type="button" class="ulink muted" data-kclear>Очистить корзину</button>
+            </div>
+          </div>
+          <div class="card-w kdisc">
+            <div class="kdisc-h"><span class="tile tile-grey tile-sm"><Icon name="percent" size={18} /></span><div><p class="strip-t" data-kdisc-t>Скидка от объёма</p><p class="small muted" data-kdisc-s></p></div></div>
+            <div class="kbar"><span data-kbar></span></div>
+            <div class="kmarks">{marks.map(([v, t]) => <span data-kmark={v}>{t}</span>)}</div>
+          </div>
+          <div class="card-w kform" data-form-host>
+            <form id="kform" class="lead-form" data-form data-kform novalidate>
+              <p class="h3">Контакты</p>
+              <input type="hidden" name="topic" value="Заказ из корзины" />
+              <input type="hidden" name="items" data-kitems />
+              <div class="kfields">
+                <label class="fld"><span>Имя</span><input name="name" autocomplete="name" placeholder="Ваше имя" required /></label>
+                <label class="fld"><span>Телефон</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" data-phone required /></label>
+                <label class="fld"><span>Почта <em>— необязательно</em></span><input name="email" type="email" autocomplete="email" placeholder="для счёта и документов" /></label>
+              </div>
+              <label class="fld"><span>Комментарий</span><input name="comment" placeholder="Подъезд к объекту, этаж, особые условия" /></label>
+              <label class="consent"><input type="checkbox" name="consent" required /><span class="box"><Icon name="check" size={14} stroke={2.5} /></span><span>Даю согласие на <a href="/soglasie/" target="_blank">обработку своих персональных данных</a> в соответствии с законом</span></label>
+              <p class="form-err" data-form-err hidden></p>
+            </form>
+            <div class="done" data-done hidden>
+              <span class="tile tile-grey done-ic"><Icon name="check" size={24} /></span>
+              <p class="h3">Заявка принята</p>
+              <p class="muted">Диспетчер перезвонит, уточнит адрес, время подачи и стоимость доставки.</p>
+              <p class="proto-note">Прототип: отправка заявки пока не подключена к CRM.</p>
+            </div>
+          </div>
+        </div>
+        <aside class="kart-side">
+          <div class="card-w ksum">
+            <p class="h3">Итого</p>
+            <div class="ksum-r"><span data-ksum-l>Бетон и растворы</span><span data-ksub>0 ₽</span></div>
+            <div class="ksum-r" data-kdrow><span data-kdl>Скидка</span><span data-kd>0 ₽</span></div>
+            <div class="ksum-t"><span>К оплате</span><b data-ktotal>0 ₽</b></div>
+            <button class="btn btn-dark btn-block" type="submit" form="kform" data-ksend>Отправить заявку<Icon name="arrow-right" size={16} /></button>
+            <p class="small muted">Диспетчер перезвонит, уточнит адрес, время подачи и стоимость доставки</p>
+            <p class="small muted">или позвоните <a class="ksum-ph" href={`tel:${site.phoneHref}`}>{site.phone}</a></p>
+          </div>
+          <div class="note"><Icon name="briefcase" size={20} /><div><b>Для юрлиц — по договору</b><p class="small muted">УПД через ЭДО, паспорт качества на каждую партию. Постоянным клиентам — отсрочка до 30 дней.</p></div></div>
+        </aside>
+      </div>
+      <div class="stack" data-kempty hidden>
+        <div class="sempty card-w">
+          <span class="tile tile-grey"><Icon name="shopping-cart" /></span>
+          <p class="h3">В корзине пока ничего нет</p>
+          <p class="muted">Добавьте позиции из прайса — посчитаем скидку от объёма и доставку по зоне</p>
+          <a class="btn btn-dark" href="/price/">Открыть прайс-лист<Icon name="arrow-right" size={16} /></a>
+        </div>
+        <Hook icon="headset" title="Не знаете, что заказать? Подберём марку и объём" btn="Рассчитать цену" topic="Подбор из пустой корзины" />
+      </div>
+    </div>
+  </section>
+  <script type="application/json" id="kspec" set:html={JSON.stringify(specs)} />
+  <PopularBlock />
+  <div class="sec-end"></div>
+  <SiteFooter slot="footer" />
+</HomeLayout>

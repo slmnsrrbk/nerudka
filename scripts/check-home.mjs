@@ -1,14 +1,16 @@
-// Проверка главной: горизонтальный скролл на разных ширинах, ошибки JS, 404.
+// Проверка главной и внутренних страниц: горизонтальный скролл на разных ширинах, ошибки JS, 404.
+// PAGES=/,/catalog/ — список путей через запятую (по умолчанию только главная).
 import { chromium } from 'playwright';
 const base = process.env.BASE || 'http://localhost:4321/';
 const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
 let bad = 0;
-for (const [w, h, mobile] of [[320, 640, true], [375, 812, true], [390, 844, true], [430, 932, true], [768, 1024, true], [1024, 768, false], [1280, 800, false], [1440, 900, false], [1920, 1080, false], [2560, 1440, false]]) {
+const pages = (process.env.PAGES || '/').split(',');
+for (const path of pages) for (const [w, h, mobile] of [[320, 640, true], [375, 812, true], [390, 844, true], [430, 932, true], [768, 1024, true], [1024, 768, false], [1280, 800, false], [1440, 900, false], [1920, 1080, false], [2560, 1440, false]]) {
   const p = await b.newPage({ viewport: { width: w, height: h }, isMobile: mobile, hasTouch: mobile });
   const errs = [];
   p.on('pageerror', (e) => errs.push(e.message));
   p.on('response', (r) => { if (r.status() >= 400 && r.url().startsWith(base)) errs.push(`${r.status()} ${r.url()}`); });
-  await p.goto(base, { waitUntil: 'load' });
+  await p.goto(new URL(path, base).href, { waitUntil: 'load' });
   const res = await p.evaluate(() => {
     const vw = document.documentElement.clientWidth;
     const clipped = (e) => { for (let a = e.parentElement; a && a !== document.body; a = a.parentElement) { const s = getComputedStyle(a); if (s.overflowX !== 'visible' || s.position === 'fixed') return true; } return false; };
@@ -18,7 +20,7 @@ for (const [w, h, mobile] of [[320, 640, true], [375, 812, true], [390, 844, tru
   });
   const ok = res.sw <= res.vw && !res.over.length && !errs.length;
   if (!ok) bad++;
-  console.log(`${ok ? 'OK ' : 'BAD'} ${w}x${h} scrollWidth=${res.sw} vw=${res.vw}`, res.over.length ? res.over : '', errs.length ? errs : '');
+  console.log(`${ok ? 'OK ' : 'BAD'} ${path} ${w}x${h} scrollWidth=${res.sw} vw=${res.vw}`, res.over.length ? res.over : '', errs.length ? errs : '');
   await p.close();
 }
 await b.close();
