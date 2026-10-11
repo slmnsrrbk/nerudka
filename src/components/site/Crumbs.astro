@@ -1,0 +1,11 @@
+---
+// Хлебные крошки под первым блоком + разметка BreadcrumbList.
+interface Crumb { href?: string; label: string }
+interface Props { items: Crumb[] }
+const { items } = Astro.props;
+const ld = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: items.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.label, ...(c.href ? { item: c.href } : {}) })) };
+---
+<nav class="crumbs wrap" aria-label="Хлебные крошки">
+  <ol>{items.map((c, i) => <li>{c.href && i < items.length - 1 ? <a href={c.href}>{c.label}</a> : <span aria-current="page">{c.label}</span>}</li>)}</ol>
+</nav>
+<script type="application/ld+json" set:html={JSON.stringify(ld)} />

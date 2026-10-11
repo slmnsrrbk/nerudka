@@ -3,10 +3,10 @@
 // Хлебные крошки — под блоком (правки заказчика).
 import NavBar from '../home/NavBar.astro';
 import HeroForm from './HeroForm.astro';
+import Crumbs from './Crumbs.astro';
 interface Crumb { href?: string; label: string }
 interface Props { h1: string; price?: string; sub?: string; crumbs: Crumb[]; form?: boolean; formSelected?: string; formOptions?: { id: string; label: string }[]; formTopic?: string }
 const { h1, price, sub, crumbs, form = false, formSelected, formOptions, formTopic } = Astro.props;
-const ld = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: crumbs.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.label, ...(c.href ? { item: c.href } : {}) })) };
 ---
 <section class:list={['phero', { 'phero-form': form }]} data-hero>
   <div class="phero-in">
@@ -24,7 +24,4 @@ const ld = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemLi
     </div>
   </div>
 </section>
-<nav class="crumbs wrap" aria-label="Хлебные крошки">
-  <ol>{crumbs.map((c, i) => <li>{c.href && i < crumbs.length - 1 ? <a href={c.href}>{c.label}</a> : <span aria-current="page">{c.label}</span>}</li>)}</ol>
-</nav>
-<script type="application/ld+json" set:html={JSON.stringify(ld)} />
+<Crumbs items={crumbs} />

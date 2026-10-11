@@ -3,6 +3,7 @@
 import HomeLayout from '../../layouts/HomeLayout.astro';
 import CategoryPage from '../../components/site/CategoryPage.astro';
 import ProductPage from '../../components/site/ProductPage.astro';
+import SubcategoryPage from '../../components/site/SubcategoryPage.astro';
 import SiteFooter from '../../components/site/SiteFooter.astro';
 import { categories, products, categoryPath, productPath } from '../../lib/catalog';
 import { seo } from '../../lib/seo';
@@ -32,6 +33,6 @@ const jsonLd = props.kind === 'product'
   : [];
 ---
 <HomeLayout title={meta.title} description={meta.description} jsonLd={jsonLd}>
-  {props.kind === 'category' ? <CategoryPage category={props.category} /> : <ProductPage product={props.product} />}
+  {props.kind === 'product' ? <ProductPage product={props.product} /> : props.category.parent ? <SubcategoryPage category={props.category} /> : <CategoryPage category={props.category} />}
   <SiteFooter slot="footer" />
 </HomeLayout>

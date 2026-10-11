@@ -1,0 +1,11 @@
+---
+// Шапка без фото (страница позиции): меню на белой плашке, тёмные пункты, ниже — крошки.
+import NavBar from '../home/NavBar.astro';
+import Crumbs from './Crumbs.astro';
+interface Props { crumbs: { href?: string; label: string }[] }
+const { crumbs } = Astro.props;
+---
+<header class="pbar-wrap" data-hero>
+  <div class="pbar"><NavBar variant="light" /></div>
+</header>
+<Crumbs items={crumbs} />

@@ -471,7 +471,8 @@ if (hero && sticky) {
     sticky.classList.toggle('on', on);
     sticky.setAttribute('aria-hidden', String(!on));
     if (!on && megaTrigger?.closest('.sticky-bar')) closeMega();
-  }, { rootMargin: '-80px 0px 0px 0px' }).observe(hero);
+  // Низкая белая шапка (страница позиции) короче 80 px — для неё отступ меньше, иначе липкая шапка накрывала бы её сразу.
+  }, { rootMargin: `-${Math.min(80, Math.round(hero.offsetHeight / 2))}px 0px 0px 0px` }).observe(hero);
 }
 
 /* ---------- Поиск ---------- */

@@ -18,6 +18,19 @@
 .crumbs li + li::before { content: '/'; margin-right: 10px; color: var(--mute); }
 .crumbs a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
 
+
+/* ---------- Шапка без фото: меню на белой плашке ---------- */
+.pbar-wrap { padding: 16px 16px 0; }
+.pbar { padding: 14px 20px 14px 32px; border-radius: 20px; background: var(--w); }
+.nav-light { color: var(--ink); }
+.nav-light .glass-pill, .nav-light .glass-sq { background: var(--bg); }
+.nav-light .glass-pill:hover, .nav-light .glass-sq:hover { background: var(--card); }
+.nav-light .cart-badge { background: var(--ink); color: var(--w); }
+.nav-light .phone-pill { background: var(--ink); color: var(--w); }
+.buy-h { display: flex; flex-direction: column; gap: 8px; }
+.buy-h h1 { font-size: clamp(30px, 2.8vw, 40px); line-height: 1.08; font-weight: 400; letter-spacing: -.02em; overflow-wrap: anywhere; }
+.buy-h .small { font-size: 14px; }
+
 /* ---------- Ритм секций ---------- */
 .sec-first { padding-top: 32px; padding-bottom: 0; }
 .sec-tight { padding: 72px 0 0; }
@@ -402,6 +415,9 @@
 }
 @media (max-width: 760px) {
   .phero { padding: 8px 8px 0; }
+  .pbar-wrap { padding: 8px 8px 0; }
+  .pbar { padding: 10px 10px 10px 16px; border-radius: 16px; }
+  .buy-h h1 { font-size: 28px; }
   .phero-in { gap: 48px; padding: 14px 14px 28px 16px; border-radius: 20px; }
   .phero-form .phero-in { gap: 40px; }
   .phero h1 { font-size: 34px; letter-spacing: -.02em; }

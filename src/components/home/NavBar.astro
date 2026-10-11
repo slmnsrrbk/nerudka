@@ -2,7 +2,7 @@
 import Icon from './Icon.astro';
 import { NAV } from '../../lib/menu';
 import { site } from '../../lib/home-site';
-interface Props { variant: 'hero' | 'sticky' }
+interface Props { variant: 'hero' | 'sticky' | 'light' }
 const { variant } = Astro.props;
 ---
 <div class={`nav nav-${variant}`}>
