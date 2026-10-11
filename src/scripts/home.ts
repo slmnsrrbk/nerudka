@@ -769,3 +769,13 @@ if (sPage) {
     }
   }
 }
+
+/* ---------- Живое фото первого экрана ---------- */
+// Видео грузим только когда можно: без «экономии трафика» и без «уменьшения движения». Пока не началось — видно фото.
+const heroVideo = $<HTMLVideoElement>('[data-hero-video]');
+const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+if (heroVideo && !mq('(prefers-reduced-motion: reduce)') && !saveData) {
+  heroVideo.addEventListener('playing', () => heroVideo.classList.add('on'), { once: true });
+  heroVideo.src = heroVideo.dataset.src!;
+  heroVideo.play().catch(() => { /* автозапуск запрещён — остаётся фото */ });
+}

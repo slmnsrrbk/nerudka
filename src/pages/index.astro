@@ -16,6 +16,9 @@ import PopularBlock from '../components/site/PopularBlock.astro';
 import { priceTabs, rub, PLANTS, OBJECTS, FAQ, TIPS, fmt } from '../lib/home';
 import { products } from '../lib/catalog';
 import { site } from '../lib/home-site';
+import { existsSync } from 'node:fs';
+// Живое фото первого экрана: видео есть, только если его скачал scripts/fetch-hero-video.mjs при сборке.
+const heroVideo = existsSync('public/video/hero.mp4');
 
 const tabs = priceTabs();
 const betonTabs = tabs.filter((t) => t.group === 'beton');
@@ -99,6 +102,7 @@ const docs = [
   <section class="hero" id="top" data-hero>
     <div class="hero-in">
       <img class="hero-bg" src="/img/home/hero.webp" alt="Бетонный завод: бетоносмесительный узел, силосы цемента и миксеры на отгрузке" width="2000" height="1125" fetchpriority="high" />
+      {heroVideo && <video class="hero-bg hero-video" data-hero-video data-src="/video/hero.mp4" muted loop playsinline preload="none" poster="/img/home/hero.webp" aria-hidden="true" tabindex="-1"></video>}
       <div class="hero-grad"></div>
       <NavBar variant="hero" />
       <div class="hero-main">
