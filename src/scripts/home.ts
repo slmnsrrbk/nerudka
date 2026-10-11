@@ -772,10 +772,25 @@ if (sPage) {
 
 /* ---------- Живое фото первого экрана ---------- */
 // Видео грузим только когда можно: без «экономии трафика» и без «уменьшения движения». Пока не началось — видно фото.
+// Повтор без скачка: за 0,9 с до конца видео гаснет до фото (оно же первый кадр) и стартует сначала.
 const heroVideo = $<HTMLVideoElement>('[data-hero-video]');
 const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
 if (heroVideo && !mq('(prefers-reduced-motion: reduce)') && !saveData) {
+  let fading = false;
+  const restart = () => {
+    heroVideo.currentTime = 0;
+    heroVideo.play().catch(() => {});
+    heroVideo.classList.add('on');
+    fading = false;
+  };
   heroVideo.addEventListener('playing', () => heroVideo.classList.add('on'), { once: true });
+  heroVideo.addEventListener('timeupdate', () => {
+    if (fading || !heroVideo.duration || heroVideo.currentTime < heroVideo.duration - 0.9) return;
+    fading = true;
+    heroVideo.classList.remove('on');
+    setTimeout(restart, 850);
+  });
+  heroVideo.addEventListener('ended', () => { if (!fading) restart(); });
   heroVideo.src = heroVideo.dataset.src!;
   heroVideo.play().catch(() => { /* автозапуск запрещён — остаётся фото */ });
 }
