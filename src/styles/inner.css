@@ -97,13 +97,13 @@
 .doc-w { background: var(--w); }
 
 /* ---------- Страница позиции ---------- */
-.prod { display: grid; grid-template-columns: minmax(0, 1fr) 516px; gap: 32px; align-items: stretch; }
-.prod-ph { position: relative; border-radius: 20px; overflow: hidden; min-height: 520px; color: var(--w); isolation: isolate; }
+.prod { display: grid; grid-template-columns: minmax(0, 35fr) minmax(0, 65fr); gap: 32px; align-items: start; }
+.prod-ph { position: sticky; top: 92px; aspect-ratio: 812 / 674; border-radius: 20px; overflow: hidden; color: var(--w); isolation: isolate; }
 .prod-ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
 .prod-ph::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(28, 36, 56, .35), rgba(28, 36, 56, .65)); }
 .prod-lab { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; padding: 0 20px; }
-.prod-lab b { font-size: clamp(64px, 8.3vw, 120px); font-weight: 600; letter-spacing: -.03em; line-height: 1; }
-.prod-lab span { font-size: clamp(14px, 1.4vw, 20px); font-weight: 500; letter-spacing: .08em; text-transform: uppercase; opacity: .9; }
+.prod-lab b { font-size: clamp(48px, 5vw, 80px); font-weight: 600; letter-spacing: -.03em; line-height: 1; }
+.prod-lab span { font-size: clamp(12px, 1vw, 15px); font-weight: 500; letter-spacing: .08em; text-transform: uppercase; opacity: .9; }
 .buy { display: flex; flex-direction: column; gap: 20px; padding: 28px; background: var(--w); border-radius: 16px; }
 .buy-tags { display: flex; flex-wrap: wrap; gap: 8px; }
 .tag { padding: 5px 10px; border-radius: 6px; background: var(--bg); font-size: 12px; font-weight: 500; }
@@ -379,14 +379,13 @@
 @media (max-width: 1240px) {
   .phero-main { grid-template-columns: minmax(0, 1fr) 340px; }
   .pgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .prod { grid-template-columns: minmax(0, 1fr) 440px; }
   .specs { grid-template-columns: minmax(0, 1fr); }
   .fcat { grid-template-columns: 260px minmax(0, 1fr); }
 }
 @media (max-width: 1080px) {
   .pur-grid, .zgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .prod { grid-template-columns: minmax(0, 1fr); }
-  .prod-ph { min-height: 360px; }
+  .prod-ph { position: relative; top: 0; max-height: 420px; width: 100%; }
   .fcat { grid-template-columns: minmax(0, 1fr); }
   .hub { grid-template-columns: minmax(0, 1fr); gap: 24px; }
   .sres { grid-template-columns: minmax(0, 1fr); }
@@ -446,7 +445,7 @@
   .zcard { padding: 14px 16px; }
   .zcard b { font-size: 20px; }
   .ptable-f .btn { flex: 1 1 100%; }
-  .prod-ph { min-height: 240px; border-radius: 16px; }
+  .prod-ph { border-radius: 16px; }
   .buy { padding: 18px 16px; gap: 16px; }
   .buy-p b { font-size: 34px; }
   .buy-btns { grid-template-columns: minmax(0, 1fr); }
