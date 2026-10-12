@@ -266,3 +266,24 @@ body.in-frame .pt, body.in-frame .banner { display: none; }
 #pay-form input[type="text"], #pay-form input[type="email"] { width: 100%; min-width: 0; }
 #pay-form label, .promo > * { min-width: 0; }
 .modal__box { overflow-x: hidden; }
+
+/* цифры, факты, философия */
+.numbers { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px 16px; margin-top: 8px; }
+.numbers li { display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+.numbers b { font-size: clamp(2rem, 6vw, 3.5rem); line-height: 1; letter-spacing: -0.03em; }
+.numbers span { color: var(--mut); font-size: 14px; }
+.blk .wrap > .tag + .numbers { margin-top: 20px; }
+.facts { display: grid; gap: 10px; margin-top: 20px; font-size: 15px; }
+.facts li { position: relative; padding-left: 18px; color: var(--mut); }
+.facts li::before { content: ""; position: absolute; left: 0; top: .6em; width: 6px; height: 6px; border-radius: 50%; background: var(--ink); }
+.facts b { color: var(--ink); font-weight: 600; }
+.quote { margin: 20px 0 0; padding-left: 16px; border-left: 2px solid var(--ink); font-size: 17px; }
+.philo { max-width: 52rem; }
+.philo__text { margin-top: 16px; font-size: clamp(1.4rem, 3.2vw, 2.25rem); line-height: 1.25; font-weight: 600; letter-spacing: -0.02em; }
+.philo .sub { margin-top: 16px; }
+.about { align-items: start; }
+@media (min-width: 1100px) {
+  .numbers { grid-template-columns: repeat(4, 1fr); gap: 32px; }
+  .about .ph--about { position: sticky; top: 96px; aspect-ratio: 4 / 5; }
+}
+.numbers b { white-space: nowrap; font-size: clamp(2rem, 5.2vw, 3.1rem); }
