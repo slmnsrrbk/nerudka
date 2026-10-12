@@ -25,11 +25,33 @@
   var form = document.getElementById('pay-form');
   var lastFocus = null;
   var current = { name: '', price: '' };
+  var upsell = document.getElementById('pay-upsell');
+  var bundleBox = document.getElementById('pay-bundle');
+  var bundleAdd = document.getElementById('pay-add');
+  var BUNDLE = { name: 'Набор: 3 сборника', price: '5 999 ₽' };
+  var SET = ['Магия 5 утра', 'Alina CookBook', 'Полезные завтраки'];
+
+  /* набор предлагаем галочкой только для цифровых сборников из него */
+  function baseOf(name) {
+    var base = name.replace(/, PDF$/, '');
+    return SET.indexOf(base) >= 0 ? base : null;
+  }
+  function render() {
+    var sel = bundleBox && bundleBox.checked && !upsell.hidden ? BUNDLE : current;
+    what.textContent = sel.name + ' · ' + sel.price;
+    payBtn.textContent = 'Оплатить ' + sel.price;
+  }
+  if (bundleBox) bundleBox.addEventListener('change', render);
 
   function openPay(name, price) {
     current = { name: name, price: price };
-    what.textContent = name + ' · ' + price;
-    payBtn.textContent = 'Оплатить ' + price;
+    var base = baseOf(name);
+    if (upsell) {
+      upsell.hidden = !base;
+      bundleBox.checked = false;
+      if (base) bundleAdd.textContent = SET.filter(function (x) { return x !== base; }).map(function (x) { return '«' + x + '»'; }).join(' и ');
+    }
+    render();
     lastFocus = document.activeElement;
     modal.hidden = false;
     document.body.classList.add('modal-open');
@@ -49,7 +71,8 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !modal.hidden) closePay(); });
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-    var q = new URLSearchParams({ p: current.name });
+    var chosen = bundleBox && bundleBox.checked && !upsell.hidden ? BUNDLE.name : current.name;
+    var q = new URLSearchParams({ p: chosen });
     location.href = 'spasibo.html?' + q.toString() + (document.body.classList.contains('in-frame') ? '&frame=1' : '');
   });
 

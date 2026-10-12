@@ -181,10 +181,12 @@ MODAL = ('<div class="modal" id="pay" hidden><div class="modal__bg" data-close><
          '<label>E-mail для получения файла<input type="email" required placeholder="name@mail.ru" autocomplete="email"></label>'
          '<p class="small">Лучше Gmail, Яндекс или Mail.ru: на iCloud и Hotmail письмо может не дойти</p>'
          '<div class="promo"><label>Промокод<input type="text" placeholder="Если есть"></label><button class="btn btn--line" type="button">Применить</button></div>'
-         '<label class="chk"><input type="checkbox" required checked> Принимаю условия <a href="oferta.html">оферты</a></label>'
-         '<label class="chk"><input type="checkbox" required checked> Согласна с <a href="oferta.html">политикой конфиденциальности</a></label>'
+         '<div class="upsell" id="pay-upsell" hidden><label class="chk"><input type="checkbox" id="pay-bundle"> <span>Добавить <b id="pay-add">два других сборника</b> и взять набор из 3 сборников за <b class="nw">5 999 ₽</b> <s>8 699 ₽</s>, скидка 20%</span></label>'
+         '<p class="small">Магия 5 утра, Alina CookBook и Полезные завтраки в PDF</p></div>'
+         '<label class="chk"><input type="checkbox" required checked> <span>Принимаю условия <a href="oferta.html">оферты</a></span></label>'
+         '<label class="chk"><input type="checkbox" required checked> <span>Согласна с <a href="oferta.html">политикой конфиденциальности</a></span></label>'
          '<button class="btn btn--full" type="submit" id="pay-btn">Оплатить</button><p class="small">Доступна оплата иностранными картами</p>'
-         '<p class="note">Уточнить: нужны ли имя и телефон, какая платёжная система, есть ли оплата частями</p></form></div></div>')
+         '<p class="note">Уточнить: нужны ли имя и телефон, какая платёжная система, есть ли оплата частями. Набор предлагаем галочкой здесь, а не на каждой странице гайда</p></form></div></div>')
 
 TOOLBAR = ('<aside class="pt" aria-label="Панель прототипа"><button class="pt__toggle" type="button" aria-expanded="false">Прототип</button>'
            '<div class="pt__menu"><p class="pt__title">Страницы</p>' + ''.join(f'<a href="{h}">{E(t)}</a>' for h, t in PAGES) +
@@ -290,8 +292,7 @@ SPEC['magiya-5-utra.html'] = ('Магия 5 утра', 'Путеводитель
     about('Гайд построен на моём образе жизни: ранние подъёмы, движение, полноценное питание и качественный сон.', ('Подъём в 5 утра:', '2 года изучения сомнологии:', 'Обучение нутрициологии:', '590 000+ подписчиков:')),
     dict(t='reviews', tag='Отзывы', h='Отзывы о гайде', note='подборка отзывов именно о «Магии 5 утра»'),
     dict(t='price', tag='Цена и формат', h='Стоимость', items=[
-        dict(title='Гайд «Магия 5 утра», PDF', price='3 299 ₽', old='3 699 ₽', bullets=['90+ страниц', 'Бессрочный доступ', 'Ссылка на почту за 15 минут', 'Оплата иностранными картами'], btn='Купить гайд', product='Магия 5 утра', dark=1),
-        dict(title='Выгоднее в наборе: 3 сборника', price='5 999 ₽', old='8 699 ₽', bullets=['Магия 5 утра', 'Alina CookBook', 'Полезные завтраки'], btn='Купить набор', product='Набор: 3 сборника')]),
+        dict(title='Гайд «Магия 5 утра», PDF', price='3 299 ₽', old='3 699 ₽', bullets=['90+ страниц', 'Бессрочный доступ', 'Ссылка на почту за 15 минут', 'Оплата иностранными картами'], btn='Купить гайд', product='Магия 5 утра', dark=1)]),
     dict(t='faq', tag='FAQ', h='Вопросы о гайде', q=FAQ_STD + [['Подойдёт, если я сова и никогда не вставала рано?']]),
     others('Магия 5 утра'),
 ])
