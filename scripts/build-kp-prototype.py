@@ -24,9 +24,9 @@ PRICE = {'Магия 5 утра': '3 299 ₽', 'Alina CookBook': '3 499 ₽', '�
 def tag(s): return f'<span class="tag">{E(s)}</span>'
 def note(s): return f'<p class="note">Уточнить: {E(s)}</p>' if s else ''
 def ph(label, cls='', src=None):
-    if src:
-        return f'<div class="ph has-img {cls}"><img src="{src}" alt="{E(label)}" loading="lazy"></div>'
-    return f'<div class="ph {cls}" role="img" aria-label="{E(label)}"><span>{E(label)}</span></div>'
+    # в прототипе только заглушки: настоящие фото подставим на этапе дизайна
+    text = label if label.lower().startswith('фото') else 'Фото: ' + label[0].lower() + label[1:]
+    return f'<div class="ph {cls}" role="img" aria-label="{E(text)}"><span>{E(text)}</span></div>'
 def buy(product, price, label=None, cls='btn'):
     return f'<button class="{cls}" type="button" data-buy="{E(product)}" data-price="{E(price)}">{E(label or "Купить")}</button>'
 def link(label, href, cls='btn btn--line'): return f'<a class="{cls}" href="{href}">{E(label)}</a>'
@@ -67,7 +67,7 @@ def r_points(b):
 
 def card(it):
     imgsrc = IMG.get(it.get('title')) if it.get('real') else None
-    img = ph(it.get('photo', 'Фото'), 'ph--card' + (' ph--wide' if it.get('wide') else ''), imgsrc)
+    img = ph(it.get('photo', 'Обложка продукта'), 'ph--card' + (' ph--wide' if it.get('wide') else ''), imgsrc)
     kicker = f'<p class="kicker">{E(it["kicker"])}</p>' if it.get('kicker') else ''
     txt = f'<p>{E(it["text"])}</p>' if it.get('text') else ''
     pr = price_html(it['price'], it.get('old')) if it.get('price') else ''
