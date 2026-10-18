@@ -302,3 +302,23 @@ body.in-frame .pt, body.in-frame .banner { display: none; }
 .upsell s, .upsell .nw { white-space: nowrap; }
 .upsell s { color: var(--mut); }
 #pay-form .chk input { flex: none; }
+
+/* превью настоящих страниц продукта */
+.blk .wrap > .spreads { margin-top: 28px; }
+.spreads > li { flex-basis: 82%; }
+.ph--spread { aspect-ratio: 3 / 2; }
+@media (min-width: 768px) { .spreads > li { flex-basis: 46%; } }
+@media (min-width: 1100px) { .spreads > li { flex-basis: 31%; } }
+
+/* как проходит покупка */
+.how { margin-top: 24px; padding: 20px; border: 1px solid var(--line, #dcdcdc); border-radius: 16px; background: var(--bg); }
+.how h3 { font-size: 1rem; }
+.how ol { margin: 12px 0 0; padding-left: 1.25em; display: grid; gap: 8px; }
+.how li { color: var(--mut); }
+.how b { color: var(--ink); }
+@media (min-width: 768px) { .how ol { grid-template-columns: repeat(3, 1fr); gap: 20px; padding-left: 1.1em; } }
+
+/* карточки каталога: кнопка всегда внизу */
+.card { display: flex; flex-direction: column; }
+.card .price { margin-top: auto; padding-top: 10px; }
+.card .btn { align-self: flex-start; }
