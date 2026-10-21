@@ -5,4 +5,3 @@ dist/
 *.log
 __pycache__/
 dist-portable/
-public/video/

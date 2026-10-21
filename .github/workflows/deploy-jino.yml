@@ -112,7 +112,7 @@ jobs:
           code=$(curl -s -o /dev/null -w '%{http_code}' "http://$SSH_HOST/")
           echo "Главная отвечает: $code"
           test "$code" = "200"
-          for path in /catalog/ /price/ /calculator/ /dostavka/odincovo/; do
+          for path in /catalog/ /price/ /catalog/beton/tovarnyj/beton-m300-gravij/ /korzina/; do
             c=$(curl -s -o /dev/null -w '%{http_code}' "http://$SSH_HOST$path")
             echo "$path -> $c"
             test "$c" = "200"
