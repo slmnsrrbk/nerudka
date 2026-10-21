@@ -701,3 +701,12 @@ ul, ol { list-style: none; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+/* Печать прайса в PDF («Скачать прайс PDF» на /price/): все виды продукции подряд, без меню, форм и подвала. */
+@media print {
+  .phero, .crumbs, .foot, #popular, #uslugi, .price-nav, .banner, [data-print], .pact, .sec-end { display: none !important; }
+  .price { display: block !important; }
+  .price-panel { background: none !important; }
+  [data-price-pane][hidden] { display: block !important; }
+  .ptab { break-inside: auto; margin-bottom: 16px; }
+  .prow { break-inside: avoid; }
+}
