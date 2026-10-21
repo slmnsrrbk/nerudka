@@ -1,8 +1,6 @@
 import { chromium } from 'playwright';
-const pages = ['/', '/catalog/', '/catalog/beton/tovarnyj/', '/catalog/beton/tovarnyj/beton-m300-granit/',
-  '/beton/m300/', '/beton/dlya-fundament/', '/uslugi/arenda-betononasosa/', '/dostavka/', '/dostavka/odincovo/',
-  '/price/', '/calculator/', '/o-zavode/', '/yurlicam/', '/sertifikaty/', '/proekty/', '/proekty/chastnyj-dom-420/',
-  '/otzyvy/', '/akcii/', '/blog/', '/blog/priemka-betona/', '/faq/', '/kontakty/', '/politika/', '/_prototype/', '/404.html'];
+const pages = ['/', '/price/', '/catalog/', '/catalog/beton/', '/catalog/beton/tovarnyj/', '/catalog/beton/tovarnyj/beton-m300-granit/',
+  '/beton/m300/', '/beton/dlya-fundament/', '/o-zavode/', '/kontakty/', '/korzina/', '/poisk/?q=М300', '/404.html'];
 const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
 const ctx = await browser.newContext({ viewport: { width: 375, height: 800 } });
 const p = await ctx.newPage();

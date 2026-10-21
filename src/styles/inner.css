@@ -264,7 +264,6 @@
 .sres-list .prows { gap: 0; }
 .sres-list .prows .prow + .prow { border-top: 1px solid var(--bg); }
 .sres-more { align-self: center; margin-top: 8px; }
-.sarts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .sres-side { position: sticky; top: 92px; display: flex; flex-direction: column; gap: 16px; }
 .sres-side .hub-promo-t { padding: 20px; }
 .r-all { font-weight: 500; }
@@ -326,7 +325,7 @@
 .qlist b { font-size: 16px; font-weight: 600; }
 .objs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
 .objc { overflow: hidden; display: flex; flex-direction: column; transition: box-shadow .15s; }
-.objc:hover { box-shadow: 0 6px 20px rgba(28, 36, 56, .1); }
+a.objc:hover { box-shadow: 0 6px 20px rgba(28, 36, 56, .1); }
 .objc img { width: 100%; height: 220px; object-fit: cover; }
 .objc-t { display: flex; flex-direction: column; gap: 4px; padding: 16px 20px 20px; }
 .objc-t b { font-size: 17px; font-weight: 600; }
@@ -400,7 +399,6 @@
   .kart-side { position: static; }
   .sres-side { position: static; order: -1; }
   .sres-side .hub-promo { display: none; }
-  .sarts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .hub-side { position: static; flex-direction: row; }
   .hub-nav { flex: 1; }
   .hub-promo { display: none; }
@@ -457,7 +455,6 @@
   .cloud-t { padding-top: 0; }
   .asklist { grid-template-columns: minmax(0, 1fr); padding: 16px; }
   .sec-end { height: 56px; }
-  .sarts { grid-template-columns: minmax(0, 1fr); }
   .numbers { gap: 10px; }
   .num { padding: 16px; }
   .num b { font-size: 28px; }

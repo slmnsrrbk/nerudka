@@ -14,19 +14,13 @@ import FaqSection from '../components/site/FaqSection.astro';
 import SeoSection from '../components/site/SeoSection.astro';
 import PopularBlock from '../components/site/PopularBlock.astro';
 import PriceSection from '../components/site/PriceSection.astro';
-import { priceTabs, PLANTS, OBJECTS, FAQ, TIPS, fmt } from '../lib/home';
+import { PLANTS, OBJECTS, FAQ, TIPS, fmt } from '../lib/home';
 import { products } from '../lib/catalog';
 import { site } from '../lib/home-site';
 import { existsSync } from 'node:fs';
 // Живое фото первого экрана: видео есть, только если его скачал scripts/fetch-hero-video.mjs при сборке.
 const heroVideo = existsSync('public/video/hero.mp4');
 
-const tabs = priceTabs();
-const betonTabs = tabs.filter((t) => t.group === 'beton');
-const mortarTabs = tabs.filter((t) => t.group === 'rastvor');
-// Порядок растворов в подвале — как в макете.
-const footOrder = ['Цементный раствор', 'Цементно-песчаный раствор (ЦПР)', 'Кладочный раствор', 'Штукатурный раствор', 'Известковый раствор', 'Цементно-известковый раствор', 'Раствор для стяжки пола'];
-const footMortars = mortarTabs.filter((t) => /раствор/i.test(t.name)).sort((x, y) => (footOrder.indexOf(x.name) + 1 || 99) - (footOrder.indexOf(y.name) + 1 || 99));
 const heroGrades = products.filter((p) => p.category === 'tovarnyj');
 
 const img = (name: string, w = 1024) => `/img/home/${name}${w <= 560 ? '-560' : ''}.webp`;
@@ -79,18 +73,6 @@ const useful = [
   ['Бетон для фундамента', '/beton/dlya-fundament/', 'columns'],
   ['Керамзитобетон', '/catalog/beton/keramzitobeton/', 'keramzit'],
   ['Цементный раствор', '/catalog/rastvor/cementnyj-rastvor/', 'mortar'],
-];
-const footerGrades = ['М100 В7,5', 'М150 В12,5', 'М200 В15', 'М250 В20', 'М300 В22,5', 'М350 В25', 'М400 В30', 'М450 В35', 'М500 В40', 'М550 В45', 'М600 В45'];
-const docs = [
-  ['Сертификаты и декларации на бетон', '/sertifikaty/'],
-  ['Политика конфиденциальности', '/politika/'],
-  ['Согласие на обработку персональных данных', '/soglasie/'],
-  ['Перечень персональных данных', '/politika/'],
-  ['Инструкция по порядку учёта и уничтожения персональных данных', '/politika/'],
-  ['Инструкция пользователя информационных систем персональных данных', '/politika/'],
-  ['Приказ об утверждении документов по персональным данным [заглушка]', '/politika/'],
-  ['Правила публичной оферты', '/oferta/'],
-  ['Реквизиты', '/kontakty/'],
 ];
 ---
 <HomeLayout
@@ -187,7 +169,7 @@ const docs = [
               <article class="card obj">
                 <img src={img(o.img, 560)} alt={o.name} width="560" height="560" loading="lazy" decoding="async" />
                 <div class="obj-c">
-                  <h3 class="h3"><a href={`/proekty/${o.slug}/`}>{o.name}</a></h3>
+                  <h3 class="h3">{o.name}</h3>
                   <dl class="obj-dl">
                     <div><dt>Марка</dt><dd>{o.grade}</dd></div>
                     <div><dt>Объём</dt><dd>{o.volume}</dd></div>
@@ -237,7 +219,7 @@ const docs = [
           </div>
           <div class="card b2b-c">
             <h3 class="h3">Скачать для закупки</h3>
-            <ul class="docs">{downloads.map(([t, f]) => <li><a class="doc" href="/sertifikaty/"><Icon name="file-text" size={24} /><span>{t}</span><span class="fmt">{f}</span><Icon name="download" size={24} /></a></li>)}</ul>
+            <ul class="docs">{downloads.map(([t, f]) => <li><a class="doc" href="/kontakty/" data-modal="lead" data-topic={`Запрос документа: ${t}`}><Icon name="file-text" size={24} /><span>{t}</span><span class="fmt">{f}</span><Icon name="download" size={24} /></a></li>)}</ul>
           </div>
         </div>
         <div class="strip strip-l"><span class="tile tile-grey"><Icon name="landmark" /></span><p>Работа по 44-ФЗ и 223-ФЗ — [заглушка: подтвердить] · Казначейское сопровождение — [заглушка: подтвердить]</p></div>
@@ -256,10 +238,10 @@ const docs = [
       <div class="stack">
         <div class="grid4 tips">
           {TIPS.map((t) => (
-            <a class="card tip" href={t.h}>
+            <div class="card tip">
               <img src={img(t.img, 560)} alt="" width="560" height="560" loading="lazy" decoding="async" />
-              <div class="tip-c"><span class="tip-tx"><b class="tip-tt">{t.t}</b><span class="tip-d">{t.d}</span></span><span class="tip-more">Читать →</span></div>
-            </a>
+              <div class="tip-c"><span class="tip-tx"><b class="tip-tt">{t.t}</b><span class="tip-d">{t.d}</span></span></div>
+            </div>
           ))}
         </div>
         <Hook icon="flask-conical" title="Нужен совет технолога по вашей конструкции?" sub="Подскажем марку и объём по проекту" btn="Заказать консультацию" />

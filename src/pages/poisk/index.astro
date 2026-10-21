@@ -1,15 +1,14 @@
 ---
 // Поиск (Figma «Поиск · десктоп» 264:790 и «Поиск · ничего не найдено» 265:1226).
-// Страница статическая: индекс позиций, разделов и статей лежит в JSON, результаты собирает scripts/home.ts по ?q=.
+// Страница статическая: индекс позиций и разделов лежит в JSON, результаты собирает scripts/home.ts по ?q=.
 import HomeLayout from '../../layouts/HomeLayout.astro';
 import PageHero from '../../components/site/PageHero.astro';
 import PopularBlock from '../../components/site/PopularBlock.astro';
 import SiteFooter from '../../components/site/SiteFooter.astro';
 import Icon from '../../components/home/Icon.astro';
-import { products, categories, childCategories, categoryPath, productPath, minPrice, specLine, purposes, purposeHref, purposeLabel, betonGrades, gradeHref, betonClasses, classHref, POST_IMG, img, typeCards } from '../../lib/inner';
+import { products, categories, childCategories, categoryPath, productPath, minPrice, specLine, purposes, purposeHref, purposeLabel, betonGrades, gradeHref, betonClasses, classHref,  typeCards } from '../../lib/inner';
 import { productsByGrade, productsByClass, productsByPurpose } from '../../lib/catalog';
 import { site } from '../../lib/home-site';
-import posts from '../../data/posts.json';
 
 const betonKids = new Set(childCategories('beton').map((c) => c.slug));
 const pos = products.map((p) => ({ id: p.id, t: p.name, h: productPath(p), s: [specLine(p).split(' · ').slice(0, 2).join(' · '), p.filler].filter(Boolean).join(' · '), f: p.filler, g: betonKids.has(p.category) ? 'beton' : 'rastvor', p: p.price }));
@@ -20,8 +19,7 @@ const sections = [
   ...betonClasses().map((c) => sec(`Бетон класса ${c}`, classHref(c), productsByClass(c), `${c} класс`)),
   ...purposes.map((p) => sec(p.h1, purposeHref(p.slug), productsByPurpose(p.slug), `${p.recommended} ${purposeLabel(p.h1)}`)),
 ].filter((s) => s.n);
-const arts = posts.map((p, i) => ({ t: p.title, h: `/blog/${p.slug}/`, d: p.excerpt, img: img(POST_IMG[i % POST_IMG.length], 560) }));
-const data = { pos, sections, arts };
+const data = { pos, sections };
 const popularSections = typeCards('beton').slice(0, 3);
 const hints = ['М300', 'B25', 'Керамзитобетон', 'Для фундамента', 'Раствор М150', 'Гранит'];
 ---
@@ -35,7 +33,7 @@ const hints = ['М300', 'B25', 'Керамзитобетон', 'Для фунд�
           <button class="btn btn-dark" type="submit">Найти</button>
         </div>
         <div class="csearch-often" data-stabs hidden>
-          {[['all', 'Все'], ['pos', 'Позиции прайса'], ['sec', 'Разделы'], ['art', 'Статьи']].map(([k, t], i) => <button type="button" class:list={['chipb', { on: i === 0 }]} data-stab={k}>{t} · <span data-sn={k}>0</span></button>)}
+          {[['all', 'Все'], ['pos', 'Позиции прайса'], ['sec', 'Разделы']].map(([k, t], i) => <button type="button" class:list={['chipb', { on: i === 0 }]} data-stab={k}>{t} · <span data-sn={k}>0</span></button>)}
         </div>
         <div class="csearch-often" data-shints><span class="small muted">Часто ищут:</span>{hints.map((q) => <a class="cloud-a" href={`/poisk/?q=${encodeURIComponent(q)}`}>{q}</a>)}</div>
       </form>
@@ -53,10 +51,6 @@ const hints = ['М300', 'B25', 'Керамзитобетон', 'Для фунд�
           <section class="sblock" data-sblock="sec" aria-labelledby="ss-h">
             <h2 class="h3 sblock-h" id="ss-h">Разделы каталога <span class="muted" data-sn="sec">0</span></h2>
             <div class="tcards" data-ssec></div>
-          </section>
-          <section class="sblock" data-sblock="art" aria-labelledby="sa-h">
-            <div class="hub-head"><h2 class="h3 sblock-h" id="sa-h">Статьи <span class="muted" data-sn="art">0</span></h2><a class="ulink" href="/blog/">Все статьи<Icon name="arrow-right" size={16} /></a></div>
-            <div class="sarts" data-sart></div>
           </section>
         </div>
         <aside class="sres-side">

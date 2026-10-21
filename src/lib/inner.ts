@@ -89,16 +89,14 @@ export function linkCloud() {
   ];
 }
 
-/** Услуги на странице каталога: ссылки только на существующие страницы услуг. */
+/** Услуги на странице каталога: ссылки ведут к ценам услуг в прайсе, к доставке на главной и к документам. */
 export const SERVICE_GROUPS = [
-  { t: 'Бетононасосы', links: [['Аренда бетононасоса', '/uslugi/arenda-betononasosa/']] },
-  { t: 'Прогрев бетона', links: [['Прогрев бетона зимой', '/uslugi/progrev-betona/']] },
-  { t: 'Поставка', links: [['Бетон с доставкой', '/uslugi/dostavka-mikserom/'], ['Доставка по Москве и области', '/dostavka/']] },
-  { t: 'Лаборатория и контроль', links: [['Лабораторные испытания бетона', '/uslugi/laboratornye-ispytaniya/'], ['Сертификаты и документы', '/sertifikaty/']] },
+  { t: 'Бетононасосы', links: [['Аренда бетононасоса', '/price/#arenda-betononasosa']] },
+  { t: 'Прогрев бетона', links: [['Прогрев бетона зимой', '/price/#progrev-betona']] },
+  { t: 'Поставка', links: [['Бетон с доставкой', '/price/#dostavka-mikserom'], ['Доставка по Москве и области', '/#delivery']] },
+  { t: 'Лаборатория и контроль', links: [['Лабораторные испытания бетона', '/price/#laboratornye-ispytaniya'], ['Сертификаты и документы', '/o-zavode/#docs']] },
 ] as const;
 
-/** Статьи: фото по порядку из набора главной. */
-export const POST_IMG = ['plant-aggregates', 'plant-silos', 'expert', 'plant-mixers', 'lab-press', 'floor-pour'];
 
 export { activeGrades, activeClasses, gradeSlug, classSlug, GRADE_SCALE };
 export { categories, products, purposes, productPath, categoryPath, getCategory, childCategories, minPrice, fmt, plural, productsOfCategory };

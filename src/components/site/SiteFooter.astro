@@ -10,14 +10,14 @@ const footOrder = ['Цементный раствор', 'Цементно-пес
 const footMortars = mortarTabs.filter((t) => /раствор/i.test(t.name)).sort((x, y) => (footOrder.indexOf(x.name) + 1 || 99) - (footOrder.indexOf(y.name) + 1 || 99));
 const footerGrades = ['М100 В7,5', 'М150 В12,5', 'М200 В15', 'М250 В20', 'М300 В22,5', 'М350 В25', 'М400 В30', 'М450 В35', 'М500 В40', 'М550 В45', 'М600 В45'];
 const docs = [
-  ['Сертификаты и декларации на бетон', '/sertifikaty/'],
-  ['Политика конфиденциальности', '/politika/'],
-  ['Согласие на обработку персональных данных', '/soglasie/'],
-  ['Перечень персональных данных', '/politika/'],
-  ['Инструкция по порядку учёта и уничтожения персональных данных', '/politika/'],
-  ['Инструкция пользователя информационных систем персональных данных', '/politika/'],
-  ['Приказ об утверждении документов по персональным данным [заглушка]', '/politika/'],
-  ['Правила публичной оферты', '/oferta/'],
+  ['Сертификаты и декларации на бетон', ''],
+  ['Политика конфиденциальности', ''],
+  ['Согласие на обработку персональных данных', ''],
+  ['Перечень персональных данных', ''],
+  ['Инструкция по порядку учёта и уничтожения персональных данных', ''],
+  ['Инструкция пользователя информационных систем персональных данных', ''],
+  ['Приказ об утверждении документов по персональным данным [заглушка]', ''],
+  ['Правила публичной оферты', ''],
   ['Реквизиты', '/kontakty/#rekvizity'],
 ];
 ---
@@ -27,7 +27,7 @@ const docs = [
       <div class="foot-c1"><p class="foot-h">Марки и классы</p><ul>{footerGrades.map((g) => <li><a href={`/beton/${g.split(' ')[0].replace('М', 'm')}/`}>{g}</a></li>)}</ul></div>
       <div class="foot-c2"><p class="foot-h">Виды бетона</p><ul>{betonTabs.slice(0, 10).map((t) => <li><a href={t.href}>{t.name}</a></li>)}</ul></div>
       <div class="foot-c3"><p class="foot-h">Растворы</p><ul>{footMortars.map((t) => <li><a href={t.href}>{t.name}</a></li>)}</ul></div>
-      <div class="foot-docs"><p class="foot-h">Документы</p><ul>{docs.map(([t, h]) => <li><a href={h}>{t}</a></li>)}</ul></div>
+      <div class="foot-docs"><p class="foot-h">Документы</p><ul>{docs.map(([t, h]) => <li>{h ? <a href={h}>{t}</a> : <span>{t}</span>}</li>)}</ul></div>
       <div class="foot-contacts">
         <a class="foot-phone" href={`tel:${site.phoneHref}`}>{site.phone}</a>
         <button type="button" class="foot-call" data-modal="lead" data-topic="Обратный звонок">Заказать звонок →</button>

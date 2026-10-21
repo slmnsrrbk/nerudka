@@ -1,6 +1,6 @@
 import { chromium } from 'playwright';
 const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
-for (const url of ['/catalog/', '/_prototype/']) {
+for (const url of ['/catalog/']) {
   const p = await b.newPage({ viewport: { width: 375, height: 900 } });
   await p.goto('http://localhost:4321' + url, { waitUntil: 'networkidle' });
   const out = await p.evaluate(() => {

@@ -9,12 +9,8 @@
     "preview": "astro preview",
     "check:links": "node scripts/check-links.mjs",
     "check:mobile": "node scripts/check-mobile.mjs",
-    "check:ui": "node scripts/check-ui.mjs",
     "portable": "astro build && node scripts/relativize.mjs",
     "offline": "npm run portable && node scripts/inline-js.mjs",
-    "check:megamenu": "node scripts/check-megamenu.mjs",
-    "check:catalog": "node scripts/check-catalog.mjs",
-    "check:concepts": "node scripts/check-concepts.mjs",
     "check:home": "node scripts/check-home.mjs",
     "check:inner": "node scripts/check-inner-ui.mjs",
     "check:home-ui": "node scripts/check-home-ui.mjs"

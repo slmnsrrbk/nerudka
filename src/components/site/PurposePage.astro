@@ -76,10 +76,10 @@ const ask = [
     <SectionHead id="tips-h" label="Советы" title="Советы технолога" sub="перед заливкой" desc="Коротко о том, что чаще всего спрашивают на объекте." />
     <div class="grid4">
       {TIPS.map((t) => (
-        <a class="card tip" href={t.h}>
+        <div class="card tip">
           <img src={img(t.img, 560)} alt="" width="560" height="560" loading="lazy" decoding="async" />
-          <div class="tip-c"><span class="tip-tx"><b class="tip-tt">{t.t}</b><span class="tip-d">{t.d}</span></span><span class="tip-more">Читать →</span></div>
-        </a>
+          <div class="tip-c"><span class="tip-tx"><b class="tip-tt">{t.t}</b><span class="tip-d">{t.d}</span></span></div>
+        </div>
       ))}
     </div>
   </div>
@@ -87,7 +87,7 @@ const ask = [
 <DeliveryZones>
   <div class="banner">
     <div class="banner-t"><p class="banner-h">Нужен бетононасос?</p><p>Подадим бетон туда, куда миксер не доедет: на этаж, через забор, в подвал.</p></div>
-    <a class="btn btn-light" href="/uslugi/arenda-betononasosa/">Аренда бетононасоса<Icon name="arrow-right" size={16} /></a>
+    <a class="btn btn-light" href="/price/#uslugi">Аренда бетононасоса<Icon name="arrow-right" size={16} /></a>
   </div>
 </DeliveryZones>
 <PopularBlock />

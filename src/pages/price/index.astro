@@ -35,9 +35,9 @@ const icons: Record<string, string> = { 'arenda-betononasosa': 'gauge', 'dostavk
       <SectionHead id="uslugi-h" label="Услуги" title="Цены на услуги" sub="подача и доставка" desc="Стоимость услуг не входит в цену за м³. Точную сумму называем до выезда." />
       <ul class="items">
         {services.map((s) => (
-          <li class="item">
+          <li class="item" id={s.slug}>
             <span class="tile"><Icon name={icons[s.slug] ?? 'package'} /></span>
-            <div><b><a href={`/uslugi/${s.slug}/`}>{s.name}</a> — от {fmt(s.priceFrom)} ₽ за {s.priceUnit}</b><span class="small muted">{s.lead}</span></div>
+            <div><b>{s.name} — от {fmt(s.priceFrom)} ₽ за {s.priceUnit}</b><span class="small muted">{s.lead}</span></div>
           </li>
         ))}
       </ul>

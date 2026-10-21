@@ -11,7 +11,6 @@ const OUT = resolve(process.argv[2] ?? 'dist-portable');
 // Хостинги артефактов резервируют имена с подчёркиванием в начале.
 const RENAMES = [
   ['_astro', 'assets'],
-  ['_prototype', 'karta-prototipa'],
 ];
 
 async function walk(dir) {

@@ -1,27 +1,29 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import PageHead from '../components/ui/PageHead.astro';
-import Block from '../components/ui/Block.astro';
-import Container from '../components/ui/Container.astro';
+// 404 в дизайне «3»: шапка внутренней страницы, ссылки на основные разделы, популярное.
+import HomeLayout from '../layouts/HomeLayout.astro';
+import PageHero from '../components/site/PageHero.astro';
+import PopularBlock from '../components/site/PopularBlock.astro';
+import SiteFooter from '../components/site/SiteFooter.astro';
+import Icon from '../components/home/Icon.astro';
 const links = [
-  { href: '/catalog/', label: 'Каталог' },
-  { href: '/price/', label: 'Прайс' },
-  { href: '/calculator/', label: 'Калькулятор' },
-  { href: '/dostavka/', label: 'Доставка' },
-  { href: '/kontakty/', label: 'Контакты' },
-];
+  ['/catalog/', 'Каталог', 'layers'],
+  ['/price/', 'Прайс-лист', 'receipt'],
+  ['/poisk/', 'Поиск по сайту', 'search'],
+  ['/kontakty/', 'Контакты', 'phone'],
+] as const;
 ---
-<BaseLayout title="Страница не найдена" description="Такой страницы нет. Воспользуйтесь каталогом, прайсом или поиском по сайту." template="T20" templateName="404">
-  <PageHead h1="Страница не найдена" lead="Возможно, адрес изменился или в ссылке опечатка." />
-  <Block id="E-01" name="Поиск и ссылки">
-    <Container class="py-12">
-      <label class="grid max-w-lg gap-1.5">
-        <span class="text-xs text-ink-2">Поиск по сайту [заглушка]</span>
-        <input type="search" placeholder="например, бетон М300" class="w-full rounded-md border border-line bg-white px-3 py-2.5 text-[15px] outline-none focus:border-accent" />
-      </label>
-      <div class="mt-6 flex flex-wrap gap-2">
-        {links.map((l) => <a href={l.href} class="rounded-md border border-line bg-white px-3 py-2 text-sm hover:border-accent hover:text-accent">{l.label}</a>)}
-      </div>
-    </Container>
-  </Block>
-</BaseLayout>
+<HomeLayout title="Страница не найдена" description="Такой страницы нет. Воспользуйтесь каталогом, прайсом или поиском по сайту.">
+  <PageHero h1="Страница не найдена" sub="Возможно, адрес изменился или в ссылке опечатка" crumbs={[{ href: '/', label: 'Главная' }, { label: 'Страница не найдена' }]} />
+  <section class="sec sec-first" aria-label="Куда перейти">
+    <div class="wrap">
+      <ul class="items">
+        {links.map(([href, label, icon]) => (
+          <li class="item"><span class="tile"><Icon name={icon} /></span><div><b><a href={href}>{label}</a></b></div></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+  <PopularBlock />
+  <div class="sec-end"></div>
+  <SiteFooter slot="footer" />
+</HomeLayout>

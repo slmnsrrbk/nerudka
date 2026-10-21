@@ -48,7 +48,7 @@ function serviceHref(label: string): string {
       || (n.includes('лаборатор') && sn.includes('лаборатор'))
       || (n === 'бетон с доставкой' && sn.includes('доставка'));
   });
-  return s ? `/uslugi/${s.slug}/` : '/uslugi/';
+  return s ? `/price/#${s.slug}` : '/price/#uslugi';
 }
 
 const BETON_GRADES = ['М50', 'М100', 'М150', 'М200', 'М250', 'М300', 'М350', 'М400', 'М450', 'М500', 'М550', 'М600', 'М700', 'М800', 'М1000'];
@@ -125,7 +125,7 @@ export const MENU: MenuSection[] = [
       ] }],
       [{ title: 'Работы и контроль', kind: 'list', items: list(['Фундамент под ключ', 'Бетонирование площадки', 'Промышленные полы', 'Бетонные полы для склада и паркинга', 'Строительная лаборатория', 'Строительный контроль'], serviceHref) }],
     ],
-    footer: [{ label: 'Все услуги', href: '/uslugi/' }, { label: 'Заказать консультацию', href: '#consult' }],
+    footer: [{ label: 'Все услуги', href: '/price/#uslugi' }, { label: 'Заказать консультацию', href: '#consult' }],
   },
 ];
 

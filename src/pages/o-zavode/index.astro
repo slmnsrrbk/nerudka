@@ -20,7 +20,7 @@ const quality = [
   ['shield-check', 'ГОСТ 7473-2010', 'Товарный бетон на гравийном и гранитном щебне'],
   ['flame', 'Зимой — до −25 °C', 'Противоморозные добавки и прогрев — от 350 ₽ за м³'],
 ];
-const docs = [['Паспорт качества на бетонную смесь — образец', '/sertifikaty/'], ['Декларация соответствия на товарный бетон', '/sertifikaty/'], ['Типовой договор поставки', '/yurlicam/'], ['Карточка предприятия', '#rekvizity']];
+const docs = ['Паспорт качества на бетонную смесь — образец', 'Декларация соответствия на товарный бетон', 'Типовой договор поставки'];
 ---
 <HomeLayout title="О компании — бетонный завод с шестью РБУ в Москве и области" description="Производим товарный бетон и растворы на шести собственных РБУ: 2 500 м³ в сутки, своя лаборатория, паспорт качества на каждую партию.">
   <PageHero h1="О компании" sub="Производим и доставляем бетон и растворы с шести собственных РБУ в Москве и области" crumbs={[{ href: '/', label: 'Главная' }, { label: 'О компании' }]} />
@@ -55,21 +55,21 @@ const docs = [['Паспорт качества на бетонную смесь
     </div>
   </section>
 
-  <section class="sec sec-tight" aria-labelledby="d-h">
+  <section class="sec sec-tight" id="docs" aria-labelledby="d-h">
     <div class="wrap">
       <SectionHead id="d-h" label="Документы" title="Документы" sub="для закупки и приёмки" desc="Скачайте образцы заранее — пригодятся для тендера и технадзора." />
-      <div class="grid2">{docs.map(([d, h]) => <a class="doc doc-w" href={h}><Icon name="file-text" size={24} /><span>{d}</span><span class="fmt">DOCX</span><Icon name="download" size={24} /></a>)}</div>
+      <div class="grid2">{docs.map((d) => <a class="doc doc-w" href="/kontakty/" data-modal="lead" data-topic={`Запрос документа: ${d}`}><Icon name="file-text" size={24} /><span>{d}</span><span class="fmt">DOCX</span><Icon name="download" size={24} /></a>)}</div>
     </div>
   </section>
 
   <section class="sec sec-tight" aria-labelledby="o-h">
     <div class="wrap">
-      <SectionHead id="o-h" label="Объекты" title="Где лили" sub="наш бетон" desc="Несколько объектов последних лет. Полный список — на странице объектов." />
+      <SectionHead id="o-h" label="Объекты" title="Где лили" sub="наш бетон" desc="Несколько объектов последних лет." />
       <div class="objs">{OBJECTS.slice(0, 3).map((o) => (
-        <a class="objc card-w" href={`/proekty/${o.slug}/`}>
+        <div class="objc card-w">
           <img src={img(o.img, 560)} alt={o.name} width="560" height="560" loading="lazy" decoding="async" />
           <span class="objc-t"><b>{o.name}</b><span class="small muted">{o.grade} · {o.volume}</span></span>
-        </a>
+        </div>
       ))}</div>
     </div>
   </section>

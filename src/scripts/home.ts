@@ -678,8 +678,7 @@ const sPage = $('[data-spage]');
 if (sPage) {
   type SP = { id: string; t: string; h: string; s: string; f: string; g: string; p: number };
   type SS = { t: string; h: string; k: string; p: number; n: number };
-  type SA = { t: string; h: string; d: string; img: string };
-  const D = JSON.parse($('#spage-data')!.textContent || '{}') as { pos: SP[]; sections: SS[]; arts: SA[] };
+  const D = JSON.parse($('#spage-data')!.textContent || '{}') as { pos: SP[]; sections: SS[] };
   const q = (new URLSearchParams(location.search).get('q') || '').trim().slice(0, 80);
   const qInput = $<HTMLInputElement>('[data-sq]', sPage)!;
   qInput.value = q;
@@ -688,26 +687,25 @@ if (sPage) {
     const hit = (txt: string) => { const n = sNorm(txt); return words.every((w) => n.includes(w)); };
     const pos = D.pos.filter((x) => hit(`${x.t} ${x.s}`)).sort((a, b) => (a.g === b.g ? 0 : a.g === 'beton' ? -1 : 1) || a.p - b.p);
     const secs = D.sections.filter((x) => hit(`${x.t} ${x.k}`)).sort((a, b) => b.n - a.n);
-    const arts = D.arts.filter((x) => hit(`${x.t} ${x.d}`));
-    const total = pos.length + secs.length + arts.length;
+    const total = pos.length + secs.length;
     const sub = $('.phero-sub');
     $('[data-shints]', sPage)!.hidden = total > 0;
     if (!total) {
       $('.phero h1')!.textContent = 'Ничего не нашли';
-      if (sub) sub.textContent = `По запросу «${q}» нет позиций, разделов и статей`;
+      if (sub) sub.textContent = `По запросу «${q}» нет позиций и разделов`;
       $('[data-sempty-t]', sPage)!.textContent = `По запросу «${q}» ничего не нашли`;
       $('[data-sempty]', sPage)!.hidden = false;
       $('[data-sempty-more]', sPage)!.hidden = false;
     } else {
-      if (sub) sub.textContent = `По запросу «${q}» — ${pos.length} ${pl(pos.length, 'позиция', 'позиции', 'позиций')} прайса, ${secs.length} ${pl(secs.length, 'раздел', 'раздела', 'разделов')} каталога и ${arts.length} ${pl(arts.length, 'статья', 'статьи', 'статей')}`;
+      if (sub) sub.textContent = `По запросу «${q}» — ${pos.length} ${pl(pos.length, 'позиция', 'позиции', 'позиций')} прайса и ${secs.length} ${pl(secs.length, 'раздел', 'раздела', 'разделов')} каталога`;
       document.title = `«${q}» — поиск по каталогу`;
       const res = $('[data-sres]', sPage)!;
       res.hidden = false;
       $('[data-stabs]', sPage)!.hidden = false;
-      const counts: Record<string, number> = { all: total, pos: pos.length, sec: secs.length, art: arts.length };
+      const counts: Record<string, number> = { all: total, pos: pos.length, sec: secs.length };
       $$('[data-sn]', sPage).forEach((el) => (el.textContent = String(counts[el.dataset.sn!])));
       $$('[data-sg]', sPage).forEach((el) => (el.textContent = String(pos.filter((x) => x.g === el.dataset.sg).length)));
-      // Разделы и статьи
+      // Разделы каталога
       const tplSec = $<HTMLTemplateElement>('[data-tpl-sec]')!;
       $('[data-ssec]', sPage)!.replaceChildren(...secs.slice(0, 9).map((x) => {
         const a = tplSec.content.firstElementChild!.cloneNode(true) as HTMLAnchorElement;
@@ -717,7 +715,6 @@ if (sPage) {
         $('.tcard-f .small', a)!.textContent = `${x.n} ${pl(x.n, 'позиция', 'позиции', 'позиций')}`;
         return a;
       }));
-      $('[data-sart]', sPage)!.innerHTML = arts.map((x) => `<a class="card tip" href="${x.h}"><img src="${x.img}" alt="" width="560" height="560" loading="lazy" decoding="async"><div class="tip-c"><span class="tip-tx"><b class="tip-tt">${esc(x.t)}</b><span class="tip-d">${esc(x.d)}</span></span><span class="tip-more">Читать →</span></div></a>`).join('');
       // Позиции: фильтр по разделу, заполнителю и цене, первые 8 + «Показать ещё»
       const fillers = [...new Set(pos.map((x) => x.f).filter(Boolean))];
       $('[data-sfill-box]', sPage)!.hidden = fillers.length < 2;

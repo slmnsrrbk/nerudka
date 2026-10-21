@@ -87,7 +87,7 @@ const sub = [p.gost, p.mobility, p.frost, p.water, p.fraction && `щебень $
   </div>
 </section>
 <DeliveryZones>
-  <div class="grid2">{['Паспорт качества на бетонную смесь — образец', 'Сертификат соответствия ГОСТ 7473-2010'].map((d) => <a class="doc doc-w" href="/sertifikaty/"><Icon name="file-text" size={24} /><span>{d}</span><span class="fmt">PDF</span><Icon name="download" size={24} /></a>)}</div>
+  <div class="grid2">{['Паспорт качества на бетонную смесь — образец', 'Сертификат соответствия ГОСТ 7473-2010'].map((d) => <a class="doc doc-w" href="/kontakty/" data-modal="lead" data-topic={`Запрос документа: ${d}`}><Icon name="file-text" size={24} /><span>{d}</span><span class="fmt">PDF</span><Icon name="download" size={24} /></a>)}</div>
 </DeliveryZones>
 {similar.length > 0 && (
   <section class="sec sec-tight" aria-labelledby="sim-h">
