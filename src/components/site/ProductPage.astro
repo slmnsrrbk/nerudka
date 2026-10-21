@@ -8,7 +8,7 @@ import PopularBlock from './PopularBlock.astro';
 import SectionHead from '../home/SectionHead.astro';
 import Hook from '../home/Hook.astro';
 import Icon from '../home/Icon.astro';
-import { products, getCategory, categoryPath, productPath, purposes, img, productPhoto, photoLabel, fmt, specLine } from '../../lib/inner';
+import { products, getCategory, categoryPath, productPath, purposes, img, productPhoto, photoLabel, fmt, specLine, productDescription } from '../../lib/inner';
 import { GRADE_SCALE } from '../../lib/catalog';
 import type { Product } from '../../lib/types';
 interface Props { product: Product }
@@ -17,8 +17,6 @@ const cat = getCategory(p.category)!;
 const parent = cat.parent ? getCategory(cat.parent) : undefined;
 const lab = photoLabel(p);
 const title = p.category === 'tovarnyj' && p.class ? p.name.replace(` ${p.grade} `, ` ${p.grade} ${p.class} `) : p.name;
-const sibling = p.category === 'tovarnyj' ? products.find((x) => x.category === p.category && x.grade === p.grade && x.filler !== p.filler) : undefined;
-const fillers = sibling ? [p, sibling].sort((a, b) => (a.filler === 'гравий' ? -1 : 1) - (b.filler === 'гравий' ? -1 : 1)) : [];
 const used = p.purposes.map((s) => purposes.find((x) => x.slug === s)).filter(Boolean) as typeof purposes;
 const specs: [string, string][] = [
   ['Марка', p.grade], ['Класс прочности', p.class], ['Марка по плотности', p.density], ['Подвижность', p.mobility],
@@ -31,7 +29,8 @@ const similar = [
   ...products.filter((x) => x.category === p.category && x.id !== p.id).sort((a, b) => Math.abs(gi(a) - gi(p)) - Math.abs(gi(b) - gi(p)) || (a.filler === p.filler ? -1 : 1)),
   ...products.filter((x) => x.category !== p.category && x.grade && x.grade === p.grade),
 ].slice(0, 4);
-const crumbs = [{ href: '/', label: 'Главная' }, { href: '/catalog/', label: 'Каталог' }, ...(parent ? [{ href: categoryPath(parent), label: parent.name }] : []), { href: categoryPath(cat), label: cat.name }, { label: title }];
+const crumbs = [{ href: '/', label: 'Главная' }, { href: '/catalog/', label: 'Каталог' }, ...(parent && parent.slug !== 'beton' ? [{ href: categoryPath(parent), label: parent.name }] : []), { href: categoryPath(cat), label: cat.name }, { label: title }];
+const desc = productDescription(p);
 const sub = [p.gost, p.mobility, p.frost, p.water, p.fraction && `щебень ${p.fraction.replace('-', '–')} мм`].filter(Boolean).join(' · ');
 ---
 <PlainHeader crumbs={crumbs} />
@@ -44,11 +43,6 @@ const sub = [p.gost, p.mobility, p.frost, p.water, p.fraction && `щебень $
     <div class="buy" data-item={p.id} data-name={p.name} data-price={p.price} data-href={productPath(p)} data-buy>
       <div class="buy-h"><h1>{title}</h1><p class="small muted">Завод-производитель · 6 РБУ · Доставка в день заказа</p></div>
       <div class="buy-tags">{p.badges?.map((b) => <span class="tag tag-dark">{b}</span>)}<span class="tag">Отгрузка круглосуточно</span>{p.gost && <span class="tag">{p.gost}</span>}</div>
-      {fillers.length > 0 && (
-        <div class="buy-g"><p class="buy-l">Заполнитель</p>
-          <div class="seg">{fillers.map((x) => <a class:list={['seg-i', { on: x.id === p.id }]} href={productPath(x)} aria-current={x.id === p.id ? 'page' : undefined}><b>{x.filler === 'гравий' ? 'На гравии' : 'На граните'}</b><span>{fmt(x.price)} ₽ за м³</span></a>)}</div>
-        </div>
-      )}
       <p class="buy-p"><b>{fmt(p.price)} ₽</b><span>за м³ с завода</span></p>
       <p class="small muted">{sub}</p>
       <div class="buy-g"><p class="buy-l">Объём, м³</p>
@@ -72,6 +66,12 @@ const sub = [p.gost, p.mobility, p.frost, p.water, p.fraction && `щебень $
         <li><Icon name="factory" />Отгрузка с ближайшего из шести РБУ, круглосуточно</li>
       </ul>
     </div>
+  </div>
+</section>
+<section class="sec sec-tight" id="opisanie" aria-labelledby="desc-h">
+  <div class="wrap">
+    <SectionHead id="desc-h" label="Описание" title="Описание" sub={title} />
+    <div class="card-w prose-d">{desc.map((t) => <p>{t}</p>)}</div>
   </div>
 </section>
 <section class="sec sec-tight" id="specs" aria-labelledby="specs-h">

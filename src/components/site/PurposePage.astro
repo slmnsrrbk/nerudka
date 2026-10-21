@@ -25,7 +25,7 @@ const fam = FAMILY.find((f) => f.includes(purpose.slug)) ?? [purpose.slug, ...pu
 const cards = [purpose.slug, ...fam.filter((s) => s !== purpose.slug)].map((s) => purposes.find((p) => p.slug === s)!).filter(Boolean);
 const rec = products.find((p) => p.category === 'tovarnyj' && p.grade === purpose.recommended && p.filler === 'гравий') ?? items[0];
 const chips = purposes.map((p) => ({ label: purposeLabel(p.h1), href: purposeHref(p.slug), on: p.slug === purpose.slug }));
-const crumbs = [{ href: '/', label: 'Главная' }, { href: '/catalog/', label: 'Каталог' }, { href: '/catalog/beton/', label: 'Бетон' }, { label: purposeLabel(purpose.h1) }];
+const crumbs = [{ href: '/', label: 'Главная' }, { href: '/catalog/', label: 'Каталог' }, { label: purposeLabel(purpose.h1) }];
 const formItems = items.map((p) => ({ id: p.id, label: p.name.replace('Бетон ', '') }));
 const ask = [
   rec && `Марку и класс: ${rec.grade} ${rec.class}`,

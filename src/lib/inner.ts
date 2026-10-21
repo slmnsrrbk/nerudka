@@ -47,7 +47,8 @@ export function typeCards(parent: string): TypeCard[] {
 
 export const crumbsFor = (cat: Category) => {
   const trail: { href?: string; label: string }[] = [{ href: '/', label: 'Главная' }, { href: '/catalog/', label: 'Каталог' }];
-  if (cat.parent) { const p = getCategory(cat.parent); if (p) trail.push({ href: categoryPath(p), label: p.name }); }
+  // Уровень «Бетон» в крошках не показываем: бетон — это и есть главная страница сайта (правки заказчика).
+  if (cat.parent && cat.parent !== 'beton') { const p = getCategory(cat.parent); if (p) trail.push({ href: categoryPath(p), label: p.name }); }
   trail.push({ label: cat.name });
   return trail;
 };
@@ -100,3 +101,19 @@ export const SERVICE_GROUPS = [
 
 export { activeGrades, activeClasses, gradeSlug, classSlug, GRADE_SCALE };
 export { categories, products, purposes, productPath, categoryPath, getCategory, childCategories, minPrice, fmt, plural, productsOfCategory };
+
+/** SEO-описание позиции для блока «Описание» — собирается только из данных позиции, без выдуманных фактов. */
+export function productDescription(p: Product): string[] {
+  const cat = getCategory(p.category);
+  const used = p.purposes.map((s) => purposes.find((x) => x.slug === s)?.name).filter(Boolean) as string[];
+  const params = [p.class && `класс прочности ${p.class}`, p.mobility && `подвижность ${p.mobility}`, p.frost && `морозостойкость ${p.frost}`, p.water && `водонепроницаемость ${p.water}`, p.density && `марка по плотности ${p.density}`].filter(Boolean);
+  const filler = p.filler ? ` на ${p.filler === 'гравий' ? 'гравийном' : p.filler === 'гранит' ? 'гранитном' : p.filler} ${['гравий', 'гранит'].includes(p.filler) ? 'щебне' : 'заполнителе'}${p.fraction ? ` фракции ${p.fraction.replace('-', '–')} мм` : ''}` : '';
+  const out = [
+    `${p.name} — ${(cat?.name ?? '').toLowerCase()}${filler}${p.gost ? ` по ${p.gost}` : ''}. ${params.length ? `Основные параметры смеси: ${params.join(', ')}.` : ''}`.trim(),
+  ];
+  if (cat?.lead) out.push(cat.lead);
+  if (used.length) out.push(`Применяют для ${used.join(', ')}. Марку и класс для конкретной конструкции подтверждают по проекту.`);
+  if (p.note) out.push(p.note);
+  out.push(`Цена — ${fmt(p.price)} ₽ за м³ с завода. Отгружаем с ближайшего из шести РБУ в Москве и области, с каждой машиной — паспорт качества и весовая распечатка. Доставка от 400 ₽ за м³, от 50 м³ — скидка 10 %.`);
+  return out;
+}

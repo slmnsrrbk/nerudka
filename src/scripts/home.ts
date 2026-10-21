@@ -401,6 +401,7 @@ if (fForm && fList) {
 /* ---------- Мегаменю ---------- */
 const mega = $('[data-mega]');
 const megaBack = $('[data-mega-backdrop]');
+const megaDim = $('[data-mega-dim]');
 let megaTimer = 0;
 let megaTrigger: HTMLElement | null = null;
 let megaOpenedAt = 0;
@@ -415,12 +416,14 @@ function openMega(trigger: HTMLElement) {
   megaBack!.style.top = `${Math.max(0, nav.bottom + 6)}px`;
   mega.hidden = false;
   megaBack!.hidden = false;
+  if (megaDim) megaDim.hidden = false;
   $$('[data-mega-toggle]').forEach((b) => b.setAttribute('aria-expanded', String(b === trigger)));
 }
 function closeMega() {
   if (!mega || mega.hidden) return;
   mega.hidden = true;
   megaBack!.hidden = true;
+  if (megaDim) megaDim.hidden = true;
   $$('[data-mega-toggle]').forEach((b) => b.setAttribute('aria-expanded', 'false'));
 }
 function setMegaTab(id: string) {

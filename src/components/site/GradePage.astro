@@ -27,7 +27,7 @@ const filler = gr && gn ? 'Гравийный щебень 5–20 мм или г
 const specs = [['Класс прочности', base.class], ['Подвижность', base.mobility], ['Морозостойкость', base.frost], ['Водонепроницаемость', base.water], ['Заполнитель', filler], ['Стандарт', base.gost]].filter(([, v]) => v);
 const uses = purposes.filter((p) => p.recommended === grade || p.short.includes(grade));
 const formItems = (tov.length ? tov : items).map((p) => ({ id: p.id, label: p.name.replace('Бетон ', '') }));
-const crumbs = [{ href: '/', label: 'Главная' }, { href: '/catalog/', label: 'Каталог' }, { href: '/catalog/beton/', label: 'Бетон' }, { label: h1.replace(/^Бетон /, '') }];
+const crumbs = [{ href: '/', label: 'Главная' }, { href: '/catalog/', label: 'Каталог' }, { label: h1.replace(/^Бетон /, '') }];
 const isBeton = tov.length > 0;
 ---
 <PageHero h1={h1} sub={sub} crumbs={crumbs} form formSelected={(gr ?? gn ?? items[0]).id} formOptions={formItems} formTopic={`Расчёт цены: ${h1}`} />

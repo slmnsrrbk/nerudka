@@ -94,12 +94,16 @@ ul, ol { list-style: none; }
 .burger { display: none; }
 .nav-hero { color: var(--w); }
 
-.sticky-bar { position: fixed; inset: 0 0 auto; z-index: 60; padding: 10px 0; background: rgba(28, 36, 56, .92); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); color: var(--w); transform: translateY(-110%); visibility: hidden; transition: transform .25s, visibility 0s .25s; }
+/* Липкая шапка при прокрутке — на всех страницах белая плашка-остров, как шапка страницы позиции. */
+.sticky-bar { position: fixed; inset: 0 0 auto; z-index: 60; padding: 12px 16px 0; color: var(--ink); transform: translateY(-120%); visibility: hidden; transition: transform .25s, visibility 0s .25s; pointer-events: none; }
 .sticky-bar.on { transform: none; visibility: visible; transition: transform .25s; }
-.sticky-bar .wrap { padding: 0 var(--pad); }
+.sticky-island { pointer-events: auto; padding: 12px 20px 12px 32px; border-radius: 20px; background: var(--w); box-shadow: 0 8px 28px rgba(28, 36, 56, .12); }
 
 /* ---------- Мегаменю ---------- */
-.mega-backdrop { position: fixed; inset: 0; z-index: 70; background: rgba(28, 36, 56, .35); }
+/* Затемнение на весь экран (и над шапкой) — только визуальный слой, клики проходят сквозь него.
+   Закрывает меню прозрачная подложка .mega-backdrop: она начинается под шапкой, чтобы курсор на «Продукции» её не задевал. */
+.mega-dim { position: fixed; inset: 0; z-index: 70; background: rgba(28, 36, 56, .35); pointer-events: none; }
+.mega-backdrop { position: fixed; inset: 0; z-index: 70; background: transparent; }
 .mega { position: fixed; z-index: 71; left: 50%; transform: translateX(-50%); width: min(1376px, calc(100vw - 32px)); max-height: calc(100vh - 110px); overflow: auto; display: grid; grid-template-columns: 240px 1fr 250px; gap: 28px; padding: 24px; background: var(--w); border-radius: 24px; box-shadow: var(--shadow); animation: pop .18s ease-out; }
 @keyframes pop { from { opacity: 0; transform: translate(-50%, -6px); } }
 .mega-rail { display: flex; flex-direction: column; gap: 4px; padding: 8px; background: var(--bg); border-radius: 16px; align-self: start; }
@@ -680,7 +684,8 @@ a.tip:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(28, 36, 
   .search-card { border-radius: 0 0 20px 20px; }
   .ov-side { place-items: stretch; }
   .side { width: 100vw; }
-  .sticky-bar { padding: 8px 0; }
+  .sticky-bar { padding: 8px 8px 0; }
+  .sticky-island { padding: 10px 10px 10px 16px; border-radius: 16px; }
 }
 @media (max-width: 380px) {
   .statbar { grid-template-columns: 1fr; }
