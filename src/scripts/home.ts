@@ -299,12 +299,21 @@ if (price) {
     if (tab) {
       const slug = tab.dataset.priceTab!;
       $$('[data-price-tab]', price).forEach((b) => { const on = b === tab; b.classList.toggle('on', on); b.setAttribute('aria-selected', String(on)); });
+      const pv = $('[data-price-pick-v]', price);
+      if (pv) pv.textContent = $('span', tab)!.textContent;
+      $$('[data-pick-kind]').forEach((b) => { const on = b.dataset.pickKind === slug; b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); });
       $$('[data-price-pane]', price).forEach((p) => (p.hidden = p.dataset.pricePane !== slug));
       tab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
       if (mq('(max-width: 1080px)')) $('.price-panel', price)!.scrollIntoView({ block: 'start', behavior: 'smooth' });
       return;
     }
   });
+  // Телефон: фильтр «Вид продукции» во всплывающем окне.
+  $('[data-price-pick]', price)?.addEventListener('click', () => openOverlay('price-kinds'));
+  $$('[data-pick-kind]').forEach((b) => b.addEventListener('click', () => {
+    closeOverlay($('[data-overlay="price-kinds"]'));
+    $<HTMLElement>(`[data-price-tab="${CSS.escape(b.dataset.pickKind!)}"]`, price)?.click();
+  }));
   // Страница /price/: вид продукции из адреса (#kladochnyj-rastvor) открывается сразу.
   const fromHash = decodeURIComponent(location.hash.slice(1));
   const hashTab = fromHash && $<HTMLElement>(`[data-price-tab="${CSS.escape(fromHash)}"]`, price);

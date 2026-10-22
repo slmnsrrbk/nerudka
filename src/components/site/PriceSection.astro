@@ -28,6 +28,11 @@ const totalItems = tabs.reduce((s, t) => s + t.count, 0);
         </ul>
       </div>
       <div class="price" data-price>
+        <!-- Телефон: вместо ленты видов — кнопка-фильтр, список видов открывается во всплывающем окне снизу. -->
+        <button type="button" class="card price-pick" data-price-pick aria-haspopup="dialog">
+          <span class="price-pick-t"><span class="small muted">Вид продукции · {tabs.length} видов</span><b data-price-pick-v>{tabs.find((t) => t.slug === 'tovarnyj')?.name}</b></span>
+          <span class="price-pick-ic"><Icon name="chevron-down" size={20} /></span>
+        </button>
         <aside class="card price-nav">
           <div class="price-nav-h"><h3 class="h3">Все виды продукции</h3><p class="small muted">{tabs.length} видов · {totalItems} позиций</p></div>
           {[['Бетон', betonTabs], ['Растворы и смеси', mortarTabs]].map(([title, list]) => (
@@ -93,6 +98,24 @@ const totalItems = tabs.reduce((s, t) => s + t.count, 0);
           </div>
         </div>
       </div>
+    </div>
+  </div>
+  <div class="ov" data-overlay="price-kinds" hidden role="dialog" aria-modal="true" aria-labelledby="pk-title">
+    <div class="ov-card pk-card">
+      <button type="button" class="ov-x" data-close aria-label="Закрыть"><Icon name="x" size={20} /></button>
+      <p class="ov-title" id="pk-title">Вид продукции</p>
+      {[['Бетон', betonTabs], ['Растворы и смеси', mortarTabs]].map(([title, list]) => (
+        <div class="pk-g">
+          <p class="kicker">{title as string} · {(list as typeof tabs).length} видов</p>
+          <div class="pk-list">
+            {(list as typeof tabs).map((t) => (
+              <button type="button" class:list={['pk-i', { on: t.slug === 'tovarnyj' }]} data-pick-kind={t.slug} aria-pressed={t.slug === 'tovarnyj' ? 'true' : 'false'}>
+                <span>{t.name}</span><span class="kind-p">от {fmt(t.min)} ₽</span><Icon name="check" size={16} class="pk-tick" />
+              </button>
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   </div>
 </section>

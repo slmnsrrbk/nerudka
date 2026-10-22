@@ -196,6 +196,20 @@ ul, ol { list-style: none; }
 .kind-p { color: var(--sub); white-space: nowrap; }
 .kind:hover { background: rgba(255, 255, 255, .5); }
 .kind.on { background: var(--w); font-weight: 500; }
+/* Фильтр видов продукции на телефоне */
+.price-pick { display: none; align-items: center; justify-content: space-between; gap: 12px; width: 100%; padding: 14px 16px; text-align: left; }
+.price-pick-t { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.price-pick-t b { font-size: 17px; font-weight: 600; }
+.price-pick-ic { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; background: var(--w); }
+.pk-card { display: flex; flex-direction: column; gap: 18px; }
+.pk-g { display: flex; flex-direction: column; gap: 8px; }
+.pk-list { display: flex; flex-direction: column; gap: 2px; }
+.pk-i { display: flex; align-items: center; gap: 10px; min-height: 46px; padding: 0 12px; border-radius: 10px; font-size: 15px; text-align: left; transition: background .3s var(--ease); }
+.pk-i > span:first-child { flex: 1; }
+.pk-i:hover, .pk-i.on { background: var(--bg); }
+.pk-i.on { font-weight: 600; }
+.pk-tick { flex: none; opacity: 0; }
+.pk-i.on .pk-tick { opacity: 1; }
 .price-panel { padding: 24px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; min-width: 0; }
 .price-top { display: flex; flex-direction: column; gap: 16px; }
 .ptab { display: flex; flex-direction: column; gap: 16px; }
@@ -265,6 +279,8 @@ ul, ol { list-style: none; }
 /* Десктоп: счётчик сверху и стрелки, без точек. Телефон: точки и свайп, без стрелок. */
 .sl-dots { display: none !important; }
 @media (max-width: 760px) {
+  .price-nav { display: none; }
+  .price-pick { display: flex; }
   .sl-btn { display: none; }
   .sl-dots { display: flex !important; }
 }
@@ -810,3 +826,4 @@ ul, ol { list-style: none; }
   .ptab { break-inside: auto; margin-bottom: 16px; }
   .prow { break-inside: avoid; }
 }
+.pk-i .kind-p { display: inline; }
