@@ -261,6 +261,13 @@ ul, ol { list-style: none; }
 .slider:hover .sl-btn { opacity: 1; }
 .sl-btn:hover, .sl-btn:focus-visible { background: var(--ink); color: var(--w); }
 .sl-prev { left: 12px; } .sl-next { right: 12px; }
+.sl-btn:disabled { opacity: 0; pointer-events: none; }
+/* Десктоп: счётчик сверху и стрелки, без точек. Телефон: точки и свайп, без стрелок. */
+.sl-dots { display: none !important; }
+@media (max-width: 760px) {
+  .sl-btn { display: none; }
+  .sl-dots { display: flex !important; }
+}
 .sl-dots { position: absolute; bottom: 12px; left: 50%; translate: -50% 0; display: flex; gap: 6px; padding: 6px 8px; border-radius: 10px; background: rgba(28, 36, 56, .45); }
 .sl-dots button { width: 6px; height: 6px; border-radius: 3px; background: rgba(255, 255, 255, .55); transition: width .2s, background .2s; }
 .sl-dots button.on { width: 16px; background: var(--w); }

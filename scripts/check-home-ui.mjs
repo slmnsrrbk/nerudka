@@ -51,7 +51,7 @@ await p.locator('[data-calc-type="0"]').click();
 check('калькулятор: лента 48×0,4×1,2 = 23 м³', /23/.test(await p.locator('[data-calc-v]').textContent()), await p.locator('[data-calc-v]').textContent());
 
 const sl = p.locator('[data-slider]').first();
-await sl.locator('[data-dots] button').nth(1).click(); await p.waitForTimeout(700);
+await sl.scrollIntoViewIfNeeded(); await sl.locator('[data-next]').click(); await p.waitForTimeout(700);
 check('слайдер РБУ: 2 / 5', (await sl.locator('[data-cur]').textContent()) === '2');
 const car = p.locator('[data-carousel]');
 await car.scrollIntoViewIfNeeded();

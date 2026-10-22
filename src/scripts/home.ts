@@ -556,15 +556,23 @@ $$('[data-slider]').forEach((sl) => {
   const cur = $('[data-cur]', sl)!;
   const n = track.children.length;
   const idx = () => Math.round(track.scrollLeft / track.clientWidth);
-  const go = (i: number) => track.scrollTo({ left: ((i + n) % n) * track.clientWidth, behavior: 'smooth' });
-  $('[data-prev]', sl)?.addEventListener('click', () => go(idx() - 1));
-  $('[data-next]', sl)?.addEventListener('click', () => go(idx() + 1));
+  // Без листания по кругу: на первом фото нет стрелки «назад», на последнем — «вперёд».
+  const prev = $<HTMLButtonElement>('[data-prev]', sl);
+  const next = $<HTMLButtonElement>('[data-next]', sl);
+  const go = (i: number) => track.scrollTo({ left: Math.max(0, Math.min(n - 1, i)) * track.clientWidth, behavior: 'smooth' });
+  const sync = () => {
+    const i = idx();
+    cur.textContent = String(i + 1);
+    dots.forEach((d, k) => d.classList.toggle('on', k === i));
+    if (prev) prev.disabled = i <= 0;
+    if (next) next.disabled = i >= n - 1;
+  };
+  prev?.addEventListener('click', () => go(idx() - 1));
+  next?.addEventListener('click', () => go(idx() + 1));
   dots.forEach((d, i) => d.addEventListener('click', () => go(i)));
   let raf = 0;
-  track.addEventListener('scroll', () => {
-    cancelAnimationFrame(raf);
-    raf = requestAnimationFrame(() => { const i = idx(); cur.textContent = String(i + 1); dots.forEach((d, k) => d.classList.toggle('on', k === i)); });
-  }, { passive: true });
+  track.addEventListener('scroll', () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(sync); }, { passive: true });
+  sync();
 });
 
 /* ---------- Карусель объектов ---------- */
