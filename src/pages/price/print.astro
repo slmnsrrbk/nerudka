@@ -1,0 +1,166 @@
+---
+// Прайс-лист А4 для PDF (кнопка «Скачать прайс PDF»): своя вёрстка под печать в стилистике проекта.
+// PDF собирает scripts/price-pdf.mjs из этой страницы после сборки сайта и кладёт в /price.pdf.
+// Данные те же, что в прайсе на сайте: products.json, services.json, site.json.
+import '@fontsource/onest/400.css';
+import '@fontsource/onest/500.css';
+import '@fontsource/onest/600.css';
+import { PLANTS, fmt } from '../../lib/home';
+import { childCategories, products } from '../../lib/catalog';
+import { site } from '../../lib/home-site';
+import servicesData from '../../data/services.json';
+import siteData from '../../data/site.json';
+import type { Product, Service } from '../../lib/types';
+
+const services = servicesData as Service[];
+const order = (g: string) => parseInt(g.replace(/\D/g, ''), 10) || 0;
+// Марка без названия вида: «Тощий бетон М100» → «М100», «Морозостойкий бетон М300 F300» → «М300 F300».
+const esc = (t: string) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const shortName = (name: string, kind: string) => {
+  const base = kind.replace(/ бетон$/i, '');
+  const t = name.replace(new RegExp(`^(${esc(kind)}|${esc(base)})\\s*`, 'i'), '').replace(/^бетон\s+/i, '').trim();
+  return t.charAt(0).toUpperCase() + t.slice(1);
+};
+const date = new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+
+type Row = { name: string; cls: string; mob: string; frost: string; water: string; prices: (number | null)[] };
+const groups = (['beton', 'rastvor'] as const).map((g) => ({
+  title: g === 'beton' ? 'Бетон' : 'Растворы и смеси',
+  kinds: childCategories(g).map((cat) => {
+    const items = products.filter((p) => p.category === cat.slug);
+    const fillers = new Set(items.map((p) => p.filler));
+    const two = fillers.has('гравий') && fillers.has('гранит');
+    let rows: Row[];
+    if (two) {
+      const grades = [...new Set(items.map((p) => p.grade))].sort((a, b) => order(a) - order(b));
+      rows = grades.map((gr) => {
+        const a = items.find((p) => p.grade === gr && p.filler === 'гравий');
+        const b = items.find((p) => p.grade === gr && p.filler === 'гранит');
+        const x = (a ?? b) as Product;
+        return { name: gr, cls: x.class || x.density, mob: x.mobility, frost: x.frost, water: x.water, prices: [a?.price ?? null, b?.price ?? null] };
+      });
+    } else {
+      rows = items.slice().sort((a, b) => order(a.grade) - order(b.grade) || a.price - b.price).map((p) => ({
+        name: shortName(p.name, cat.name) || p.grade || p.density,
+        cls: p.class || p.density, mob: p.mobility, frost: p.frost, water: p.water, prices: [p.price],
+      }));
+    }
+    return { cat, two, rows, gost: [...new Set(items.map((p) => p.gost).filter(Boolean))][0] ?? '' };
+  }).filter((k) => k.rows.length),
+}));
+---
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <title>Прайс-лист — {site.name}</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <style is:global>
+      @page { size: A4; margin: 14mm 12mm 16mm; }
+      :root { --ink: #1C2438; --sub: #6B7593; --mute: #8E98B4; --card: #DCE3EE; --bg: #EEF1F6; --line: #CDD5E3; --w: #FFFFFF; }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      body { font: 400 9.5pt/1.35 'Onest', sans-serif; color: var(--ink); background: var(--w); }
+      .cover { display: grid; grid-template-columns: 1fr auto; gap: 8mm; padding: 9mm 10mm; border-radius: 6mm; background: var(--ink); color: var(--w); }
+      .logo { display: flex; align-items: center; gap: 2.5mm; font-size: 13pt; font-weight: 600; }
+      .logo i { width: 5mm; height: 5mm; border-radius: 50%; background: var(--w); }
+      .cover h1 { margin-top: 9mm; font-size: 30pt; font-weight: 400; letter-spacing: -.02em; line-height: 1; }
+      .cover h1 span { display: block; color: #9AA6C2; font-size: 17pt; margin-top: 2mm; }
+      .cover p { margin-top: 4mm; color: #C9D1E3; max-width: 105mm; }
+      .contacts { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; text-align: right; }
+      .contacts b { font-size: 14pt; font-weight: 600; }
+      .contacts span { color: #C9D1E3; }
+      .date { display: inline-block; padding: 1.5mm 3mm; border-radius: 2mm; background: rgba(255, 255, 255, .12); font-size: 8.5pt; }
+      .info { display: grid; grid-template-columns: 1.3fr 1fr; gap: 4mm; margin-top: 4mm; }
+      .box { padding: 5mm 6mm; border-radius: 4mm; background: var(--bg); }
+      .box h3 { font-size: 10.5pt; font-weight: 600; margin-bottom: 2.5mm; }
+      .plants { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2mm 4mm; }
+      .plants li { list-style: none; font-size: 8.5pt; }
+      .plants b { display: block; font-weight: 600; }
+      .plants span, .muted { color: var(--sub); }
+      .disc { display: flex; gap: 2mm; margin-top: 1mm; }
+      .disc span { flex: 1; padding: 2mm; border-radius: 2mm; background: var(--w); text-align: center; font-size: 8pt; color: var(--sub); }
+      .disc b { display: block; font-size: 12pt; color: var(--ink); }
+      .group { margin-top: 7mm; }
+      .group > h2 { font-size: 16pt; font-weight: 500; letter-spacing: -.01em; padding-bottom: 2mm; border-bottom: .4mm solid var(--ink); }
+      .kind { margin-top: 5mm; break-inside: avoid; }
+      .kind-h { display: flex; justify-content: space-between; align-items: baseline; gap: 4mm; margin-bottom: 1.5mm; }
+      .kind-h h3 { font-size: 11pt; font-weight: 600; }
+      .kind-h span { font-size: 8pt; color: var(--sub); }
+      table { width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 0; font-size: 8.8pt; }
+      .c-n { width: 34%; } .c-c { width: 12%; } .c-s { width: 9%; }
+      th { padding: 1.6mm 2.5mm; font-weight: 500; font-size: 7.5pt; color: var(--sub); text-align: left; background: var(--bg); }
+      th:first-child { border-radius: 1.5mm 0 0 1.5mm; } th:last-child { border-radius: 0 1.5mm 1.5mm 0; }
+      td { padding: 1.5mm 2.5mm; border-bottom: .2mm solid var(--bg); }
+      td.n { font-weight: 600; }
+      td.p, th.p { text-align: right; white-space: nowrap; }
+      td.p { font-weight: 600; }
+      tr { break-inside: avoid; }
+      .svc td:first-child { font-weight: 500; }
+      .note { margin-top: 6mm; padding: 4mm 6mm; border-radius: 4mm; background: var(--bg); font-size: 8.5pt; color: var(--sub); break-inside: avoid; }
+      .note b { color: var(--ink); }
+    </style>
+  </head>
+  <body>
+    <header class="cover">
+      <div>
+        <div class="logo"><i></i>{site.name}</div>
+        <h1>Прайс-лист<span>бетон и растворы с завода</span></h1>
+        <p>Цены за 1 м³ на условиях самовывоза. Прайс единый для всех шести РБУ — отгружаем с ближайшего к объекту узла.</p>
+      </div>
+      <div class="contacts">
+        <span class="date">Действует с {date}</span>
+        <div><b>{site.phone}</b><br /><span>{site.email}</span><br /><span>{site.hours}</span></div>
+      </div>
+    </header>
+
+    <section class="info">
+      <div class="box">
+        <h3>Адреса производств</h3>
+        <ul class="plants">{PLANTS.map((p) => <li><b>РБУ {p.n}</b><span>{p.address}</span></li>)}</ul>
+      </div>
+      <div class="box">
+        <h3>Скидка от объёма</h3>
+        <div class="disc">{[['50', '10'], ['200', '15'], ['500', '20']].map(([v, d]) => <span><b>−{d} %</b>от {v} м³</span>)}</div>
+        <p class="muted" style="margin-top:2.5mm;font-size:8pt">Доставка от {siteData.deliveryZones[0].pricePerM3} ₽ за м³ по зонам от ближайшего узла.</p>
+      </div>
+    </section>
+
+    {groups.map((g) => (
+      <section class="group">
+        <h2>{g.title}</h2>
+        {g.kinds.map((k) => (
+          <div class="kind">
+            <div class="kind-h"><h3>{k.cat.name}</h3><span>{[k.gost, `${k.rows.length} поз.`].filter(Boolean).join(' · ')}</span></div>
+            <table>
+              <colgroup><col class="c-n" /><col class="c-c" /><col class="c-s" /><col class="c-s" /><col class="c-s" />{k.two ? <><col /><col /></> : <col />}</colgroup>
+              <thead><tr><th>Марка</th><th>Класс / D</th><th>П</th><th>F</th><th>W</th>{k.two ? <><th class="p">На гравии, ₽/м³</th><th class="p">На граните, ₽/м³</th></> : <th class="p">Цена, ₽/м³</th>}</tr></thead>
+              <tbody>{k.rows.map((r) => (
+                <tr><td class="n">{r.name}</td><td>{r.cls || '—'}</td><td>{r.mob || '—'}</td><td>{r.frost || '—'}</td><td>{r.water || '—'}</td>{r.prices.map((x) => <td class="p">{x ? fmt(x) : '—'}</td>)}</tr>
+              ))}</tbody>
+            </table>
+          </div>
+        ))}
+      </section>
+    ))}
+
+    <section class="group">
+      <h2>Услуги</h2>
+      <div class="kind">
+        <table class="svc">
+          <thead><tr><th>Услуга</th><th>Что входит</th><th class="p">Цена</th></tr></thead>
+          <tbody>{services.map((s) => <tr><td>{s.name}</td><td class="muted">{s.includes[0]}</td><td class="p">от {fmt(s.priceFrom)} ₽ / {s.priceUnit}</td></tr>)}</tbody>
+        </table>
+      </div>
+      <div class="kind">
+        <div class="kind-h"><h3>Доставка по зонам</h3><span>от ближайшего узла</span></div>
+        <table>
+          <thead><tr><th>Зона</th><th class="p">Цена доставки, ₽/м³</th></tr></thead>
+          <tbody>{siteData.deliveryZones.map((z) => <tr><td>{z.name.replace('-', '–')}</td><td class="p">{fmt(z.pricePerM3)}</td></tr>)}</tbody>
+        </table>
+      </div>
+    </section>
+
+    <p class="note"><b>Как заказать.</b> Позвоните {site.phone} или оставьте заявку на сайте — диспетчер подтвердит марку, объём, время и итоговую сумму с доставкой. С каждой машиной — паспорт качества и весовая распечатка. Цены справочные и не являются публичной офертой.</p>
+  </body>
+</html>

@@ -13,7 +13,7 @@ export default defineConfig({
   trailingSlash: 'always',
   integrations: [
     sitemap({
-      filter: (page) => !page.includes('/_prototype'),
+      filter: (page) => !page.includes('/price/print/'),
     }),
   ],
   vite: {

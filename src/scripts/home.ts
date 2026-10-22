@@ -381,8 +381,6 @@ if (price) {
   const hashTab = fromHash && $<HTMLElement>(`[data-price-tab="${CSS.escape(fromHash)}"]`, price);
   if (hashTab) { hashTab.click(); price.scrollIntoView({ block: 'start' }); }
 }
-/* «Скачать прайс PDF» на странице прайса: печать в PDF средствами браузера. */
-$$('[data-print]').forEach((b) => b.addEventListener('click', () => window.print()));
 /* Счётчик и «в корзину» — в прайсе, карточках товара и на странице позиции. */
 document.addEventListener('click', (e) => {
   const t = e.target as HTMLElement;

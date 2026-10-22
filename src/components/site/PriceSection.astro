@@ -116,7 +116,6 @@ const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
             {shown.map((t, ti) => (
               <div class:list={['ptab', { 'ptab-sub': many }]} data-price-pane={t.slug} data-name={t.name} data-note={t.note} role={links ? undefined : 'tabpanel'} hidden={!links && t.slug !== active}>
                 {many && <div class="ptab-h"><div><h4 class="h3"><a href={t.href}>{t.name}</a></h4><p class="small muted">{t.note}</p></div></div>}
-                {!links && <div class="ptab-h ptab-h-print"><div><h3 class="h3 h3-l">{t.name}</h3><p class="small muted">{t.note}</p></div></div>}
                 <div class:list={['prow', 'prow-head', { two: t.columns.length > 1 }]}>
                   <span>Марка</span>{t.columns.map((c) => <span>{c}</span>)}
                 </div>
@@ -151,9 +150,10 @@ const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
               <span class="tile tile-grey"><Icon name="percent" /></span>
               <div><p class="strip-t">От 50 м³ — скидка 10 %, от 200 м³ — 15 %, от 500 м³ — 20 %</p><p class="small muted">Скидку учтём в расчёте цены и в корзине</p></div>
             </div>
-            <div>{head || links
-              ? <a class="btn btn-dark" href="/price/">{links ? 'Весь прайс-лист' : 'Скачать прайс PDF'}<Icon name={links ? 'arrow-right' : 'download'} size={16} /></a>
-              : <button type="button" class="btn btn-dark" data-print>Скачать прайс PDF<Icon name="download" size={16} /></button>}</div>
+            <div class="price-btns">
+              <a class="btn btn-dark" href="/price.pdf" download="Прайс-лист бетон и растворы.pdf">Скачать прайс PDF<Icon name="download" size={16} /></a>
+              {links && <a class="btn btn-light" href="/price/">Весь прайс-лист<Icon name="arrow-right" size={16} /></a>}
+            </div>
           </div>
           <div class="banner">
             <div class="banner-t"><p class="banner-h">Не нашли нужную марку?</p><p>Подберём состав под вашу задачу и пришлём расчёт — выберите вид продукции слева или напишите нам.</p></div>

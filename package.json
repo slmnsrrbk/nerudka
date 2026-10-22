@@ -13,7 +13,8 @@
     "offline": "npm run portable && node scripts/inline-js.mjs",
     "check:home": "node scripts/check-home.mjs",
     "check:inner": "node scripts/check-inner-ui.mjs",
-    "check:home-ui": "node scripts/check-home-ui.mjs"
+    "check:home-ui": "node scripts/check-home-ui.mjs",
+    "price-pdf": "node scripts/price-pdf.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

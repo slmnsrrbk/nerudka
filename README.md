@@ -41,6 +41,15 @@ npm run portable   # копия с относительными ссылками
 npm run offline    # portable + встроенный скрипт, открывается двойным кликом по index.html
 ```
 
+## Прайс-лист PDF
+
+Кнопка «Скачать прайс PDF» отдаёт файл `/price.pdf` — вёрстка А4 из страницы `/price/print/` (`src/pages/price/print.astro`).
+Файл хранится в `public/price.pdf`. После изменения цен или позиций пересоберите его:
+
+```bash
+npm run build && npm run price-pdf   # нужен Chromium для Playwright; путь можно задать в CHROMIUM_PATH
+```
+
 ## Проверки
 
 ```bash
