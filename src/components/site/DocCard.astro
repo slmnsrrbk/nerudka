@@ -1,11 +1,22 @@
 ---
-// Карточка документа: с файлом (href) — скачивание одним кликом; без файла — пометка «Файл скоро появится».
+// Документ открывается сразу в просмотрщике (лист A4), без скачивания вслепую.
+// card — карточка с превью листа (страница «Сертификаты»), иначе строка «Смотреть».
+// Есть файл (href) — в просмотрщике показываем его и кнопку «Скачать»; нет — макет листа [заглушка].
 import Icon from '../home/Icon.astro';
-interface Props { title: string; fmt?: string; href?: string; white?: boolean }
-const { title, fmt = 'PDF', href, white = true } = Astro.props;
+import DocSheet from './DocSheet.astro';
+interface Props { title: string; fmt?: string; href?: string; white?: boolean; card?: boolean; img?: string }
+const { title, fmt = 'PDF', href, white = true, card = false, img } = Astro.props;
 ---
-{href ? (
-  <a class:list={['doc', { 'doc-w': white }]} href={href} download><Icon name="file-text" size={24} /><span>{title}</span><span class="fmt">{fmt}</span><Icon name="download" size={24} /></a>
+{card ? (
+  <button type="button" class="dcard" data-doc-open data-doc-title={title} data-doc-fmt={fmt} data-doc-href={href}>
+    <DocSheet title={title} src={img} />
+    <span class="dcard-t">{title}</span>
+    <span class="dcard-f"><Icon name="eye" size={16} />Смотреть · {fmt}</span>
+    <template data-doc-sheet><DocSheet title={title} src={img} /></template>
+  </button>
 ) : (
-  <div class:list={['doc', 'doc-soon', { 'doc-w': white }]}><Icon name="file-text" size={24} /><span>{title}</span><span class="fmt fmt-soon">Файл скоро появится</span></div>
+  <button type="button" class:list={['doc', { 'doc-w': white }]} data-doc-open data-doc-title={title} data-doc-fmt={fmt} data-doc-href={href}>
+    <Icon name="file-text" size={24} /><span>{title}</span><span class="fmt"><Icon name="eye" size={16} />Смотреть</span>
+    <template data-doc-sheet><DocSheet title={title} src={img} /></template>
+  </button>
 )}

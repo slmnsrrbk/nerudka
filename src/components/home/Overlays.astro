@@ -30,6 +30,19 @@ const idx = searchIndex();
   </div>
 </div>
 
+<div class="ov" data-overlay="doc" hidden role="dialog" aria-modal="true" aria-labelledby="doc-title">
+  <div class="ov-card doc-view">
+    <button type="button" class="ov-x" data-close aria-label="Закрыть"><Icon name="x" size={20} /></button>
+    <p class="ov-kicker" data-doc-fmt>PDF</p>
+    <h3 class="ov-title" id="doc-title" data-doc-name>Документ</h3>
+    <div class="doc-view-body" data-doc-body></div>
+    <div class="doc-view-act">
+      <a class="btn btn-dark" data-doc-dl href="#" download hidden>Скачать<Icon name="download" size={16} /></a>
+      <button type="button" class="btn btn-grey" data-modal="lead" data-topic="Запрос документа">Запросить на почту<Icon name="mail" size={16} /></button>
+    </div>
+  </div>
+</div>
+
 <div class="ov ov-top" data-overlay="search" hidden role="dialog" aria-modal="true" aria-label="Поиск">
   <div class="ov-card search-card">
     <div class="search-row">

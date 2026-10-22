@@ -75,7 +75,37 @@ document.addEventListener('click', (e) => {
   closeDrawer();
   let comment = '';
   if (b.hasAttribute('data-calc-order')) comment = calcSummary();
+  else if (b.dataset.comment) comment = b.dataset.comment;
   openLead(b.dataset.topic || 'Заявка', comment);
+});
+
+/* ---------- Просмотр документа: лист сразу на экране, скачать — если файл есть ---------- */
+document.addEventListener('click', (e) => {
+  const b = (e.target as HTMLElement).closest<HTMLElement>('[data-doc-open]');
+  if (!b) return;
+  e.preventDefault();
+  const el = openOverlay('doc');
+  if (!el) return;
+  const { docTitle = 'Документ', docFmt = 'PDF', docHref } = b.dataset;
+  $('[data-doc-name]', el)!.textContent = docTitle;
+  $('[data-doc-fmt]', el)!.textContent = docFmt;
+  const body = $('[data-doc-body]', el)!;
+  body.replaceChildren();
+  if (docHref && /\.pdf($|\?)/i.test(docHref)) {
+    const f = document.createElement('iframe');
+    f.src = docHref;
+    f.title = docTitle;
+    f.className = 'doc-view-pdf';
+    body.append(f);
+  } else {
+    const tpl = $<HTMLTemplateElement>('template[data-doc-sheet]', b);
+    if (tpl) body.append(tpl.content.cloneNode(true));
+  }
+  const dl = $<HTMLAnchorElement>('[data-doc-dl]', el)!;
+  dl.hidden = !docHref;
+  if (docHref) dl.href = docHref;
+  const req = $<HTMLElement>('[data-modal="lead"]', el)!;
+  req.dataset.comment = `Документ: ${docTitle}`;
 });
 
 /* ---------- Формы: маска телефона, проверка, успех ---------- */

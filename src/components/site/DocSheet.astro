@@ -1,0 +1,18 @@
+---
+// Превью документа — лист A4. Пока сканов нет, показываем макет листа с пометкой [заглушка]; номера не выдумываем.
+interface Props { title: string; src?: string }
+const { title, src } = Astro.props;
+const kind = title.replace(/\s*\[.*$/, '').replace(/\s+—.*$/, '');
+---
+<div class="dsheet" aria-hidden="true">
+  {src ? <img src={src} alt="" loading="lazy" /> : (
+    <>
+      <span class="dsheet-k">{kind}</span>
+      <span class="dsheet-l"></span><span class="dsheet-l"></span><span class="dsheet-l dsheet-l-s"></span>
+      <span class="dsheet-t"></span>
+      <span class="dsheet-l"></span><span class="dsheet-l"></span><span class="dsheet-l"></span><span class="dsheet-l dsheet-l-s"></span>
+      <span class="dsheet-st"></span>
+      <span class="dsheet-z">[заглушка: скан документа]</span>
+    </>
+  )}
+</div>

@@ -66,7 +66,7 @@ const b2b = [
   ['flask-conical', 'Протоколы испытаний 7 и 28 суток по запросу'],
   ['calendar-check', 'График подачи и ночные отгрузки'],
 ];
-const downloads = [['Договор поставки', 'DOCX'], ['Карточка организации', 'PDF'], ['Прайс-лист', 'PDF'], ['Образец паспорта качества', 'PDF']];
+const downloads: [string, string, string?][] = [['Договор поставки', 'DOCX'], ['Карточка организации', 'PDF'], ['Прайс-лист', 'PDF', '/price.pdf'], ['Образец паспорта качества', 'PDF']];
 const useful = [
   ['Бетон М300', '/beton/m300/', 'm300-slab'],
   ['Бетон для фундамента', '/beton/dlya-fundament/', 'columns'],
@@ -217,7 +217,7 @@ const useful = [
           </div>
           <div class="card b2b-c">
             <h3 class="h3">Скачать для закупки</h3>
-            <ul class="docs">{downloads.map(([t, f]) => <li><DocCard title={t} fmt={f} white={false} /></li>)}</ul>
+            <ul class="docs">{downloads.map(([t, f, h]) => <li><DocCard title={t} fmt={f} href={h} white={false} /></li>)}</ul>
           </div>
         </div>
         <div class="strip strip-l"><span class="tile tile-grey"><Icon name="landmark" /></span><p>Работа по 44-ФЗ и 223-ФЗ — [заглушка: подтвердить] · Казначейское сопровождение — [заглушка: подтвердить]</p></div>

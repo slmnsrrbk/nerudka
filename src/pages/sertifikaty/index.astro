@@ -1,6 +1,6 @@
 ---
-// Сертификаты и декларации на бетон: документы о качестве продукции. Файлы пока не загружены —
-// у каждого документа пометка «Файл скоро появится»; номера деклараций и аттестатов — [заглушка].
+// Сертификаты и декларации на бетон: документы о качестве продукции. Каждый документ показан листом
+// и открывается в просмотрщике; сканов пока нет — лист-макет [заглушка], номера — [заглушка].
 import HomeLayout from '../../layouts/HomeLayout.astro';
 import PageHero from '../../components/site/PageHero.astro';
 import SiteFooter from '../../components/site/SiteFooter.astro';
@@ -33,7 +33,7 @@ const groups: { t: string; d: string; desc: string; items: [string, string][] }[
     <section class:list={['sec', i === 0 ? 'sec-first' : 'sec-tight']} aria-labelledby={`dg-${i}`}>
       <div class="wrap">
         <SectionHead id={`dg-${i}`} label="Документы" title={g.t} sub={g.d} desc={g.desc} />
-        <div class="grid2">{g.items.map(([d, f]) => <DocCard title={d} fmt={f} />)}</div>
+        <div class="docs-grid">{g.items.map(([d, f]) => <DocCard title={d} fmt={f} card />)}</div>
       </div>
     </section>
   ))}
