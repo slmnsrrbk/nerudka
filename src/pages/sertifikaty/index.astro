@@ -1,0 +1,47 @@
+---
+// Сертификаты и декларации на бетон: документы о качестве продукции. Файлы пока не загружены —
+// каждый документ запрашивается через форму; номера деклараций и аттестатов — [заглушка].
+import HomeLayout from '../../layouts/HomeLayout.astro';
+import PageHero from '../../components/site/PageHero.astro';
+import SiteFooter from '../../components/site/SiteFooter.astro';
+import SectionHead from '../../components/home/SectionHead.astro';
+import Hook from '../../components/home/Hook.astro';
+import Icon from '../../components/home/Icon.astro';
+
+const groups: { t: string; d: string; desc: string; items: [string, string][] }[] = [
+  { t: 'Продукция', d: 'декларации и паспорта', desc: 'Соответствие бетонных и растворных смесей ГОСТ 7473-2010 и ГОСТ 28013-98.', items: [
+    ['Декларация о соответствии на товарный бетон [заглушка: номер]', 'PDF'],
+    ['Декларация о соответствии на растворные смеси [заглушка: номер]', 'PDF'],
+    ['Паспорт качества на бетонную смесь — образец', 'PDF'],
+    ['Паспорт качества на растворную смесь — образец', 'PDF'],
+  ] },
+  { t: 'Лаборатория', d: 'контроль качества', desc: 'Контроль прочности, подвижности и морозостойкости каждой партии.', items: [
+    ['Аттестат аккредитации лаборатории [заглушка: подтвердить]', 'PDF'],
+    ['Протокол испытаний образцов на 7 и 28 сутки — образец', 'PDF'],
+  ] },
+  { t: 'Сырьё', d: 'цемент, щебень, песок', desc: 'Документы поставщиков сырья, из которого готовим смеси.', items: [
+    ['Сертификат на цемент [заглушка: поставщик]', 'PDF'],
+    ['Паспорт на щебень (гравий, гранит) [заглушка: поставщик]', 'PDF'],
+    ['Паспорт на песок [заглушка: поставщик]', 'PDF'],
+  ] },
+];
+---
+<HomeLayout title="Сертификаты и декларации на бетон" description="Декларации о соответствии, паспорта качества, протоколы испытаний и документы на сырьё. Пришлём нужный документ на почту.">
+  <PageHero h1="Сертификаты и декларации" sub="Документы о качестве бетона и растворов — пришлём нужный на почту" crumbs={[{ href: '/', label: 'Главная' }, { label: 'Сертификаты и декларации' }]} />
+  {groups.map((g, i) => (
+    <section class:list={['sec', i === 0 ? 'sec-first' : 'sec-tight']} aria-labelledby={`dg-${i}`}>
+      <div class="wrap">
+        <SectionHead id={`dg-${i}`} label="Документы" title={g.t} sub={g.d} desc={g.desc} />
+        <div class="grid2">{g.items.map(([d, f]) => <a class="doc doc-w" href="/kontakty/" data-modal="lead" data-topic={`Запрос документа: ${d}`}><Icon name="file-text" size={24} /><span>{d}</span><span class="fmt">{f}</span><Icon name="download" size={24} /></a>)}</div>
+      </div>
+    </section>
+  ))}
+  <section class="sec sec-tight" aria-label="Проверка декларации">
+    <div class="wrap stack">
+      <p class="note card-w cert-note"><Icon name="shield-check" />Декларацию о соответствии можно проверить по номеру в открытом реестре Росаккредитации: <a class="ulink" href="https://pub.fsa.gov.ru/rds/declaration" target="_blank" rel="noopener">pub.fsa.gov.ru</a></p>
+      <Hook icon="file-check" title="Нужен документ для закупки или проверки?" sub="Пришлём на почту в течение рабочего дня" btn="Запросить документы" />
+    </div>
+  </section>
+  <div class="sec-end"></div>
+  <SiteFooter slot="footer" />
+</HomeLayout>

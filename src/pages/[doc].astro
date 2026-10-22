@@ -1,0 +1,37 @@
+---
+// Правовые документы (подвал → «Документы»): один шаблон, тексты — src/lib/legal.ts.
+import HomeLayout from '../layouts/HomeLayout.astro';
+import PageHero from '../components/site/PageHero.astro';
+import SiteFooter from '../components/site/SiteFooter.astro';
+import Icon from '../components/home/Icon.astro';
+import { LEGAL_DOCS, legalHref, type LegalDoc } from '../lib/legal';
+
+export function getStaticPaths() {
+  return LEGAL_DOCS.map((d) => ({ params: { doc: d.slug }, props: { doc: d } }));
+}
+const { doc } = Astro.props as { doc: LegalDoc };
+const others = LEGAL_DOCS.filter((d) => d.slug !== doc.slug);
+---
+<HomeLayout title={doc.title} description={doc.description}>
+  <PageHero h1={doc.title} sub={doc.sub} crumbs={[{ href: '/', label: 'Главная' }, { label: doc.title }]} />
+  <section class="sec sec-first" aria-label="Текст документа">
+    <div class="wrap legal">
+      <article class="card-w prose-d policy">
+        {doc.sections.map(([h, ps]) => (
+          <section>
+            <h2 class="h3">{h}</h2>
+            {ps.map((t) => <p>{t}</p>)}
+          </section>
+        ))}
+      </article>
+      <aside class="card-w links legal-nav" aria-label="Другие документы">
+        <p class="links-h">Другие документы</p>
+        {others.map((d) => <a href={legalHref(d.slug)}>{d.title}<Icon name="chevron-right" size={18} /></a>)}
+        <a href="/sertifikaty/">Сертификаты и декларации на бетон<Icon name="chevron-right" size={18} /></a>
+        <a href="/kontakty/#rekvizity">Реквизиты<Icon name="chevron-right" size={18} /></a>
+      </aside>
+    </div>
+  </section>
+  <div class="sec-end"></div>
+  <SiteFooter slot="footer" />
+</HomeLayout>

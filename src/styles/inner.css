@@ -520,3 +520,9 @@ a.objc:hover { box-shadow: 0 6px 20px rgba(28, 36, 56, .1); }
   .post-cover { height: 240px; min-height: 0; }
   .tips-3 { grid-template-columns: minmax(0, 1fr); }
 }
+/* Правовые документы: текст слева, список документов справа */
+.legal { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 20px; align-items: start; }
+.legal .policy { max-width: none; }
+.legal-nav { position: sticky; top: 100px; }
+@media (max-width: 1080px) { .legal { grid-template-columns: minmax(0, 1fr); } .legal-nav { position: static; } }
+.cert-note { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 18px 20px; }
