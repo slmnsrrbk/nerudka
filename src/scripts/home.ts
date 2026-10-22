@@ -314,6 +314,41 @@ if (price) {
     closeOverlay($('[data-overlay="price-kinds"]'));
     $<HTMLElement>(`[data-price-tab="${CSS.escape(b.dataset.pickKind!)}"]`, price)?.click();
   }));
+  // Каталог: фильтры по параметрам позиций. Внутри группы — «или», между группами — «и».
+  const pf = $<HTMLFormElement>('[data-pfilter]', price);
+  if (pf) {
+    const rows = $$('.prow[data-f]', price);
+    const panes = $$('[data-price-pane]', price);
+    const count = $('[data-pf-count]', price);
+    const baseNote = count?.textContent ?? '';
+    const apply = () => {
+      const sel = new Map<string, string[]>();
+      $$<HTMLInputElement>('input:checked', pf).forEach((i) => sel.set(i.name, [...(sel.get(i.name) ?? []), `${i.name}:${i.value}`]));
+      let n = 0;
+      rows.forEach((r) => {
+        const f = (r.dataset.f || '').split('|');
+        const ok = [...sel.values()].every((vals) => vals.some((v) => f.includes(v)));
+        r.hidden = !ok;
+        if (ok) n += r.querySelectorAll('.pcell:not(.pcell-none)').length;
+      });
+      panes.forEach((p) => (p.hidden = !$$('.prow[data-f]', p).some((r) => !r.hidden)));
+      $$('[data-pf-reset]', price).forEach((b) => (b.hidden = !sel.size && b.closest('form') !== null));
+      $('[data-pf-empty]', price)!.hidden = n > 0;
+      if (count) count.textContent = sel.size ? `Найдено: ${n} ${pl(n, 'позиция', 'позиции', 'позиций')}` : baseNote;
+    };
+    pf.addEventListener('change', apply);
+    // Телефон: окно фильтров снизу.
+    const back = $('.pf-back', price);
+    const sum = $('[data-pf-sum]', price);
+    const sheet = (open: boolean) => { if (pf.classList.contains('open') === open) return; pf.classList.toggle('open', open); if (back) back.hidden = !open; lock(open); };
+    $('[data-pf-open]', price)?.addEventListener('click', () => sheet(true));
+    $$('[data-pf-close]', price).forEach((b) => b.addEventListener('click', () => sheet(false)));
+    pf.addEventListener('change', () => {
+      const n = $$('input:checked', pf).length;
+      if (sum) sum.textContent = n ? `Выбрано: ${n}` : sum.dataset.pfDefault!;
+    });
+    $$('[data-pf-reset]', price).forEach((b) => b.addEventListener('click', () => { pf.reset(); apply(); if (sum) sum.textContent = sum.dataset.pfDefault!; }));
+  }
   // Страница /price/: вид продукции из адреса (#kladochnyj-rastvor) открывается сразу.
   const fromHash = decodeURIComponent(location.hash.slice(1));
   const hashTab = fromHash && $<HTMLElement>(`[data-price-tab="${CSS.escape(fromHash)}"]`, price);
@@ -381,35 +416,6 @@ if (buy) {
     $$('[data-preset]', buy).forEach((b) => b.classList.toggle('on', Number(b.dataset.preset) === q));
   };
   buy.addEventListener('qty', (e) => upd((e as CustomEvent<number>).detail));
-}
-
-/* ---------- Фильтры списка позиций ---------- */
-const fForm = $<HTMLFormElement>('[data-filter]');
-const fList = $('[data-frows]');
-if (fForm && fList) {
-  const num = (s: string) => parseFloat(s.replace(/\s/g, '').replace(',', '.'));
-  const apply = () => {
-    const fd = new FormData(fForm);
-    const sel: Record<string, string[]> = {};
-    for (const [k, v] of fd.entries()) if (!['pmin', 'pmax'].includes(k)) (sel[k] ||= []).push(String(v));
-    const lo = num(String(fd.get('pmin') || '')) || 0;
-    const hi = num(String(fd.get('pmax') || '')) || Infinity;
-    let n = 0;
-    $$('[data-frow]', fList).forEach((r) => {
-      const ok = Object.entries(sel).every(([k, vs]) => vs.includes(r.dataset[`f${k[0].toUpperCase()}${k.slice(1)}`] ?? ''))
-        && Number(r.dataset.fPrice) >= lo && Number(r.dataset.fPrice) <= hi;
-      r.hidden = !ok;
-      if (ok) n++;
-    });
-    $$('[data-fgroup]', fList).forEach((g) => (g.hidden = !$$('[data-frow]:not([hidden])', g).length));
-    $('[data-fempty]', fList)!.hidden = n > 0;
-    const total = $('[data-ftotal]');
-    if (total) total.textContent = `Подходят ${n} ${pl(n, 'позиция', 'позиции', 'позиций')}`;
-    $('[data-fcount]', fForm)!.textContent = `Показано ${n}`;
-  };
-  fForm.addEventListener('change', apply);
-  fForm.addEventListener('input', (e) => { if ((e.target as HTMLInputElement).name?.startsWith('p')) apply(); });
-  fForm.addEventListener('reset', () => setTimeout(apply));
 }
 
 /* ---------- Мегаменю ---------- */

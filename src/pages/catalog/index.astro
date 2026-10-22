@@ -7,7 +7,8 @@ import PopularBlock from '../../components/site/PopularBlock.astro';
 import SiteFooter from '../../components/site/SiteFooter.astro';
 import Hook from '../../components/home/Hook.astro';
 import Icon from '../../components/home/Icon.astro';
-import { products, childCategories, categoryPath, minPrice, fmt, plural, typeCards, linkCloud, SERVICE_GROUPS, gradeHref, classHref, betonGrades, betonClasses, getCategory } from '../../lib/inner';
+import { products, childCategories, categoryPath, minPrice, fmt, plural, typeCards, linkCloud, SERVICE_GROUPS, gradeHref, classHref, betonGrades, betonClasses, getCategory, CATALOG_SUB } from '../../lib/inner';
+import PriceSection from '../../components/site/PriceSection.astro';
 import { site } from '../../lib/home-site';
 
 const count = (root: string) => {
@@ -29,9 +30,10 @@ const often = ['М200', 'М300', 'М350', 'B25', 'Для фундамента', 
 const nav = [['beton', 'Бетон', 'layers'], ['rastvor', 'Растворы и смеси', 'package'], ['uslugi', 'Услуги', 'truck']];
 ---
 <HomeLayout title="Каталог бетонной продукции — бетон и растворы от производителя" description="Каталог бетона и растворов: марки, классы, виды, заполнитель и назначение. Единый прайс шести РБУ, бетон от 3 990 ₽ за м³.">
-  <PageHero h1="Каталог бетонной продукции" price="Бетон от 3 990 ₽ за м³" sub="Завод-производитель · 6 РБУ · Доставка в день заказа" crumbs={[{ href: '/', label: 'Главная' }, { label: 'Каталог' }]} />
+  <PageHero h1="Каталог бетонной продукции" sub={CATALOG_SUB} crumbs={[{ href: '/', label: 'Главная' }, { label: 'Каталог' }]} form formTopic="Расчёт по каталогу" />
+  <PriceSection head={false} />
 
-  <section class="sec sec-first" aria-label="Поиск по каталогу">
+  <section class="sec sec-tight" aria-label="Поиск по каталогу">
     <div class="wrap">
       <form class="csearch card-w" action="/poisk/" method="get" role="search">
         <div class="csearch-row">

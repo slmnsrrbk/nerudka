@@ -1,8 +1,0 @@
----
-// Все виды продукции сразу — открытым списком ссылок (правки заказчика: без «Ещё 7 видов»).
-interface Props { items: { label: string; href: string; on?: boolean }[] }
-const { items } = Astro.props;
----
-<nav class="wrap tchips" aria-label="Виды продукции">
-  {items.map((c) => <a class:list={['tchip', { on: c.on }]} href={c.href} aria-current={c.on ? 'page' : undefined}>{c.label}</a>)}
-</nav>

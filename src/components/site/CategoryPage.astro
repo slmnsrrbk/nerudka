@@ -2,8 +2,7 @@
 // Страница категории (Figma «Бетон · десктоп» 291:23937 с правками заказчика):
 // шапка с формой и оффером, все виды открыто, прайс на всю ширину, заводы, «Из чего цена», калькулятор, подбор, популярное, вопросы, SEO.
 import PageHero from './PageHero.astro';
-import TypeChips from './TypeChips.astro';
-import PriceTable from './PriceTable.astro';
+import PriceSection from './PriceSection.astro';
 import PlantsSection from './PlantsSection.astro';
 import HonestSection from './HonestSection.astro';
 import CalcSection from './CalcSection.astro';
@@ -12,30 +11,20 @@ import PopularBlock from './PopularBlock.astro';
 import FaqSection from './FaqSection.astro';
 import SeoSection from './SeoSection.astro';
 import { priceTabs } from '../../lib/home';
-import { products, productsOfCategory, childCategories, getCategory, categoryPath, minPrice, fmt, plural, crumbsFor } from '../../lib/inner';
+import { products, productsOfCategory, childCategories, getCategory, categoryPath, minPrice, fmt, plural, crumbsFor, CATALOG_SUB } from '../../lib/inner';
 import type { Category } from '../../lib/types';
 interface Props { category: Category }
 const { category: cat } = Astro.props;
 const root = cat.parent ? getCategory(cat.parent)! : cat;
 const tabs = priceTabs().filter((t) => t.group === root.slug);
 const groups = cat.parent ? tabs.filter((t) => t.slug === cat.slug) : tabs;
-const items = productsOfCategory(cat.slug);
+const items = cat.parent ? productsOfCategory(cat.slug) : groups.flatMap((t) => productsOfCategory(t.slug));
 const rootItems = productsOfCategory(root.slug);
-const kids = childCategories(root.slug).map((c) => ({ c, n: products.filter((p) => p.category === c.slug).length })).filter((x) => x.n);
-const chips = [{ label: `Все виды · ${rootItems.length}`, href: categoryPath(root), on: !cat.parent }, ...kids.map(({ c, n }) => ({ label: `${c.name.replace(/ бетон$/, '')} · ${n}`, href: categoryPath(c), on: c.slug === cat.slug }))];
-// Оффер по правкам заказчика: для бетона — «от 3 990 ₽ за м³», для остальных — минимальная цена раздела.
-const price = cat.slug === 'beton' ? 'от 3 990 ₽ за м³' : `от ${fmt(minPrice(items))} ₽ за м³`;
 const formItems = (cat.parent ? items : products.filter((p) => p.category === (root.slug === 'beton' ? 'tovarnyj' : 'cpr'))).map((p) => ({ id: p.id, label: p.name.replace('Бетон ', '') }));
 const sel = formItems.find((o) => o.id === 'beton-m300-gravij')?.id ?? formItems[0]?.id;
 ---
-<PageHero h1={cat.name} price={price} sub="Завод-производитель · 6 РБУ · Доставка в день заказа" crumbs={crumbsFor(cat)} form formSelected={sel} formOptions={formItems} formTopic={`Расчёт цены: ${cat.name}`} />
-<TypeChips items={chips} />
-<section class="sec sec-first" id="price" aria-label={`Цены: ${cat.name}`}>
-  <div class="wrap">
-    {cat.parent && cat.lead && <p class="cat-lead">{cat.lead}</p>}
-    <PriceTable groups={groups} heads={!cat.parent} open={cat.parent ? 1 : 2} />
-  </div>
-</section>
+<PageHero h1={cat.name} sub={CATALOG_SUB} crumbs={crumbsFor(cat)} form formSelected={sel} formOptions={formItems} formTopic={`Расчёт цены: ${cat.name}`} />
+<PriceSection head={false} links active={categoryPath(cat)} panes={groups} title={{ name: cat.name, note: `${items.length} ${plural(items.length, 'позиция', 'позиции', 'позиций')} · ${groups.length} ${plural(groups.length, 'вид', 'вида', 'видов')}` }} />
 <PlantsSection />
 <HonestSection />
 <CalcSection />

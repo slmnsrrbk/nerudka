@@ -9,11 +9,10 @@ let bad = 0;
 const ok = (cond, name, extra = '') => { if (!cond) bad++; console.log(`${cond ? 'OK ' : 'BAD'} ${name}${extra ? ` — ${extra}` : ''}`); };
 const go = (path) => p.goto(base + path, { waitUntil: 'load' });
 
-// Категория: «Показать ещё» открывает остальные группы
+// Категория: тот же блок прайса, что на /price/; виды слева — ссылки, справа — все виды раздела
 await go('/catalog/beton/');
-const hidden0 = await p.locator('[data-pgroup][hidden]').count();
-await p.click('[data-pmore]');
-ok(hidden0 > 0 && (await p.locator('[data-pgroup][hidden]').count()) === 0, 'категория: «Показать ещё» раскрывает прайс', `скрыто было ${hidden0}`);
+ok((await p.locator('#price [data-price-pane]:visible').count()) > 5, 'категория: позиции всех видов бетона');
+ok((await p.locator('.price-nav a.kind.on').textContent()).includes('Все виды'), 'категория: в меню слева выделено «Все виды»');
 
 // Позиция: пресет 50 м³ → сумма со скидкой 10 %
 await go('/catalog/beton/tovarnyj/beton-m300-gravij/');
@@ -23,16 +22,17 @@ ok(total.replace(/\D/g, '') === String(Math.round(5260 * 50 * 0.9)), 'позиц
 await p.click('[data-buy] [data-add]');
 ok((await p.textContent('[data-cart-count]')) === '1', 'позиция: «В корзину» — бейдж 1');
 
-// Назначение: фильтр по заполнителю
-await go('/beton/dlya-fundament/');
-const all = await p.locator('[data-frow]:visible').count();
-await p.locator('.fcheck', { hasText: 'Гравий' }).click();
-const grav = await p.locator('[data-frow]:visible').count();
-const txt = await p.textContent('[data-ftotal]');
-ok(grav > 0 && grav < all && txt.includes(String(grav)), 'назначение: фильтр «Гравий»', `${all} → ${grav}, «${txt}»`);
-await p.click('[data-freset]');
+// Вид: фильтр по плотности и «Сбросить»
+await go('/catalog/beton/keramzitobeton/');
+const rows = () => p.locator('#price .prow[data-f]:visible').count();
+const all = await rows();
+await p.locator('[data-pfilter] .pf-i', { hasText: 'D1200' }).click();
+const one = await rows();
+const txt = await p.textContent('[data-pf-count]');
+ok(one > 0 && one < all && txt.includes(String(one)), 'вид: фильтр «D1200»', `${all} → ${one}, «${txt}»`);
+await p.click('[data-pfilter] [data-pf-reset]');
 await p.waitForTimeout(50);
-ok((await p.locator('[data-frow]:visible').count()) === all, 'назначение: «Сбросить» возвращает все');
+ok((await rows()) === all, 'вид: «Сбросить» возвращает все');
 
 // Поиск: результаты, вкладки, «Показать ещё»
 await go('/poisk/?q=' + encodeURIComponent('м300'));

@@ -1,12 +1,12 @@
 // Данные итоговой главной (дизайн «3», П8 после правок заказчика).
 import { categories, products, childCategories, productPath, categoryPath, minPrice } from './catalog';
-import type { Product } from './types';
+import type { Category, Product } from './types';
 
 export const fmt = (n: number) => n.toLocaleString('ru-RU').replace(/ /g, ' ');
 export const rub = (n: number) => `${fmt(n)} ₽`;
 
 export type PriceCell = { id: string; price: number; href: string; name: string };
-export type PriceRow = { title: string; sub: string; cells: (PriceCell | null)[] };
+export type PriceRow = { title: string; sub: string; cells: (PriceCell | null)[]; f?: string };
 export type PriceTab = {
   slug: string; name: string; group: 'beton' | 'rastvor'; min: number; count: number;
   note: string; columns: string[]; rows: PriceRow[]; href: string;
@@ -20,40 +20,63 @@ function sub(p: Product): string {
 
 const gradeOrder = (g: string) => parseInt(g.replace(/\D/g, ''), 10) || 0;
 
+/** Признаки строки прайса для фильтров каталога: «группа:значение» через «|». */
+const rowFilter = (list: Product[]) => [...new Set(list.flatMap((p) => [
+  p.filler && `filler:${p.filler}`, p.density && `density:${p.density}`, p.mobility && `mob:${p.mobility}`,
+  p.frost && `frost:${p.frost}`, p.water && `water:${p.water}`,
+].filter(Boolean) as string[]))].join('|');
+
+/** Вкладка прайса для вида продукции; items — все позиции вида или только отобранные (марка, класс, назначение). */
+export function buildTab(cat: Category, items: Product[], group: 'beton' | 'rastvor'): PriceTab {
+  const fillers = new Set(items.map((p) => p.filler));
+  const two = fillers.has('гравий') && fillers.has('гранит');
+  const gost = [...new Set(items.map((p) => p.gost).filter(Boolean))][0] ?? '';
+  const mob = [...new Set(items.map((p) => p.mobility).filter(Boolean))];
+  let rows: PriceRow[];
+  if (two) {
+    const grades = [...new Set(items.map((p) => p.grade))].sort((a, b) => gradeOrder(a) - gradeOrder(b));
+    rows = grades.map((g) => {
+      const gr = items.find((p) => p.grade === g && p.filler === 'гравий');
+      const gn = items.find((p) => p.grade === g && p.filler === 'гранит');
+      const any = (gr ?? gn)!;
+      const base = cat.name.replace(/ бетон$/, '');
+      return {
+        title: cat.slug === 'tovarnyj' ? `Бетон ${g}` : `${base} ${g}`,
+        sub: [any.class || any.density, any.mobility].filter(Boolean).join(' · '),
+        cells: [gr ? cell(gr) : null, gn ? cell(gn) : null],
+        f: rowFilter([gr, gn].filter(Boolean) as Product[]),
+      };
+    });
+  } else {
+    rows = items.slice().sort((a, b) => gradeOrder(a.grade) - gradeOrder(b.grade) || a.price - b.price)
+      .map((p) => ({ title: p.name, sub: sub(p), cells: [cell(p)], f: rowFilter([p]) }));
+  }
+  return {
+    slug: cat.slug, name: cat.name, group, min: minPrice(items), count: items.length,
+    note: [`${items.length} ${plural(items.length, 'позиция', 'позиции', 'позиций')}`, gost, mob.length === 1 ? `подвижность ${mob[0]}` : ''].filter(Boolean).join(' · '),
+    columns: two ? ['На гравии · за м³', 'На граните · за м³'] : ['Цена · за м³'],
+    rows, href: categoryPath(cat),
+  };
+}
+
 export function priceTabs(): PriceTab[] {
   const tabs: PriceTab[] = [];
   for (const group of ['beton', 'rastvor'] as const) {
     for (const cat of childCategories(group)) {
       const items = products.filter((p) => p.category === cat.slug);
-      if (!items.length) continue;
-      const fillers = new Set(items.map((p) => p.filler));
-      const two = fillers.has('гравий') && fillers.has('гранит');
-      const gost = [...new Set(items.map((p) => p.gost).filter(Boolean))][0] ?? '';
-      const mob = [...new Set(items.map((p) => p.mobility).filter(Boolean))];
-      let rows: PriceRow[];
-      if (two) {
-        const grades = [...new Set(items.map((p) => p.grade))].sort((a, b) => gradeOrder(a) - gradeOrder(b));
-        rows = grades.map((g) => {
-          const gr = items.find((p) => p.grade === g && p.filler === 'гравий');
-          const gn = items.find((p) => p.grade === g && p.filler === 'гранит');
-          const any = (gr ?? gn)!;
-          const base = cat.name.replace(/ бетон$/, '');
-          return {
-            title: cat.slug === 'tovarnyj' ? `Бетон ${g}` : `${base} ${g}`,
-            sub: [any.class || any.density, any.mobility].filter(Boolean).join(' · '),
-            cells: [gr ? cell(gr) : null, gn ? cell(gn) : null],
-          };
-        });
-      } else {
-        rows = items.slice().sort((a, b) => gradeOrder(a.grade) - gradeOrder(b.grade) || a.price - b.price)
-          .map((p) => ({ title: p.name, sub: sub(p), cells: [cell(p)] }));
-      }
-      tabs.push({
-        slug: cat.slug, name: cat.name, group, min: minPrice(items), count: items.length,
-        note: [`${items.length} ${plural(items.length, 'позиция', 'позиции', 'позиций')}`, gost, mob.length === 1 ? `подвижность ${mob[0]}` : ''].filter(Boolean).join(' · '),
-        columns: two ? ['На гравии · за м³', 'На граните · за м³'] : ['Цена · за м³'],
-        rows, href: categoryPath(cat),
-      });
+      if (items.length) tabs.push(buildTab(cat, items, group));
+    }
+  }
+  return tabs;
+}
+
+/** Вкладки по произвольному набору позиций (страницы марки, класса, назначения): по видам, в порядке каталога. */
+export function tabsForItems(items: Product[]): PriceTab[] {
+  const tabs: PriceTab[] = [];
+  for (const group of ['beton', 'rastvor'] as const) {
+    for (const cat of childCategories(group)) {
+      const list = items.filter((p) => p.category === cat.slug);
+      if (list.length) tabs.push(buildTab(cat, list, group));
     }
   }
   return tabs;
