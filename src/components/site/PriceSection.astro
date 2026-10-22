@@ -9,7 +9,7 @@ import Icon from '../home/Icon.astro';
 import SectionHead from '../home/SectionHead.astro';
 import { priceTabs, rub, PLANTS, fmt, plural, type PriceTab } from '../../lib/home';
 interface Props { head?: boolean; links?: boolean; active?: string; panes?: PriceTab[]; title?: { name: string; note: string }; filters?: boolean }
-const { head = true, links = false, active = 'tovarnyj', panes, title, filters = links } = Astro.props;
+const { head = true, links = false, active = 'tovarnyj', panes, title, filters = true } = Astro.props;
 const tabs = priceTabs();
 const betonTabs = tabs.filter((t) => t.group === 'beton');
 const mortarTabs = tabs.filter((t) => t.group === 'rastvor');
@@ -22,14 +22,20 @@ const groupHref = { 'Бетон': '/catalog/beton/', 'Растворы и сме
 // Фильтры: только параметры, у которых на странице больше одного значения.
 const FGROUPS: [string, string][] = [['filler', 'Заполнитель'], ['density', 'Плотность'], ['mob', 'Подвижность'], ['frost', 'Морозостойкость'], ['water', 'Водонепроницаемость']];
 const num = (v: string) => parseFloat(v.replace(/\D+/g, '')) || 0;
-const fvals = new Map<string, Set<string>>();
+// На главной и /price/ вкладки переключаются без перезагрузки — у каждого значения список вкладок, где оно есть;
+// скрипт показывает только значения активной вкладки.
+const fvals = new Map<string, Map<string, Set<string>>>();
 for (const t of shown) for (const r of t.rows) for (const kv of (r.f ?? '').split('|').filter(Boolean)) {
   const [k, v] = kv.split(':');
   if (k === 'filler' && t.columns.length > 1) continue; // гравий и гранит уже разнесены по колонкам
-  if (!fvals.has(k)) fvals.set(k, new Set());
-  fvals.get(k)!.add(v);
+  if (!fvals.has(k)) fvals.set(k, new Map());
+  if (!fvals.get(k)!.has(v)) fvals.get(k)!.set(v, new Set());
+  fvals.get(k)!.get(v)!.add(t.slug);
 }
-const fgroups = filters ? FGROUPS.map(([k, label]) => ({ k, label, vals: [...(fvals.get(k) ?? [])].sort((a, b) => num(a) - num(b) || a.localeCompare(b)) })).filter((g) => g.vals.length > 1) : [];
+const perTab = (k: string) => Math.max(0, ...shown.map((t) => [...(fvals.get(k)?.values() ?? [])].filter((s) => s.has(t.slug)).length));
+const fgroups = filters ? FGROUPS.map(([k, label]) => ({ k, label, vals: [...(fvals.get(k)?.entries() ?? [])].sort(([a], [b]) => num(a) - num(b) || a.localeCompare(b)).map(([v, set]) => ({ v, tabs: [...set].join(' ') })) }))
+  .filter((g) => (links ? g.vals.length : perTab(g.k)) > 1) : [];
+const head0 = links ? { name: title?.name ?? shown[0]?.name, note: title?.note ?? shown[0]?.note } : { name: shown.find((t) => t.slug === active)?.name, note: shown.find((t) => t.slug === active)?.note };
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 ---
 <section class:list={['sec', { 'sec-first': !head }]} id="price" aria-labelledby={head ? 'price-h' : undefined} aria-label={head ? undefined : 'Прайс-лист'}>
@@ -82,9 +88,9 @@ const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
         <div class="card price-panel">
           <div class="price-top">
             <!-- Заголовок панели и кнопка «Фильтры»: фильтры раскрываются карточкой под кнопкой, на телефоне — окном снизу. -->
-            {links && (
+            {(
               <div class="ptab-h ptab-h-top">
-                <div><h3 class="h3 h3-l">{title?.name ?? shown[0]?.name}</h3><p class="small muted" data-pf-count>{title?.note ?? shown[0]?.note}</p></div>
+                <div><h3 class="h3 h3-l" data-ph-name>{head0.name}</h3><p class="small muted" data-pf-count>{head0.note}</p></div>
                 {fgroups.length > 0 && (
                   <div class="pf-wrap" data-pf-wrap>
                     <button type="button" class="pf-btn" data-pf-open aria-expanded="false" aria-controls="pfilter"><Icon name="sliders" size={18} />Фильтры<span class="pf-n" data-pf-n hidden>0</span><Icon name="chevron-down" size={16} class="pf-ch" /></button>
@@ -95,8 +101,8 @@ const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
                         <fieldset class="pf-g">
                           <legend class="kicker">{g.label}</legend>
                           <div class="pf-list">
-                            {g.vals.map((v) => (
-                              <label class="pf-i"><input type="checkbox" name={g.k} value={v} /><span>{g.k === 'filler' ? cap(v) : v}</span></label>
+                            {g.vals.map(({ v, tabs: in_ }) => (
+                              <label class="pf-i" data-pf-tabs={in_}><input type="checkbox" name={g.k} value={v} /><span>{g.k === 'filler' ? cap(v) : v}</span></label>
                             ))}
                           </div>
                         </fieldset>
@@ -108,9 +114,9 @@ const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
               </div>
             )}
             {shown.map((t, ti) => (
-              <div class:list={['ptab', { 'ptab-sub': many }]} data-price-pane={t.slug} role={links ? undefined : 'tabpanel'} hidden={!links && t.slug !== active}>
+              <div class:list={['ptab', { 'ptab-sub': many }]} data-price-pane={t.slug} data-name={t.name} data-note={t.note} role={links ? undefined : 'tabpanel'} hidden={!links && t.slug !== active}>
                 {many && <div class="ptab-h"><div><h4 class="h3"><a href={t.href}>{t.name}</a></h4><p class="small muted">{t.note}</p></div></div>}
-                {!links && <div class="ptab-h"><div><h3 class="h3 h3-l">{t.name}</h3><p class="small muted">{t.note}</p></div></div>}
+                {!links && <div class="ptab-h ptab-h-print"><div><h3 class="h3 h3-l">{t.name}</h3><p class="small muted">{t.note}</p></div></div>}
                 <div class:list={['prow', 'prow-head', { two: t.columns.length > 1 }]}>
                   <span>Марка</span>{t.columns.map((c) => <span>{c}</span>)}
                 </div>

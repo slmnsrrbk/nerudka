@@ -209,6 +209,7 @@ ul, ol { list-style: none; }
 .ptab-sub h4 a { transition: color .3s var(--ease); }
 .ptab-sub h4 a:hover { color: var(--sub); }
 .pf-empty { padding: 20px; font-size: 15px; }
+.ptab-h.ptab-h-print, .pf-wrap[hidden], .pf-i[hidden], .pf-g[hidden] { display: none; }
 
 /* Фильтры каталога: кнопка справа в заголовке панели, карточка-поповер под ней */
 .pf-wrap { position: relative; flex: none; }
@@ -866,7 +867,9 @@ ul, ol { list-style: none; }
 }
 /* Печать прайса в PDF («Скачать прайс PDF» на /price/): все виды продукции подряд, без меню, форм и подвала. */
 @media print {
-  .phero, .crumbs, .foot, #popular, #uslugi, .price-nav, .banner, [data-print], .pact, .sec-end { display: none !important; }
+  .phero, .crumbs, .foot, #popular, #uslugi, .price-nav, .price-side, .ptab-h-top, .pf-empty, .banner, [data-print], .pact, .sec-end { display: none !important; }
+  .ptab-h-print { display: flex !important; }
+  .prow[hidden] { display: grid !important; }
   .price { display: block !important; }
   .price-panel { background: none !important; }
   [data-price-pane][hidden] { display: block !important; }

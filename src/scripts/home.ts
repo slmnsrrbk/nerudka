@@ -303,6 +303,7 @@ if (price) {
       if (pv) pv.textContent = $('span', tab)!.textContent;
       $$('[data-pick-kind]').forEach((b) => { const on = b.dataset.pickKind === slug; b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); });
       $$('[data-price-pane]', price).forEach((p) => (p.hidden = p.dataset.pricePane !== slug));
+      price.dispatchEvent(new CustomEvent('price-tab', { detail: slug }));
       tab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
       if (mq('(max-width: 1080px)')) $('.price-panel', price)!.scrollIntoView({ block: 'start', behavior: 'smooth' });
       return;
@@ -316,26 +317,43 @@ if (price) {
   }));
   // Каталог: фильтры по параметрам позиций. Внутри группы — «или», между группами — «и».
   const pf = $<HTMLFormElement>('[data-pfilter]', price);
+  const tabsMode = price.dataset.priceMode === 'tabs';
   if (pf) {
     const rows = $$('.prow[data-f]', price);
     const panes = $$('[data-price-pane]', price);
     const count = $('[data-pf-count]', price);
-    const baseNote = count?.textContent ?? '';
+    let baseNote = count?.textContent ?? '';
     const apply = () => {
       const sel = new Map<string, string[]>();
       $$<HTMLInputElement>('input:checked', pf).forEach((i) => sel.set(i.name, [...(sel.get(i.name) ?? []), `${i.name}:${i.value}`]));
-      let n = 0;
       rows.forEach((r) => {
         const f = (r.dataset.f || '').split('|');
-        const ok = [...sel.values()].every((vals) => vals.some((v) => f.includes(v)));
-        r.hidden = !ok;
-        if (ok) n += r.querySelectorAll('.pcell:not(.pcell-none)').length;
+        r.hidden = ![...sel.values()].every((vals) => vals.some((v) => f.includes(v)));
       });
-      panes.forEach((p) => (p.hidden = !$$('.prow[data-f]', p).some((r) => !r.hidden)));
+      // Каталог: вид без подходящих позиций скрывается целиком; на главной и /price/ видна только активная вкладка.
+      if (!tabsMode) panes.forEach((p) => (p.hidden = !$$('.prow[data-f]', p).some((r) => !r.hidden)));
+      let n = 0;
+      panes.filter((p) => !p.hidden).forEach((p) => $$('.prow[data-f]', p).forEach((r) => { if (!r.hidden) n += r.querySelectorAll('.pcell:not(.pcell-none)').length; }));
       $$('[data-pf-reset]', price).forEach((b) => (b.hidden = !sel.size && b.closest('form') !== null));
       $('[data-pf-empty]', price)!.hidden = n > 0;
       if (count) count.textContent = sel.size ? `Найдено: ${n} ${pl(n, 'позиция', 'позиции', 'позиций')}` : baseNote;
     };
+    // Вкладки: в фильтрах — только значения активного вида; группа с одним значением прячется.
+    const syncTab = (slug: string) => {
+      pf.reset();
+      $$<HTMLElement>('[data-pf-tabs]', pf).forEach((c) => (c.hidden = !c.dataset.pfTabs!.split(' ').includes(slug)));
+      let any = false;
+      $$('.pf-g', pf).forEach((g) => { const vis = $$<HTMLElement>('[data-pf-tabs]', g).filter((c) => !c.hidden).length; g.hidden = vis < 2; any ||= vis >= 2; });
+      $('[data-pf-wrap]', price)!.hidden = !any;
+      const pane = panes.find((p) => p.dataset.pricePane === slug);
+      if (pane) { $('[data-ph-name]', price)!.textContent = pane.dataset.name!; baseNote = pane.dataset.note!; }
+      apply();
+      $('[data-pf-n]', price)!.hidden = true;
+    };
+    if (tabsMode) {
+      price.addEventListener('price-tab', (e) => syncTab((e as CustomEvent<string>).detail));
+      syncTab($<HTMLElement>('[data-price-tab].on', price)?.dataset.priceTab ?? panes[0].dataset.pricePane!);
+    }
     pf.addEventListener('change', apply);
     // Кнопка «Фильтры»: на десктопе — карточка под кнопкой, на телефоне — окно снизу (с блокировкой прокрутки).
     const btn = $('[data-pf-open]', price)!;
