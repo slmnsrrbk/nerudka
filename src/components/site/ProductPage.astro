@@ -68,21 +68,25 @@ const sub = [p.gost, p.mobility, p.frost, p.water, p.fraction && `щебень $
     </div>
   </div>
 </section>
-<section class="sec sec-tight" id="opisanie" aria-labelledby="desc-h">
+<!-- Описание и характеристики — два таба без меток раздела (правки заказчика). Оба текста есть в HTML, скрыт только неактивный. -->
+<section class="sec sec-tight" id="opisanie" aria-label="Описание и характеристики" data-ptabs>
   <div class="wrap">
-    <SectionHead id="desc-h" label="Описание" title="Описание" sub={title} />
-    <div class="card-w prose-d">{desc.map((t) => <p>{t}</p>)}</div>
-  </div>
-</section>
-<section class="sec sec-tight" id="specs" aria-labelledby="specs-h">
-  <div class="wrap">
-    <SectionHead id="specs-h" label="Характеристики" title="Характеристики" sub="и применение" desc="Параметры смеси по паспорту качества. Нужен другой состав — подберём под задачу." />
-    <div class="specs">
-      <dl class="card-w spec-t">{specs.map(([a, b]) => <div><dt>{a}</dt><dd>{b}</dd></div>)}</dl>
-      <div class="spec-side">
-        {used.length > 0 && <div class="card-w links"><p class="links-h">Подходит для</p>{used.map((u) => <a href={`/beton/dlya-${u.slug}/`}>{u.h1.replace('Бетон для ', '').replace(/^./, (c) => c.toUpperCase())}<Icon name="chevron-right" size={16} /></a>)}</div>}
-        {p.note && <p class="note"><Icon name="circle-help" />{p.note}</p>}
+    <div class="ptabs" role="tablist" aria-label="Описание и характеристики">
+      <button type="button" role="tab" class="ptabs-b on" id="pt-desc" aria-selected="true" aria-controls="pp-desc" data-ptab="desc">Описание</button>
+      <button type="button" role="tab" class="ptabs-b" id="pt-specs" aria-selected="false" aria-controls="pp-specs" data-ptab="specs" tabindex="-1">Характеристики</button>
+    </div>
+    <div class="ptabs-pane" id="pp-desc" role="tabpanel" aria-labelledby="pt-desc" data-ptab-pane="desc">
+      <div class="card-w prose-d">{desc.map((t) => <p>{t}</p>)}</div>
+    </div>
+    <div class="ptabs-pane" id="pp-specs" role="tabpanel" aria-labelledby="pt-specs" data-ptab-pane="specs" hidden>
+      <div class="specs">
+        <dl class="card-w spec-t">{specs.map(([a, b]) => <div><dt>{a}</dt><dd>{b}</dd></div>)}</dl>
+        <div class="spec-side">
+          {used.length > 0 && <div class="card-w links"><p class="links-h">Подходит для</p>{used.map((u) => <a href={`/beton/dlya-${u.slug}/`}>{u.h1.replace('Бетон для ', '').replace(/^./, (c) => c.toUpperCase())}<Icon name="chevron-right" size={16} /></a>)}</div>}
+          {p.note && <p class="note"><Icon name="circle-help" />{p.note}</p>}
+        </div>
       </div>
+      <p class="small muted ptabs-note">Параметры смеси по паспорту качества. Нужен другой состав — подберём под задачу.</p>
     </div>
   </div>
 </section>

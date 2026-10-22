@@ -471,6 +471,23 @@ document.addEventListener('keydown', (e) => {
   else closeDrawer();
 });
 
+/* ---------- Карточка товара: табы «Описание / Характеристики» ---------- */
+$$('[data-ptabs]').forEach((box) => {
+  const tabs = $$<HTMLButtonElement>('[data-ptab]', box);
+  const select = (t: HTMLButtonElement) => {
+    tabs.forEach((b) => { const on = b === t; b.classList.toggle('on', on); b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; });
+    $$('[data-ptab-pane]', box).forEach((p) => (p.hidden = p.dataset.ptabPane !== t.dataset.ptab));
+  };
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => select(t));
+    t.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      const n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+      select(n); n.focus();
+    });
+  });
+});
+
 /* ---------- Липкая шапка ---------- */
 const hero = $('[data-hero]');
 const sticky = $('[data-sticky]');

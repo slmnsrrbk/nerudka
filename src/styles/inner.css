@@ -497,3 +497,14 @@ a.objc:hover { box-shadow: 0 6px 20px rgba(28, 36, 56, .1); }
 /* Карточка товара: SEO-описание позиции */
 .prose-d { display: flex; flex-direction: column; gap: 14px; max-width: 960px; padding: 28px 32px; font-size: 16px; line-height: 1.6; }
 @media (max-width: 760px) { .prose-d { padding: 20px 16px; font-size: 15px; } }
+/* Карточка товара: табы «Описание / Характеристики» — крупные, как заголовок раздела */
+.ptabs { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; margin-bottom: 24px; width: fit-content; max-width: 100%; border-radius: 16px; background: var(--card); }
+.ptabs-b { padding: 12px 24px; border-radius: 12px; font-size: 22px; font-weight: 500; letter-spacing: -.01em; color: var(--sub); transition: background .15s, color .15s; }
+.ptabs-b:hover { color: var(--ink); }
+.ptabs-b.on { background: var(--w); color: var(--ink); box-shadow: 0 2px 10px rgba(28, 36, 56, .06); }
+.ptabs-b:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.ptabs-note { margin-top: 16px; }
+@media (max-width: 760px) {
+  .ptabs { width: 100%; }
+  .ptabs-b { flex: 1; padding: 10px 12px; font-size: 17px; }
+}

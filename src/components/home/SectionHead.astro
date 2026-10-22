@@ -1,12 +1,23 @@
 ---
 // Шапка раздела: метка, двухцветный H2, описание справа (компонент «Заголовок раздела» в UI-ките).
 import { site } from '../../lib/home-site';
-interface Props { label: string; title: string; sub?: string; desc?: string; phone?: boolean; id?: string }
-const { label, title, sub, desc, phone = false, id } = Astro.props;
+interface Props { label: string; title: string; sub?: string; desc?: string; phone?: boolean; id?: string; icon?: string }
+const { label, title, sub, desc, phone = false, id, icon } = Astro.props;
+// Иконка метки раздела — Iconly, стиль Light (src/icons/iconly). Подобрана по смыслу метки.
+const ICONS: Record<string, string> = {
+  'Прайс': 'wallet', 'Доставка': 'location', 'Заказ': 'buy', 'Заявка': 'editsquare', 'Калькулятор': 'graph',
+  'Качество': 'shielddone', 'О бетоне': 'infosquare', 'О виде': 'infosquare', 'О компании': '3user', 'Юрлицам': 'work',
+  'Объекты': 'home', 'Описание': 'document', 'Характеристики': 'chart', 'Подбор': 'filter', 'Популярное': 'star',
+  'Похожие': 'bookmark', 'Советы': 'message', 'Вопросы': 'chat', 'Сравнение': 'swap', 'Производство': 'setting',
+  'Заводы': 'setting', 'Узлы': 'setting', 'Услуги': 'bag', 'Честно о цене': 'discount', 'Все разделы': 'category',
+  'График': 'calendar', 'Документы': 'paper',
+};
+const svgs = import.meta.glob('../../icons/iconly/*.svg', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
+const iconBody = svgs[`../../icons/iconly/${icon ?? ICONS[label] ?? 'category'}.svg`];
 ---
 <header class="sh">
   <div class="sh-l">
-    <span class="chip-label">{label}</span>
+    <span class="chip-label">{iconBody && <svg class="chip-ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" set:html={iconBody} />}{label}</span>
     <h2 class="h2" id={id}>{title}{sub && <><br /><span class="h2-sub">{sub}</span></>}</h2>
   </div>
   {(desc || phone) && (

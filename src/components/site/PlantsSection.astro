@@ -29,6 +29,8 @@ const {
               <div class="slides" data-track>
                 {p.photos.map((ph, k) => <img src={img(ph, 560)} alt={`РБУ ${p.n}, фото ${k + 1}`} width="560" height="560" loading="lazy" decoding="async" />)}
               </div>
+              <button type="button" class="sl-btn sl-prev" data-prev aria-label={`РБУ ${p.n}: предыдущее фото`}><Icon name="chevron-left" size={20} /></button>
+              <button type="button" class="sl-btn sl-next" data-next aria-label={`РБУ ${p.n}: следующее фото`}><Icon name="chevron-right" size={20} /></button>
               <span class="badge-dark">РБУ {p.n}</span>
               <span class="sl-count"><Icon name="images" size={14} /><b data-cur>1</b> / {p.photos.length}</span>
               <div class="sl-dots" data-dots>{p.photos.map((_, k) => <button type="button" aria-label={`Фото ${k + 1}`} class:list={[{ on: k === 0 }]}></button>)}</div>
