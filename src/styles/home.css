@@ -726,17 +726,25 @@ ul, ol { list-style: none; }
 .dd-tick { flex: none; opacity: 0; }
 .dd-o[aria-selected='true'] .dd-tick { opacity: 1; }
 
-/* Форма на фото: стеклянная карточка с обводкой, кнопка белая */
+/* Форма на фото: стеклянная карточка с обводкой; поля без подложки — только белая обводка 20 %,
+   при наведении 50 %, в фокусе 90 %; кнопка белая на всю ширину. */
 .hero-form { border: 1px solid rgba(255, 255, 255, .28); }
-.hero-form .btn-white { --curtain: #E4E9F2; }
+.hero-form .btn-white { --curtain: #E4E9F2; align-self: stretch; width: 100%; }
+.hero-form .fld input, .hero-form .dd-btn { background: transparent; border-color: rgba(255, 255, 255, .2); color: var(--w); transition: border-color .3s var(--ease), box-shadow .3s var(--ease); }
+.hero-form .fld input::placeholder { color: rgba(255, 255, 255, .55); }
+.hero-form .fld input:hover, .hero-form .dd-btn:hover { border-color: rgba(255, 255, 255, .5); }
+.hero-form .fld input:focus, .hero-form .dd-btn:focus-visible, .hero-form .dd.open .dd-btn { border-color: rgba(255, 255, 255, .9); box-shadow: 0 0 0 3px rgba(255, 255, 255, .12); }
+.hero-form .dd-ch { color: rgba(255, 255, 255, .75); }
+.hero-form .fld input.err { border-color: #FF8A84; box-shadow: 0 0 0 3px rgba(255, 138, 132, .2); }
 
 /* ---------- Анимации наведения ---------- */
 /* Текстовые ссылки: линия растёт слева направо при наведении и уходит вправо при уходе курсора. */
-.nav-link, .mega-list a, .acc-list a, .prow-name a, .obj-c h3 a, .foot ul a, .foot-contacts a, .crumbs a, .pgroup-h a, .pcard-n, .prlist-h a, .pcard-more, .post-card-t, .tip-tt {
+/* На карточках (товар, советы, объекты) линии нет — только у текстовых ссылок. */
+.nav-link, .mega-list a, .acc-list a, .prow-name a, .foot ul a, .foot-contacts a, .crumbs a, .pgroup-h a, .prlist-h a {
   background: linear-gradient(currentColor, currentColor) no-repeat 100% 100% / 0 1px;
   transition: background-size .45s var(--ease), color .3s var(--ease), opacity .3s var(--ease);
 }
-.nav-link:hover, .nav-link[aria-expanded='true'], .mega-list a:hover, .acc-list a:hover, .prow-name a:hover, .obj-c h3 a:hover, .foot ul a:hover, .foot-contacts a:hover, .crumbs a:hover, .pgroup-h a:hover, .pcard-n:hover, .prlist-h a:hover, .pcard-more:hover, a.tip:hover .tip-tt, .post-card:hover .post-card-t {
+.nav-link:hover, .nav-link[aria-expanded='true'], .mega-list a:hover, .acc-list a:hover, .prow-name a:hover, .foot ul a:hover, .foot-contacts a:hover, .crumbs a:hover, .pgroup-h a:hover, .prlist-h a:hover {
   background-position: 0 100%; background-size: 100% 1px;
 }
 .nav-link { padding: 4px 0; }
