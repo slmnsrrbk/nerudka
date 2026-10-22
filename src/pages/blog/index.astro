@@ -1,0 +1,21 @@
+---
+// Блог «Советы технолога»: список статей. В основное меню не выводится — ссылки с главной, страниц назначений и из подвала.
+import HomeLayout from '../../layouts/HomeLayout.astro';
+import PageHero from '../../components/site/PageHero.astro';
+import TipCards from '../../components/site/TipCards.astro';
+import PopularBlock from '../../components/site/PopularBlock.astro';
+import SiteFooter from '../../components/site/SiteFooter.astro';
+import Hook from '../../components/home/Hook.astro';
+---
+<HomeLayout title="Советы технолога — статьи о бетоне" description="Короткие статьи технолога: что делать, если не хватило бетона, как принять машину на объекте, как лить зимой, гравий или гранит.">
+  <PageHero h1="Советы технолога" sub="Короткие статьи о заказе, приёмке и заливке бетона" crumbs={[{ href: '/', label: 'Главная' }, { label: 'Советы технолога' }]} />
+  <section class="sec sec-first" aria-label="Статьи">
+    <div class="wrap stack">
+      <TipCards />
+      <Hook icon="flask-conical" title="Нужен совет технолога по вашей конструкции?" sub="Подскажем марку и объём по проекту" btn="Заказать консультацию" />
+    </div>
+  </section>
+  <PopularBlock />
+  <div class="sec-end"></div>
+  <SiteFooter slot="footer" />
+</HomeLayout>

@@ -1,0 +1,22 @@
+---
+// Выпадающий список в стиле проекта вместо системного select: кнопка-поле и всплывающая карточка с вариантами.
+// Значение уходит в форму через скрытое поле name. Логика (мышь, клавиатура, закрытие) — scripts/home.ts, [data-dd].
+import Icon from '../home/Icon.astro';
+interface Props { label: string; name: string; options: string[]; value?: string; light?: boolean }
+const { label, name, options, value = options[0], light = false } = Astro.props;
+const id = `dd-${name}-${Math.random().toString(36).slice(2, 8)}`;
+---
+<div class:list={['fld', { 'fld-w': light }]}>
+  <span id={`${id}-l`}>{label}</span>
+  <div class="dd" data-dd>
+    <input type="hidden" name={name} value={value} data-dd-input />
+    <button type="button" class="dd-btn" aria-haspopup="listbox" aria-expanded="false" aria-labelledby={`${id}-l ${id}-v`} aria-controls={`${id}-list`} data-dd-btn>
+      <span class="dd-v" id={`${id}-v`} data-dd-v>{value}</span><Icon name="chevron-down" size={18} class="dd-ch" />
+    </button>
+    <ul class="dd-list" id={`${id}-list`} role="listbox" tabindex="-1" aria-labelledby={`${id}-l`} data-dd-list hidden>
+      {options.map((o) => (
+        <li class="dd-o" role="option" aria-selected={o === value ? 'true' : 'false'} data-v={o}><span>{o}</span><Icon name="check" size={16} class="dd-tick" /></li>
+      ))}
+    </ul>
+  </div>
+</div>

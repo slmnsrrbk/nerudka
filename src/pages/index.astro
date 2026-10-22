@@ -14,7 +14,8 @@ import FaqSection from '../components/site/FaqSection.astro';
 import SeoSection from '../components/site/SeoSection.astro';
 import PopularBlock from '../components/site/PopularBlock.astro';
 import PriceSection from '../components/site/PriceSection.astro';
-import { PLANTS, OBJECTS, FAQ, TIPS, fmt } from '../lib/home';
+import { PLANTS, OBJECTS, FAQ, fmt } from '../lib/home';
+import TipCards from '../components/site/TipCards.astro';
 import { products } from '../lib/catalog';
 import { site } from '../lib/home-site';
 
@@ -230,16 +231,9 @@ const useful = [
   <!-- 12 · Советы технолога -->
   <section class="sec" id="tips" aria-labelledby="tips-h">
     <div class="wrap">
-      <SectionHead id="tips-h" label="Советы" title="Советы технолога" sub="перед заливкой" desc="Короткие статьи из блога: что делать, если не хватило бетона, как принять машину, как лить зимой." />
+      <SectionHead id="tips-h" label="Советы" title="Советы технолога" sub="перед заливкой" desc="Короткие статьи из блога: что делать, если не хватило бетона, как принять машину, как лить зимой." more={{ href: '/blog/', label: 'Все статьи' }} />
       <div class="stack">
-        <div class="grid4 tips">
-          {TIPS.map((t) => (
-            <div class="card tip">
-              <img src={img(t.img, 560)} alt="" width="560" height="560" loading="lazy" decoding="async" />
-              <div class="tip-c"><span class="tip-tx"><b class="tip-tt">{t.t}</b><span class="tip-d">{t.d}</span></span></div>
-            </div>
-          ))}
-        </div>
+        <TipCards />
         <Hook icon="flask-conical" title="Нужен совет технолога по вашей конструкции?" sub="Подскажем марку и объём по проекту" btn="Заказать консультацию" />
       </div>
     </div>

@@ -4,15 +4,27 @@ import Icon from '../home/Icon.astro';
 import SectionHead from '../home/SectionHead.astro';
 import Hook from '../home/Hook.astro';
 import { site } from '../../lib/home-site';
-import { FAQ } from '../../lib/home';
+import { FAQ_TOPICS } from '../../lib/home';
 ---
 <!-- 11 · FAQ -->
 <section class="sec" id="faq" aria-labelledby="faq-h">
   <div class="wrap">
-    <SectionHead id="faq-h" label="Вопросы" title="Вопросы о бетоне" sub="и доставке — коротко" desc="Самое частое, что спрашивают перед заказом. Ответы видны сразу. Не нашли свой — напишите на почту, в Telegram или MAX." />
+    <SectionHead id="faq-h" label="Вопросы" title="Вопросы о бетоне" sub="и доставке — коротко" desc="Самое частое, что спрашивают перед заказом, — по темам. Не нашли свой вопрос — напишите на почту, в Telegram или MAX." />
     <div class="stack">
       <div class="faq">
-        {FAQ.map(([q, a]) => <div class="card qa"><p class="qa-q"><Icon name="circle-help" size={20} />{q}</p><p class="small muted">{a}</p></div>)}
+        {FAQ_TOPICS.map((g, gi) => (
+          <div class="faq-g">
+            <h3 class="faq-t">{g.t}</h3>
+            <div class="faq-list">
+              {g.items.map(([q, a], i) => (
+                <details class="card qa" name={`faq-${gi}`} open={gi === 0 && i === 0}>
+                  <summary class="qa-q"><span>{q}</span><Icon name="chevron-down" size={20} class="qa-ch" /></summary>
+                  <p class="small muted qa-a">{a}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
       <Hook icon="circle-help" title="Не нашли свой вопрос? Спросите диспетчера" sub="Ответим по телефону или на почту" btn="Задать вопрос" />
     </div>

@@ -7,6 +7,7 @@ import PopularBlock from '../../components/site/PopularBlock.astro';
 import SiteFooter from '../../components/site/SiteFooter.astro';
 import SectionHead from '../../components/home/SectionHead.astro';
 import Icon from '../../components/home/Icon.astro';
+import Dropdown from '../../components/site/Dropdown.astro';
 import { site } from '../../lib/home-site';
 import { PLANTS } from '../../lib/home';
 import data from '../../data/site.json';
@@ -87,9 +88,9 @@ const pins = [[18, 22], [44, 36], [76, 20], [30, 62], [62, 56], [88, 72]];
               <label class="fld"><span>Имя</span><input name="name" autocomplete="name" placeholder="Ваше имя" required /></label>
               <label class="fld"><span>Телефон</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" data-phone required /></label>
             </div>
-            <label class="fld"><span>Тема</span><select name="subject"><option>Заказ бетона</option><option>Расчёт цены с доставкой</option><option>Документы и счета</option><option>Сотрудничество</option></select></label>
+            <Dropdown label="Тема" name="subject" options={['Заказ бетона', 'Расчёт цены с доставкой', 'Документы и счета', 'Сотрудничество']} />
             <label class="fld"><span>Сообщение</span><textarea name="comment" rows="3" placeholder="Марка, объём, адрес объекта"></textarea></label>
-            <label class="consent"><input type="checkbox" name="consent" required /><span class="box"><Icon name="check" size={14} stroke={2.5} /></span><span>Даю согласие на обработку своих персональных данных в соответствии с законом</span></label>
+            <label class="consent"><input type="checkbox" name="consent" required /><span class="box"><Icon name="check" size={14} stroke={2.5} /></span><span>Даю согласие на обработку своих персональных данных в соответствии с <a href="/politika/" target="_blank" rel="noopener">политикой конфиденциальности</a></span></label>
             <p class="form-err" data-form-err hidden></p>
             <button class="btn btn-dark" type="submit">Отправить<Icon name="arrow-right" size={16} /></button>
           </form>

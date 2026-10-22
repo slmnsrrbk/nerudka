@@ -1,0 +1,15 @@
+---
+// Карточки «Советы технолога»: фото, заголовок, короткое описание, ссылка на статью блога.
+import { TIPS, tipHref } from '../../lib/home';
+interface Props { items?: typeof TIPS; cls?: string }
+const { items = TIPS, cls = '' } = Astro.props;
+const img = (name: string) => `/img/home/${name}-560.webp`;
+---
+<div class:list={['grid4', 'tips', cls]}>
+  {items.map((t) => (
+    <a class="card tip" href={tipHref(t.slug)}>
+      <img src={img(t.img)} alt="" width="560" height="560" loading="lazy" decoding="async" />
+      <div class="tip-c"><span class="tip-tx"><b class="tip-tt">{t.t}</b><span class="tip-d">{t.d}</span></span><span class="tip-more">Читать →</span></div>
+    </a>
+  ))}
+</div>

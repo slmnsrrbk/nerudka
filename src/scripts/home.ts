@@ -5,6 +5,8 @@ const $$ = <T extends Element = HTMLElement>(s: string, r: ParentNode = document
 const fmt = (n: number, d = 0) => n.toLocaleString('ru-RU', { minimumFractionDigits: d, maximumFractionDigits: d }).replace(/ /g, ' ');
 const rub = (n: number) => `${fmt(Math.round(n))} ₽`;
 const vol = (n: number) => `${fmt(n, n % 1 ? 1 : 0)} м³`;
+/** Короткое «подпрыгивание» числа в счётчике после изменения. */
+const bump = (el: Element | null) => { if (!el) return; el.classList.remove('bump'); void (el as HTMLElement).offsetWidth; el.classList.add('bump'); };
 const pl = (n: number, one: string, few: string, many: string) => {
   const a = n % 10, b = n % 100;
   return a === 1 && b !== 11 ? one : a >= 2 && a <= 4 && (b < 10 || b >= 20) ? few : many;
@@ -204,6 +206,7 @@ document.addEventListener('click', (e) => {
     if (t.closest('[data-cdel]')) setQty(id, 0);
     else if (t.closest('[data-cinc]')) setQty(id, cart[id].qty + 1);
     else if (t.closest('[data-cdec]')) setQty(id, cart[id].qty - 1 < 0.5 ? 0.5 : cart[id].qty - 1);
+    if (t.closest('[data-cinc],[data-cdec]')) bump($(`.cart-item[data-id="${CSS.escape(id)}"] [data-cqty]`));
   }
 });
 document.addEventListener('change', (e) => {
@@ -278,6 +281,7 @@ if (kPage) {
     if (t.closest('[data-kdel]')) setQty(id, 0);
     else if (t.closest('[data-kinc]')) setQty(id, clampQ(cart[id].qty + 1));
     else if (t.closest('[data-kdec]')) setQty(id, clampQ(cart[id].qty - 1));
+    if (t.closest('[data-kinc],[data-kdec]')) bump($(`.krow[data-id="${CSS.escape(id)}"] [data-kqty]`, kPage));
   });
   kPage.addEventListener('change', (e) => {
     const t = e.target as HTMLInputElement;
@@ -321,6 +325,7 @@ document.addEventListener('click', (e) => {
   if (t.closest('[data-inc]')) q = clampQ(q + 1);
   if (t.closest('[data-dec]')) q = clampQ(q - 1);
   input.value = fmt(q, q % 1 ? 1 : 0);
+  if (t.closest('[data-inc],[data-dec],[data-preset]')) bump(input);
   cell.dispatchEvent(new CustomEvent('qty', { detail: q }));
   const { item: id, name, href } = cell.dataset as { item: string; name: string; href: string };
   const p = Number(cell.dataset.price);
@@ -685,12 +690,51 @@ if (calc) {
 
 saveCart();
 
-/* ---------- Выбор марки в форме первого экрана: текст поля + «▾» как в макете ---------- */
-$$<HTMLSelectElement>('[data-sel]').forEach((sel) => {
-  const v = sel.parentElement!.querySelector('[data-sel-v]')!;
-  const sync = () => (v.textContent = sel.value);
-  sel.addEventListener('change', sync);
-  sync();
+/* ---------- Выпадающие списки в стиле проекта (марка в форме, тема на «Контактах») ---------- */
+$$('[data-dd]').forEach((dd) => {
+  const btn = $<HTMLButtonElement>('[data-dd-btn]', dd)!;
+  const list = $('[data-dd-list]', dd)!;
+  const input = $<HTMLInputElement>('[data-dd-input]', dd)!;
+  const val = $('[data-dd-v]', dd)!;
+  const opts = $$('[role="option"]', list);
+  let active = -1;
+  const setActive = (i: number) => {
+    active = (i + opts.length) % opts.length;
+    opts.forEach((o, k) => o.classList.toggle('act', k === active));
+    opts[active].scrollIntoView({ block: 'nearest' });
+  };
+  const open = () => {
+    if (!list.hidden) return;
+    $$('[data-dd]').forEach((x) => x !== dd && x.dispatchEvent(new Event('dd-close')));
+    list.hidden = false;
+    requestAnimationFrame(() => dd.classList.add('open'));
+    btn.setAttribute('aria-expanded', 'true');
+    setActive(Math.max(0, opts.findIndex((o) => o.getAttribute('aria-selected') === 'true')));
+  };
+  const close = (focus = false) => {
+    if (list.hidden) return;
+    dd.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
+    setTimeout(() => { if (!dd.classList.contains('open')) list.hidden = true; }, 200);
+    if (focus) btn.focus();
+  };
+  const pick = (o: HTMLElement) => {
+    opts.forEach((x) => x.setAttribute('aria-selected', String(x === o)));
+    input.value = o.dataset.v!;
+    val.textContent = o.dataset.v!;
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+    close(true);
+  };
+  dd.addEventListener('dd-close', () => close());
+  btn.addEventListener('click', () => (list.hidden ? open() : close()));
+  btn.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); if (list.hidden) open(); else setActive(active + (e.key === 'ArrowDown' ? 1 : -1)); }
+    else if ((e.key === 'Enter' || e.key === ' ') && !list.hidden) { e.preventDefault(); pick(opts[active]); }
+    else if (e.key === 'Escape' || e.key === 'Tab') close(e.key === 'Escape');
+  });
+  list.addEventListener('click', (e) => { const o = (e.target as HTMLElement).closest<HTMLElement>('[role="option"]'); if (o) pick(o); });
+  list.addEventListener('mousemove', (e) => { const o = (e.target as HTMLElement).closest<HTMLElement>('[role="option"]'); if (o) { const k = opts.indexOf(o); if (k !== active) { active = k; opts.forEach((x, n) => x.classList.toggle('act', n === k)); } } });
+  document.addEventListener('click', (e) => { if (!dd.contains(e.target as Node)) close(); });
 });
 
 /* ---------- Страница поиска /poisk/ ---------- */

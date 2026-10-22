@@ -1,8 +1,9 @@
 ---
 // Шапка раздела: метка, двухцветный H2, описание справа (компонент «Заголовок раздела» в UI-ките).
 import { site } from '../../lib/home-site';
-interface Props { label: string; title: string; sub?: string; desc?: string; phone?: boolean; id?: string; icon?: string }
-const { label, title, sub, desc, phone = false, id, icon } = Astro.props;
+import Icon from './Icon.astro';
+interface Props { label: string; title: string; sub?: string; desc?: string; phone?: boolean; id?: string; icon?: string; more?: { href: string; label: string } }
+const { label, title, sub, desc, phone = false, id, icon, more } = Astro.props;
 // Иконка метки раздела — Iconly, стиль Light (src/icons/iconly). Подобрана по смыслу метки.
 const ICONS: Record<string, string> = {
   'Прайс': 'wallet', 'Доставка': 'location', 'Заказ': 'buy', 'Заявка': 'editsquare', 'Калькулятор': 'graph',
@@ -20,9 +21,10 @@ const iconBody = svgs[`../../icons/iconly/${icon ?? ICONS[label] ?? 'category'}.
     <span class="chip-label">{iconBody && <svg class="chip-ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" set:html={iconBody} />}{label}</span>
     <h2 class="h2" id={id}>{title}{sub && <><br /><span class="h2-sub">{sub}</span></>}</h2>
   </div>
-  {(desc || phone) && (
+  {(desc || phone || more) && (
     <div class="sh-r">
       {desc && <p class="desc">{desc}</p>}
+      {more && <a class="btn btn-white sh-more" href={more.href}>{more.label}<Icon name="arrow-right" size={16} /></a>}
       {phone && (
         <div class="sh-phone">
           <a href={`tel:${site.phoneHref}`} class="sh-phone-n">{site.phone}</a>

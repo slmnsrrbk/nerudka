@@ -37,7 +37,7 @@ check('корзина: без имени/согласия — ошибка', awa
 await p.locator('[data-cart-form] input[name=name]').fill('Иван');
 await p.locator('[data-cart-form] input[name=phone]').pressSequentially('9161234567');
 check('маска телефона', (await p.locator('[data-cart-form] input[name=phone]').inputValue()) === '+7 (916) 123-45-67');
-await p.locator('[data-cart-form] .consent').click();
+await p.locator('[data-cart-form] .consent .box').click();
 await p.locator('[data-cart-form] button[type=submit]').click();
 check('корзина: заявка отправлена', await p.locator('[data-overlay="cart"] [data-done]').isVisible());
 await p.keyboard.press('Escape');
@@ -80,7 +80,7 @@ await p.locator('.hero-form button[type=submit]').click();
 check('форма первого экрана: проверка полей', await p.locator('.hero-form [data-form-err]').isVisible());
 await p.locator('.hero-form input[name=name]').fill('Анна');
 await p.locator('.hero-form input[name=phone]').pressSequentially('89161234567');
-await p.locator('.hero-form .consent').click();
+await p.locator('.hero-form .consent .box').click();
 await p.locator('.hero-form button[type=submit]').click();
 check('форма первого экрана: успех', await p.locator('[data-overlay="lead"] [data-done]').isVisible());
 await p.close();

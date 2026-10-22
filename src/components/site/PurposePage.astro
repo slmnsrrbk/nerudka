@@ -15,7 +15,7 @@ import SectionHead from '../home/SectionHead.astro';
 import Icon from '../home/Icon.astro';
 import { products, purposes, fmt, plural, groupByRoot, purposeHref, purposeLabel, minPrice, img, byGrade } from '../../lib/inner';
 import { productsByPurpose } from '../../lib/catalog';
-import { TIPS } from '../../lib/home';
+import TipCards from './TipCards.astro';
 import type { Purpose } from '../../lib/types';
 interface Props { purpose: Purpose }
 const { purpose } = Astro.props;
@@ -73,15 +73,8 @@ const ask = [
 </section>
 <section class="sec sec-tight" aria-labelledby="tips-h">
   <div class="wrap">
-    <SectionHead id="tips-h" label="Советы" title="Советы технолога" sub="перед заливкой" desc="Коротко о том, что чаще всего спрашивают на объекте." />
-    <div class="grid4">
-      {TIPS.map((t) => (
-        <div class="card tip">
-          <img src={img(t.img, 560)} alt="" width="560" height="560" loading="lazy" decoding="async" />
-          <div class="tip-c"><span class="tip-tx"><b class="tip-tt">{t.t}</b><span class="tip-d">{t.d}</span></span></div>
-        </div>
-      ))}
-    </div>
+    <SectionHead id="tips-h" label="Советы" title="Советы технолога" sub="перед заливкой" desc="Коротко о том, что чаще всего спрашивают на объекте." more={{ href: '/blog/', label: 'Все статьи' }} />
+    <TipCards />
   </div>
 </section>
 <DeliveryZones>

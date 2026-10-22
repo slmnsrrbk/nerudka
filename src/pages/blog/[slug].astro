@@ -1,0 +1,49 @@
+---
+// Шаблон статьи блога: шапка, обложка, вводный абзац, разделы, совет технолога, другие статьи.
+// Текст статей пока заглушка — структура готова, содержимое заливают позже.
+import HomeLayout from '../../layouts/HomeLayout.astro';
+import PageHero from '../../components/site/PageHero.astro';
+import TipCards from '../../components/site/TipCards.astro';
+import SiteFooter from '../../components/site/SiteFooter.astro';
+import SectionHead from '../../components/home/SectionHead.astro';
+import Hook from '../../components/home/Hook.astro';
+import Icon from '../../components/home/Icon.astro';
+import { TIPS } from '../../lib/home';
+
+export function getStaticPaths() {
+  return TIPS.map((t) => ({ params: { slug: t.slug }, props: { tip: t } }));
+}
+const { tip } = Astro.props as { tip: (typeof TIPS)[number] };
+const others = TIPS.filter((t) => t.slug !== tip.slug);
+const sections = [
+  ['Коротко', ['[заглушка: главный вывод статьи в двух-трёх предложениях].']],
+  ['Подробно', ['[заглушка: основной текст статьи — причины, порядок действий, на что обратить внимание].', '[заглушка: второй абзац основного текста].']],
+  ['Что сделать перед заказом', ['[заглушка: практический чек-лист для заказчика].']],
+] as const;
+---
+<HomeLayout title={`${tip.t} — советы технолога`} description={`${tip.d}. Советы технолога бетонного завода.`}>
+  <PageHero h1={tip.t} sub={tip.d} crumbs={[{ href: '/', label: 'Главная' }, { href: '/blog/', label: 'Советы технолога' }, { label: tip.t }]} />
+  <section class="sec sec-first" aria-label="Статья">
+    <div class="wrap">
+      <article class="card-w post">
+        <img class="post-cover" src={`/img/home/${tip.img}.webp`} alt="" width="1024" height="1024" />
+        <div class="prose-d post-body">
+          <p class="post-lead">{tip.d}. [заглушка: вводный абзац статьи].</p>
+          {sections.map(([h, ps]) => (
+            <section><h2 class="h3">{h}</h2>{ps.map((t) => <p>{t}</p>)}</section>
+          ))}
+          <aside class="post-note"><Icon name="flask-conical" /><p><b>Совет технолога:</b> [заглушка: короткая практическая рекомендация].</p></aside>
+        </div>
+      </article>
+    </div>
+  </section>
+  <section class="sec sec-tight" aria-labelledby="more-h">
+    <div class="wrap stack">
+      <SectionHead id="more-h" label="Советы" title="Другие советы" sub="технолога" more={{ href: '/blog/', label: 'Все статьи' }} />
+      <TipCards items={others} cls="tips-3" />
+      <Hook icon="flask-conical" title="Остались вопросы? Спросите технолога" sub="Подскажем марку и объём по проекту" btn="Задать вопрос" />
+    </div>
+  </section>
+  <div class="sec-end"></div>
+  <SiteFooter slot="footer" />
+</HomeLayout>
