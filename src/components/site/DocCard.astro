@@ -1,0 +1,11 @@
+---
+// Карточка документа: с файлом (href) — скачивание одним кликом; без файла — пометка «Файл скоро появится».
+import Icon from '../home/Icon.astro';
+interface Props { title: string; fmt?: string; href?: string; white?: boolean }
+const { title, fmt = 'PDF', href, white = true } = Astro.props;
+---
+{href ? (
+  <a class:list={['doc', { 'doc-w': white }]} href={href} download><Icon name="file-text" size={24} /><span>{title}</span><span class="fmt">{fmt}</span><Icon name="download" size={24} /></a>
+) : (
+  <div class:list={['doc', 'doc-soon', { 'doc-w': white }]}><Icon name="file-text" size={24} /><span>{title}</span><span class="fmt fmt-soon">Файл скоро появится</span></div>
+)}

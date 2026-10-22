@@ -10,6 +10,7 @@ import Requisites from '../../components/site/Requisites.astro';
 import SectionHead from '../../components/home/SectionHead.astro';
 import Hook from '../../components/home/Hook.astro';
 import Icon from '../../components/home/Icon.astro';
+import DocCard from '../../components/site/DocCard.astro';
 import { products, img, fmt } from '../../lib/inner';
 import { OBJECTS } from '../../lib/home';
 
@@ -58,7 +59,7 @@ const docs = ['Паспорт качества на бетонную смесь 
   <section class="sec sec-tight" id="docs" aria-labelledby="d-h">
     <div class="wrap">
       <SectionHead id="d-h" label="Документы" title="Документы" sub="для закупки и приёмки" desc="Скачайте образцы заранее — пригодятся для тендера и технадзора." />
-      <div class="grid2">{docs.map((d) => <a class="doc doc-w" href="/kontakty/" data-modal="lead" data-topic={`Запрос документа: ${d}`}><Icon name="file-text" size={24} /><span>{d}</span><span class="fmt">DOCX</span><Icon name="download" size={24} /></a>)}</div>
+      <div class="grid2">{docs.map((d) => <DocCard title={d} fmt="DOCX" />)}</div>
     </div>
   </section>
 

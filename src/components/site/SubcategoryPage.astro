@@ -10,6 +10,7 @@ import LinkCloud from './LinkCloud.astro';
 import SeoSection from './SeoSection.astro';
 import SectionHead from '../home/SectionHead.astro';
 import Icon from '../home/Icon.astro';
+import DocCard from './DocCard.astro';
 import { priceTabs } from '../../lib/home';
 import { products, purposes, productsOfCategory, childCategories, getCategory, categoryPath, minPrice, fmt, plural, crumbsFor, img, productPhoto, byGrade, purposeHref, purposeLabel, CATALOG_SUB } from '../../lib/inner';
 import type { Category } from '../../lib/types';
@@ -63,7 +64,7 @@ const lower = cat.name.charAt(0).toLowerCase() + cat.name.slice(1);
   </section>
 )}
 <DeliveryZones>
-  <div class="grid2">{['Паспорт качества на бетонную смесь — образец', 'Декларация соответствия на товарный бетон'].map((d) => <a class="doc doc-w" href="/kontakty/" data-modal="lead" data-topic={`Запрос документа: ${d}`}><Icon name="file-text" size={24} /><span>{d}</span><span class="fmt">PDF</span><Icon name="download" size={24} /></a>)}</div>
+  <div class="grid2">{['Паспорт качества на бетонную смесь — образец', 'Декларация соответствия на товарный бетон'].map((d) => <DocCard title={d} />)}</div>
 </DeliveryZones>
 <PopularBlock />
 <FaqSection />

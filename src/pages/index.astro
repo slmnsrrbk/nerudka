@@ -3,6 +3,7 @@
 import HomeLayout from '../layouts/HomeLayout.astro';
 import NavBar from '../components/home/NavBar.astro';
 import Icon from '../components/home/Icon.astro';
+import DocCard from '../components/site/DocCard.astro';
 import SectionHead from '../components/home/SectionHead.astro';
 import Hook from '../components/home/Hook.astro';
 import HeroForm from '../components/site/HeroForm.astro';
@@ -216,7 +217,7 @@ const useful = [
           </div>
           <div class="card b2b-c">
             <h3 class="h3">Скачать для закупки</h3>
-            <ul class="docs">{downloads.map(([t, f]) => <li><a class="doc" href="/kontakty/" data-modal="lead" data-topic={`Запрос документа: ${t}`}><Icon name="file-text" size={24} /><span>{t}</span><span class="fmt">{f}</span><Icon name="download" size={24} /></a></li>)}</ul>
+            <ul class="docs">{downloads.map(([t, f]) => <li><DocCard title={t} fmt={f} white={false} /></li>)}</ul>
           </div>
         </div>
         <div class="strip strip-l"><span class="tile tile-grey"><Icon name="landmark" /></span><p>Работа по 44-ФЗ и 223-ФЗ — [заглушка: подтвердить] · Казначейское сопровождение — [заглушка: подтвердить]</p></div>
