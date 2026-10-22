@@ -75,7 +75,6 @@
 .pcard-p b { font-size: 22px; font-weight: 600; }
 .pcard-p span { font-size: 13px; color: var(--sub); }
 .pcard-a { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.pcard-more { font-size: 13px; }
 
 /* ---------- Подбор по назначению ---------- */
 .pur-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
