@@ -196,43 +196,51 @@ ul, ol { list-style: none; }
 .kind-p { color: var(--sub); white-space: nowrap; }
 .kind:hover { background: rgba(255, 255, 255, .5); }
 .kind.on { background: var(--w); font-weight: 500; }
-/* Левая колонка прайса: виды продукции и фильтры каталога */
+/* Левая колонка прайса: виды продукции */
 .price-side { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
 .price-side > * { min-width: 0; max-width: 100%; }
 .kind-all { color: var(--sub); }
 .kind-all .ic { margin-left: auto; opacity: .7; }
 .kind-all.on { color: var(--ink); }
-.price-filter { gap: 14px; }
-.price-filter-h { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
-.pf-reset { font-size: 13px; font-weight: 500; color: var(--sub); transition: color .3s var(--ease); }
-.pf-reset:hover { color: var(--ink); }
-.pf-g { border: 0; margin: 0; padding: 0; min-width: 0; }
-.pf-g legend { padding: 0; margin-bottom: 8px; }
-.pf-list { display: flex; flex-direction: column; }
-.pf-i { cursor: pointer; }
-.pf-i input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.pf-box { flex: none; display: grid; place-items: center; width: 18px; height: 18px; margin-left: auto; border-radius: 5px; border: 1.2px solid var(--mute); color: transparent; transition: background .3s var(--ease), border-color .3s var(--ease), color .3s var(--ease); }
-.pf-i:has(input:checked) { background: var(--w); font-weight: 500; }
-.pf-i input:checked ~ .pf-box { background: var(--ink); border-color: var(--ink); color: var(--w); }
-.pf-i:has(input:focus-visible) { outline: 2px solid var(--ink); outline-offset: -2px; }
-.ptab-h-top { padding-bottom: 4px; }
+.ptab-h.ptab-h-top { padding-bottom: 4px; flex-direction: row; align-items: flex-start; justify-content: space-between; }
 .ptab-sub + .ptab-sub { margin-top: 12px; }
 .ptab-sub { gap: 12px; }
 .ptab-sub h4 { font-size: 19px; margin-bottom: 4px; }
 .ptab-sub h4 a { transition: color .3s var(--ease); }
 .ptab-sub h4 a:hover { color: var(--sub); }
 .pf-empty { padding: 20px; font-size: 15px; }
-.pf-open, .pf-back, .pf-done { display: none; }
-/* Телефон: фильтры — кнопка и всплывающее окно снизу, значения — чипами */
+
+/* Фильтры каталога: кнопка справа в заголовке панели, карточка-поповер под ней */
+.pf-wrap { position: relative; flex: none; }
+.pf-btn { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 14px; border-radius: 10px; background: var(--w); font-size: 14px; font-weight: 500; transition: background .3s var(--ease), color .3s var(--ease); }
+.pf-btn:hover, .pf-btn[aria-expanded='true'] { background: var(--ink); color: var(--w); }
+.pf-ch { transition: transform .3s var(--ease); }
+.pf-btn[aria-expanded='true'] .pf-ch { transform: rotate(180deg); }
+.pf-n { min-width: 20px; height: 20px; padding: 0 6px; border-radius: 10px; background: var(--ink); color: var(--w); font-size: 12px; font-weight: 600; line-height: 20px; text-align: center; }
+.pf-btn:hover .pf-n, .pf-btn[aria-expanded='true'] .pf-n { background: var(--w); color: var(--ink); }
+.price-filter { position: absolute; z-index: 30; top: calc(100% + 8px); right: 0; width: min(420px, calc(100vw - 32px)); max-height: min(70vh, 560px); overflow-y: auto; display: flex; flex-direction: column; gap: 16px; padding: 20px; border-radius: 16px; background: var(--w); box-shadow: 0 16px 40px rgba(28, 36, 56, .22); opacity: 0; visibility: hidden; transform: translateY(-6px); transition: opacity .25s var(--ease), transform .25s var(--ease), visibility 0s .25s; }
+.price-filter.open { opacity: 1; visibility: visible; transform: none; transition: opacity .25s var(--ease), transform .25s var(--ease); }
+.price-filter-h { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.pf-reset { font-size: 13px; font-weight: 500; color: var(--sub); transition: color .3s var(--ease); }
+.pf-reset:hover { color: var(--ink); }
+.pf-g { border: 0; margin: 0; padding: 0; min-width: 0; }
+.pf-g legend { padding: 0; margin-bottom: 8px; }
+.pf-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.pf-i { position: relative; display: inline-flex; align-items: center; height: 36px; padding: 0 14px; border-radius: 10px; background: var(--bg); font-size: 14px; cursor: pointer; transition: background .3s var(--ease), color .3s var(--ease); }
+.pf-i:hover { background: var(--card); }
+.pf-i input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.pf-i:has(input:checked) { background: var(--ink); color: var(--w); }
+.pf-i:has(input:focus-visible) { outline: 2px solid var(--ink); outline-offset: 2px; }
+.pf-back, .pf-done { display: none; }
+/* Телефон: фильтры — окно снизу */
 @media (max-width: 760px) {
-  .pf-open { display: flex; }
+  .ptab-h-top { flex-direction: row; align-items: flex-start; justify-content: space-between; }
+  .pf-btn { height: 40px; padding: 0 12px; }
+  .pf-btn .pf-ch { display: none; }
   .pf-back:not([hidden]) { display: block; position: fixed; inset: 0; z-index: 94; background: rgba(28, 36, 56, .5); }
-  .price-filter { position: fixed; z-index: 95; left: 0; right: 0; bottom: 0; max-height: 86svh; overflow-y: auto; border-radius: 20px 20px 0 0; padding: 22px 16px calc(16px + env(safe-area-inset-bottom)); background: var(--w); flex-direction: column; flex-wrap: nowrap; transform: translateY(105%); visibility: hidden; transition: transform .35s var(--ease), visibility 0s .35s; }
-  .price-filter.open { transform: none; visibility: visible; transition: transform .35s var(--ease); }
-  .pf-list { flex-direction: row; flex-wrap: wrap; gap: 6px; }
-  .price-filter .pf-i { flex: none; height: 38px; padding: 0 14px; background: var(--bg); }
-  .pf-i .pf-box { display: none; }
-  .price-filter .pf-i:has(input:checked) { background: var(--ink); color: var(--w); }
+  .price-filter { position: fixed; z-index: 95; left: 0; right: 0; top: auto; bottom: 0; width: auto; max-height: 86svh; border-radius: 20px 20px 0 0; padding: 22px 16px calc(16px + env(safe-area-inset-bottom)); box-shadow: none; transform: translateY(105%); opacity: 1; transition: transform .35s var(--ease), visibility 0s .35s; }
+  .price-filter.open { transform: none; transition: transform .35s var(--ease); }
+  .pf-i { height: 38px; }
   .pf-done { display: inline-flex; position: sticky; bottom: 0; margin-top: 6px; }
 }
 /* Фильтр видов продукции на телефоне */

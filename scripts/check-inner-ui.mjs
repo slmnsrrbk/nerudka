@@ -26,6 +26,7 @@ ok((await p.textContent('[data-cart-count]')) === '1', 'позиция: «В к�
 await go('/catalog/beton/keramzitobeton/');
 const rows = () => p.locator('#price .prow[data-f]:visible').count();
 const all = await rows();
+await p.click('[data-pf-open]');
 await p.locator('[data-pfilter] .pf-i', { hasText: 'D1200' }).click();
 const one = await rows();
 const txt = await p.textContent('[data-pf-count]');

@@ -337,17 +337,26 @@ if (price) {
       if (count) count.textContent = sel.size ? `Найдено: ${n} ${pl(n, 'позиция', 'позиции', 'позиций')}` : baseNote;
     };
     pf.addEventListener('change', apply);
-    // Телефон: окно фильтров снизу.
+    // Кнопка «Фильтры»: на десктопе — карточка под кнопкой, на телефоне — окно снизу (с блокировкой прокрутки).
+    const btn = $('[data-pf-open]', price)!;
     const back = $('.pf-back', price);
-    const sum = $('[data-pf-sum]', price);
-    const sheet = (open: boolean) => { if (pf.classList.contains('open') === open) return; pf.classList.toggle('open', open); if (back) back.hidden = !open; lock(open); };
-    $('[data-pf-open]', price)?.addEventListener('click', () => sheet(true));
+    const badge = $('[data-pf-n]', price);
+    let locked = false;
+    const sheet = (open: boolean) => {
+      if (pf.classList.contains('open') === open) return;
+      pf.classList.toggle('open', open);
+      btn.setAttribute('aria-expanded', String(open));
+      const mobile = mq('(max-width: 760px)');
+      if (back) back.hidden = !(open && mobile);
+      if (open && mobile) { lock(true); locked = true; } else if (!open && locked) { lock(false); locked = false; }
+    };
+    btn.addEventListener('click', () => sheet(!pf.classList.contains('open')));
     $$('[data-pf-close]', price).forEach((b) => b.addEventListener('click', () => sheet(false)));
-    pf.addEventListener('change', () => {
-      const n = $$('input:checked', pf).length;
-      if (sum) sum.textContent = n ? `Выбрано: ${n}` : sum.dataset.pfDefault!;
-    });
-    $$('[data-pf-reset]', price).forEach((b) => b.addEventListener('click', () => { pf.reset(); apply(); if (sum) sum.textContent = sum.dataset.pfDefault!; }));
+    document.addEventListener('click', (e) => { if (!(e.target as HTMLElement).closest('[data-pf-wrap]')) sheet(false); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && pf.classList.contains('open')) { sheet(false); btn.focus(); } });
+    const mark = () => { const n = $$('input:checked', pf).length; if (badge) { badge.hidden = !n; badge.textContent = String(n); } };
+    pf.addEventListener('change', mark);
+    $$('[data-pf-reset]', price).forEach((b) => b.addEventListener('click', () => { pf.reset(); apply(); mark(); }));
   }
   // Страница /price/: вид продукции из адреса (#kladochnyj-rastvor) открывается сразу.
   const fromHash = decodeURIComponent(location.hash.slice(1));

@@ -30,9 +30,7 @@ for (const t of shown) for (const r of t.rows) for (const kv of (r.f ?? '').spli
   fvals.get(k)!.add(v);
 }
 const fgroups = filters ? FGROUPS.map(([k, label]) => ({ k, label, vals: [...(fvals.get(k) ?? [])].sort((a, b) => num(a) - num(b) || a.localeCompare(b)) })).filter((g) => g.vals.length > 1) : [];
-const sumLabel = fgroups.map((g) => g.label).join(', ');
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-const total = shown.reduce((s, t) => s + t.count, 0);
 ---
 <section class:list={['sec', { 'sec-first': !head }]} id="price" aria-labelledby={head ? 'price-h' : undefined} aria-label={head ? undefined : 'Прайс-лист'}>
   <div class="wrap">
@@ -80,42 +78,39 @@ const total = shown.reduce((s, t) => s + t.count, 0);
               </div>
             ))}
           </aside>
-          {fgroups.length > 0 && (
-            <button type="button" class="card price-pick pf-open" data-pf-open aria-haspopup="dialog">
-              <span class="price-pick-t"><span class="small muted">Фильтры</span><b data-pf-sum data-pf-default={sumLabel}>{sumLabel}</b></span>
-              <span class="price-pick-ic"><Icon name="sliders" size={20} /></span>
-            </button>
-          )}
-          {fgroups.length > 0 && <div class="pf-back" data-pf-close hidden></div>}
-          {fgroups.length > 0 && (
-            <form class="card price-nav price-filter" data-pfilter aria-label="Фильтры" onsubmit="return false">
-              <div class="price-filter-h"><h3 class="h3">Фильтры</h3><button type="reset" class="pf-reset" data-pf-reset hidden>Сбросить</button></div>
-              {fgroups.map((g) => (
-                <fieldset class="price-nav-g pf-g">
-                  <legend class="kicker">{g.label}</legend>
-                  <div class="pf-list">
-                    {g.vals.map((v) => (
-                      <label class="kind pf-i"><input type="checkbox" name={g.k} value={v} /><span>{g.k === 'filler' ? cap(v) : v}</span><span class="pf-box" aria-hidden="true"><Icon name="check" size={14} stroke={2.5} /></span></label>
-                    ))}
-                  </div>
-                </fieldset>
-              ))}
-              <button type="button" class="btn btn-dark btn-block pf-done" data-pf-close>Показать позиции</button>
-            </form>
-          )}
         </div>
         <div class="card price-panel">
           <div class="price-top">
-            {many && title && (
-              <div class="ptab-h ptab-h-top"><div><h3 class="h3 h3-l">{title.name}</h3><p class="small muted" data-pf-count data-total={total}>{title.note}</p></div></div>
+            <!-- Заголовок панели и кнопка «Фильтры»: фильтры раскрываются карточкой под кнопкой, на телефоне — окном снизу. -->
+            {links && (
+              <div class="ptab-h ptab-h-top">
+                <div><h3 class="h3 h3-l">{title?.name ?? shown[0]?.name}</h3><p class="small muted" data-pf-count>{title?.note ?? shown[0]?.note}</p></div>
+                {fgroups.length > 0 && (
+                  <div class="pf-wrap" data-pf-wrap>
+                    <button type="button" class="pf-btn" data-pf-open aria-expanded="false" aria-controls="pfilter"><Icon name="sliders" size={18} />Фильтры<span class="pf-n" data-pf-n hidden>0</span><Icon name="chevron-down" size={16} class="pf-ch" /></button>
+                    <div class="pf-back" data-pf-close hidden></div>
+                    <form class="price-filter" id="pfilter" data-pfilter aria-label="Фильтры" onsubmit="return false">
+                      <div class="price-filter-h"><p class="h3">Фильтры</p><button type="reset" class="pf-reset" data-pf-reset hidden>Сбросить</button></div>
+                      {fgroups.map((g) => (
+                        <fieldset class="pf-g">
+                          <legend class="kicker">{g.label}</legend>
+                          <div class="pf-list">
+                            {g.vals.map((v) => (
+                              <label class="pf-i"><input type="checkbox" name={g.k} value={v} /><span>{g.k === 'filler' ? cap(v) : v}</span></label>
+                            ))}
+                          </div>
+                        </fieldset>
+                      ))}
+                      <button type="button" class="btn btn-dark btn-block pf-done" data-pf-close>Показать позиции</button>
+                    </form>
+                  </div>
+                )}
+              </div>
             )}
             {shown.map((t, ti) => (
               <div class:list={['ptab', { 'ptab-sub': many }]} data-price-pane={t.slug} role={links ? undefined : 'tabpanel'} hidden={!links && t.slug !== active}>
-                <div class="ptab-h">
-                  {many
-                    ? <div><h4 class="h3"><a href={t.href}>{t.name}</a></h4><p class="small muted">{t.note}</p></div>
-                    : <div><h3 class="h3 h3-l">{t.name}</h3><p class="small muted" data-pf-count={links && ti === 0 ? '' : undefined} data-total={t.count}>{t.note}</p></div>}
-                </div>
+                {many && <div class="ptab-h"><div><h4 class="h3"><a href={t.href}>{t.name}</a></h4><p class="small muted">{t.note}</p></div></div>}
+                {!links && <div class="ptab-h"><div><h3 class="h3 h3-l">{t.name}</h3><p class="small muted">{t.note}</p></div></div>}
                 <div class:list={['prow', 'prow-head', { two: t.columns.length > 1 }]}>
                   <span>Марка</span>{t.columns.map((c) => <span>{c}</span>)}
                 </div>
