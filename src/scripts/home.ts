@@ -181,6 +181,11 @@ function saveCart(sent = false) {
   renderCartPage(sent);
 }
 const DISC = [{ from: 500, p: 20 }, { from: 200, p: 15 }, { from: 50, p: 10 }];
+// Иконки «минус/плюс» в счётчике корзины — те же Lucide, что и в счётчике прайса (14 px, обводка 1.75)
+const IC = (d: string) => `<svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const IC_MINUS = IC('<path d="M5 12h14" />');
+const IC_PLUS = IC('<path d="M5 12h14" /><path d="M12 5v14" />');
+
 function renderCart(keepDone = false) {
   const el = $('[data-overlay="cart"]');
   if (!el) return;
@@ -191,7 +196,7 @@ function renderCart(keepDone = false) {
     const li = document.createElement('li');
     li.className = 'cart-item';
     li.innerHTML = `<div><a href="${it.href}"></a><div class="ci-p">${rub(it.price)} за м³</div></div><b class="ci-sum">${rub(it.price * it.qty)}</b>
-      <div class="ci-ctl"><div class="stepper"><button type="button" class="st-b" data-cdec aria-label="Меньше">−</button><input class="st-q" value="${it.qty}" inputmode="decimal" data-cqty aria-label="Объём, м³"><button type="button" class="st-b" data-cinc aria-label="Больше">+</button></div>
+      <div class="ci-ctl"><div class="stepper"><button type="button" class="st-b" data-cdec aria-label="Меньше">${IC_MINUS}</button><input class="st-q" value="${it.qty}" inputmode="decimal" data-cqty aria-label="Объём, м³"><button type="button" class="st-b" data-cinc aria-label="Больше">${IC_PLUS}</button></div>
       <button type="button" class="ci-del" data-cdel>Удалить</button></div>`;
     li.dataset.id = id;
     $('a', li)!.textContent = it.name;

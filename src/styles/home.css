@@ -782,6 +782,8 @@ ul, ol { list-style: none; }
   .foot-cols > div { gap: 12px; }
   .foot-bottom { margin-top: 36px; gap: 14px; }
   .mbar { display: flex; position: fixed; z-index: 80; left: 0; right: 0; bottom: 0; gap: 8px; padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); background: rgba(255, 255, 255, .96); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-top: 1px solid var(--line); }
+  /* Пока открыт поп-ап, шторка или меню — нижняя панель не нужна */
+  body.lock .mbar { display: none; }
   .mbar-btn { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 46px; padding: 0 12px; border-radius: 10px; background: var(--bg); font-size: 13px; font-weight: 500; }
   .mbar-main { flex: 1; background: var(--ink); color: var(--w); font-size: 14px; }
   .mbar-btn:not(.mbar-main) { width: 46px; padding: 0; flex: none; }
