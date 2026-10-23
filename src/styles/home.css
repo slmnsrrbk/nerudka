@@ -3,6 +3,7 @@
   --ink: #1C2438; --sub: #6B7593; --mute: #8E98B4; --card: #DCE3EE; --bg: #EEF1F6; --line: #CDD5E3; --w: #FFFFFF;
   --r-lg: 20px; --r-md: 14px; --r-sm: 10px;
   --pad: 40px; --max: 1440px;
+  --sg: 132px; /* расстояние между блоками: десктоп 132, планшет 100, мобильный 92 */
   --shadow: 0 20px 48px rgba(28, 36, 56, .18);
   --font: 'Onest', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --ease: cubic-bezier(.22, .61, .36, 1);
@@ -25,7 +26,7 @@ ul, ol { list-style: none; }
 
 /* ---------- Сетка ---------- */
 .wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--pad); }
-.sec { padding: 110px 0 100px; }
+.sec { padding: var(--sg) 0 0; }
 .stack { display: flex; flex-direction: column; gap: 24px; }
 .stack > .hook { margin-top: 8px; }
 #price .stack { gap: 20px; }
@@ -541,7 +542,7 @@ ul, ol { list-style: none; }
 .ucard:hover .ucard-m .ic { transform: translateX(3px); }
 
 /* ---------- Подвал ---------- */
-.foot { margin-top: 60px; background: var(--ink); color: #EEF1F6; padding: 56px 0 45px; }
+.foot { margin-top: var(--sg); background: var(--ink); color: #EEF1F6; padding: 56px 0 45px; }
 .foot-cols { display: flex; justify-content: space-between; gap: 30px; }
 .foot-cols > div { display: flex; flex-direction: column; gap: 20px; }
 .foot-h { font-size: 12px; font-weight: 500; letter-spacing: .72px; text-transform: uppercase; color: var(--mute); }
@@ -668,6 +669,7 @@ ul, ol { list-style: none; }
   .hook-t { flex: 1 1 260px; }
 }
 @media (max-width: 1080px) {
+  :root { --sg: 100px; }
   .nav-links, .nav-mail, .nav-tools .glass-sq:not(.cart-btn) { display: none; }
   .burger { display: inline-flex; }
   .nav-tools [data-search-open] { display: inline-flex; }
@@ -706,9 +708,8 @@ ul, ol { list-style: none; }
   .hero-form { width: 340px; }
 }
 @media (max-width: 760px) {
-  :root { --pad: 16px; }
+  :root { --pad: 16px; --sg: 92px; }
   body.home { padding-bottom: 72px; font-size: 14px; }
-  .sec { padding: 64px 0 56px; }
   .h2 { font-size: 30px; }
   .h3-l { font-size: 20px; }
   .sh { margin-bottom: 28px; }
@@ -782,7 +783,7 @@ ul, ol { list-style: none; }
   .useful { gap: 12px; }
   .ucard { height: 160px; padding: 14px; }
   .ucard-t { font-size: 16px; }
-  .foot { padding: 40px 0 30px; margin-top: 30px; }
+  .foot { padding: 40px 0 30px; }
   .foot-cols { flex-direction: column; gap: 28px; }
   .foot-cols > div { gap: 12px; }
   .foot-bottom { margin-top: 36px; gap: 14px; }

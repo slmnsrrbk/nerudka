@@ -33,9 +33,7 @@
 
 /* ---------- Ритм секций ---------- */
 .sec-first { padding-top: 32px; padding-bottom: 0; }
-.sec-tight { padding: 72px 0 0; }
-.sec-pop { padding: 96px 0 0; }
-.sec-pop + .sec, .sec-tight + .sec { padding-top: 96px; }
+.sec-tight, .sec-pop { padding: var(--sg) 0 0; }
 .btn-grey { background: var(--bg); color: var(--ink); }
 .btn-grey:hover { background: var(--card); }
 .card-w { background: var(--w); border-radius: 16px; }
@@ -205,7 +203,7 @@
 
 
 /* ---------- Каталог ---------- */
-.sec-end { height: 100px; }
+.sec-end { height: 0; }
 .csearch { display: flex; flex-direction: column; gap: 14px; padding: 20px; }
 .csearch-row { display: flex; gap: 10px; }
 .csearch-f { flex: 1; display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 16px; border-radius: 10px; background: var(--bg); color: var(--sub); min-width: 0; }
@@ -424,8 +422,6 @@ a.objc:hover { box-shadow: 0 6px 20px rgba(28, 36, 56, .1); }
   .tchips::-webkit-scrollbar { display: none; }
   .tchip { height: 36px; padding: 0 14px; }
   .sec-first { padding-top: 16px; }
-  .sec-tight, .sec-pop { padding-top: 56px; }
-  .sec-pop + .sec, .sec-tight + .sec { padding-top: 56px; }
   .pgrid { grid-template-columns: minmax(0, 1fr); gap: 10px; }
   .pcard { flex-direction: row; align-items: stretch; }
   .pcard-ph { width: 96px; height: auto; min-height: 96px; flex: none; margin: 12px 0 12px 12px; border-radius: 10px; }
@@ -450,7 +446,6 @@ a.objc:hover { box-shadow: 0 6px 20px rgba(28, 36, 56, .1); }
   .cloud-r { grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 12px 0; }
   .cloud-t { padding-top: 0; }
   .asklist { grid-template-columns: minmax(0, 1fr); padding: 16px; }
-  .sec-end { height: 56px; }
   .numbers { gap: 10px; }
   .num { padding: 16px; }
   .num b { font-size: 28px; }
