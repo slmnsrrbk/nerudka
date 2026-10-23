@@ -74,13 +74,13 @@ ul, ol { list-style: none; }
 .nav { display: flex; align-items: center; gap: 10px; min-height: 38px; }
 .logo { display: inline-flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 600; white-space: nowrap; }
 .logo-dot { width: 18px; height: 18px; border-radius: 50%; background: currentColor; }
-.nav-links { display: flex; align-items: center; gap: clamp(12px, 1.53vw, 22px); margin-left: clamp(4px, .85vw, 12px); }
+.nav-links { display: flex; align-items: center; gap: clamp(8px, 1vw, 16px); margin-left: 4px; }
 /* Почта — в правой группе, вплотную к поиску и корзине */
 @media (min-width: 1241px) {
   .nav-mail { margin-left: auto; }
   .nav-mail + .nav-tools { margin-left: 0; }
 }
-.nav-link { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 500; letter-spacing: .575px; text-transform: uppercase; white-space: nowrap; opacity: .92; transition: opacity .3s; }
+.nav-link { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 500; white-space: nowrap; opacity: .92; transition: opacity .3s; }
 .nav-link:hover, .nav-link[aria-expanded='true'] { opacity: 1; }
 .nav-link[aria-expanded='true'] .ic { transform: rotate(180deg); }
 .nav-tools { display: flex; align-items: center; gap: 8px; margin-left: auto; }
@@ -635,7 +635,7 @@ ul, ol { list-style: none; }
 .drawer-msg { display: flex; gap: 8px; }
 
 /* ================= Адаптив ================= */
-@media (max-width: 1400px) {
+@media (max-width: 1279px) {
   .nav-msg { display: none; }
 }
 @media (max-width: 1360px) {
