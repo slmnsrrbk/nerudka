@@ -1,4 +1,5 @@
-# Деплой КП mrs.alinaas (папка kp-alinaas/) на свой сервер, на отдельный поддомен.
+# Деплой на поддомен kp.slmn2.ru: сайт mrs.alinaas (alinaas-site/) в корне,
+# КП (kp-alinaas/) по адресу /kp/, прототип (kp-alinaas/prototype/) по адресу /prototype/.
 # Использует те же секреты, что и deploy-jino.yml:
 #   SSH_HOST, SSH_USER и SSH_KEY или SSH_PASSWORD.
 # Домен задаётся переменной репозитория KP_DOMAIN (Settings -> Secrets and variables
@@ -12,7 +13,8 @@ on:
     branches: [claude/blissful-brown-puzd0b, main]
     paths:
       - 'kp-alinaas/**'
-      - 'deploy/nginx-kp-alinaas.conf'
+      - 'alinaas-site/**'
+      - 'deploy/nginx-kp-alinaas*.conf'
       - '.github/workflows/deploy-kp-alinaas.yml'
 
 concurrency:
@@ -31,12 +33,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Проверить файлы КП
+      - name: Проверить файлы и собрать раскладку
         run: |
           test -f kp-alinaas/index.html
           test -f kp-alinaas/style.css
           test -f kp-alinaas/script.js
           ! grep -n '—' kp-alinaas/index.html
+          test -f alinaas-site/index.html
+          rm -rf build && mkdir -p build/kp build/prototype
+          rsync -a --exclude '.htaccess' --exclude '_headers' alinaas-site/ build/
+          rsync -a --exclude 'prototype' kp-alinaas/ build/kp/
+          rsync -a kp-alinaas/prototype/ build/prototype/
 
       - name: Нет секретов
         if: env.HAS_HOST != 'true' || (env.HAS_KEY != 'true' && env.HAS_PASSWORD != 'true')
@@ -69,24 +76,43 @@ jobs:
           server_ip=$(getent ahostsv4 "$SSH_HOST" | awk 'NR==1{print $1}')
           SSLIP="kp.$(echo "$server_ip" | tr . -).sslip.io"
           echo "SSLIP=$SSLIP" >> "$GITHUB_ENV"
-          sed "s#KP_DOMAIN#$DOMAIN#; s#SSLIP_DOMAIN#$SSLIP#" deploy/nginx-kp-alinaas.conf > /tmp/kp.conf
-          $SSH_CMD "$SSH_USER@$SSH_HOST" "command -v rsync >/dev/null 2>&1 || apt-get install -y -qq rsync; mkdir -p $TARGET"
-          # Если сертификат уже выпущен, certbot дописал в конфиг блоки 443; не затираем их.
-          if $SSH_CMD "$SSH_USER@$SSH_HOST" "grep -q 'managed by Certbot' /etc/nginx/sites-available/kp-alinaas 2>/dev/null && grep -q sslip.io /etc/nginx/sites-available/kp-alinaas"; then
-            echo "Конфиг с HTTPS уже есть, оставляю как есть"
+          for f in nginx-kp-alinaas.conf nginx-kp-alinaas-ssl.conf; do
+            sed "s#KP_DOMAIN#$DOMAIN#g; s#SSLIP_DOMAIN#$SSLIP#g" "deploy/$f" > "/tmp/$f"
+          done
+          $SSH_CMD "$SSH_USER@$SSH_HOST" "command -v rsync >/dev/null 2>&1 || apt-get install -y -qq rsync; mkdir -p $TARGET /etc/nginx/snippets /root/kp-alinaas-deploy"
+          rsync -az -e "$SSH_CMD" deploy/nginx-kp-alinaas-common.conf "$SSH_USER@$SSH_HOST:/etc/nginx/snippets/kp-alinaas.conf"
+          rsync -az -e "$SSH_CMD" deploy/nginx-kp-alinaas-headers.conf "$SSH_USER@$SSH_HOST:/etc/nginx/snippets/kp-alinaas-headers.conf"
+          rsync -az -e "$SSH_CMD" /tmp/nginx-kp-alinaas.conf /tmp/nginx-kp-alinaas-ssl.conf "$SSH_USER@$SSH_HOST:/root/kp-alinaas-deploy/"
+          # Есть сертификат: ставим HTTPS-конфиг, нет: HTTP (сертификат выпустит шаг ниже).
+          # Если nginx -t не проходит, возвращаем прежний конфиг и падаем.
+          $SSH_CMD "$SSH_USER@$SSH_HOST" bash -s <<REMOTE
+          set -e
+          conf=/etc/nginx/sites-available/kp-alinaas
+          [ -f \$conf ] && cp \$conf /root/kp-alinaas-deploy/previous.conf
+          if [ -f /etc/letsencrypt/live/$SSLIP/fullchain.pem ]; then
+            cp /root/kp-alinaas-deploy/nginx-kp-alinaas-ssl.conf \$conf
+            [ -f /etc/letsencrypt/options-ssl-nginx.conf ] || sed -i '/options-ssl-nginx/d' \$conf
+            [ -f /etc/letsencrypt/ssl-dhparams.pem ] || sed -i '/ssl_dhparam/d' \$conf
           else
-            rsync -az -e "$SSH_CMD" /tmp/kp.conf "$SSH_USER@$SSH_HOST:/etc/nginx/sites-available/kp-alinaas"
+            cp /root/kp-alinaas-deploy/nginx-kp-alinaas.conf \$conf
           fi
-          $SSH_CMD "$SSH_USER@$SSH_HOST" "ln -sf /etc/nginx/sites-available/kp-alinaas /etc/nginx/sites-enabled/kp-alinaas && nginx -t"
+          ln -sf \$conf /etc/nginx/sites-enabled/kp-alinaas
+          if ! nginx -t; then
+            [ -f /root/kp-alinaas-deploy/previous.conf ] && cp /root/kp-alinaas-deploy/previous.conf \$conf
+            nginx -t && systemctl reload nginx
+            echo "Новый конфиг nginx не прошёл проверку, вернул прежний"; exit 1
+          fi
+          systemctl reload nginx
+          REMOTE
 
-      - name: Залить КП
+      - name: Залить сайт, КП и прототип
         env:
           SSHPASS: ${{ secrets.SSH_PASSWORD }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
         run: |
-          # --delete чистит только каталог КП.
-          rsync -az --delete -e "$SSH_CMD" kp-alinaas/ "$SSH_USER@$SSH_HOST:$TARGET/"
+          # --delete чистит только каталог этого поддомена.
+          rsync -az --delete -e "$SSH_CMD" build/ "$SSH_USER@$SSH_HOST:$TARGET/"
           $SSH_CMD "$SSH_USER@$SSH_HOST" "chown -R www-data:www-data $TARGET 2>/dev/null || true; systemctl reload nginx"
 
       - name: Проверить, что КП отвечает
@@ -96,10 +122,13 @@ jobs:
           ip=$(getent ahostsv4 "$SSH_HOST" | awk 'NR==1{print $1}')
           # Идём по адресу sslip с редиректами: работает и до, и после выпуска сертификата.
           R="--resolve $SSLIP:80:$ip --resolve $SSLIP:443:$ip"
-          curl -skL $R "http://$SSLIP/" | grep -q 'mrs.alinaas'
-          code=$(curl -skL $R -o /dev/null -w '%{http_code}' "http://$SSLIP/img/alina.webp")
-          echo "img/alina.webp -> $code"; test "$code" = "200"
-          echo "Файлы КП на сервере отдаются"
+          curl -skL $R "http://$SSLIP/" | grep -q 'MRS.ALINAAS'
+          curl -skL $R "http://$SSLIP/kp/" | grep -q 'mrs.alinaas'
+          for path in img/alina-hero.webp fonts/inter-cyrillic.woff2 kp/img/alina.webp prototype/index.html; do
+            code=$(curl -skL $R -o /dev/null -w '%{http_code}' "http://$SSLIP/$path")
+            echo "$path -> $code"; test "$code" = "200"
+          done
+          echo "Сайт, КП и прототип на сервере отдаются"
 
       - name: HTTPS-сертификат на sslip.io и свой домен
         env:
@@ -118,17 +147,33 @@ jobs:
           else
             echo "::warning::У $DOMAIN нет A-записи: добавьте A $DOMAIN -> $server_ip (DNS only)."
           fi
-          # Один сертификат на оба имени: иначе certbot подменит сертификат в общем блоке 443.
+          # Один сертификат на оба имени. certonly не трогает конфиг: после выпуска ставим свой HTTPS-конфиг.
           $SSH_CMD "$SSH_USER@$SSH_HOST" bash -s <<REMOTE
           set -e
           export DEBIAN_FRONTEND=noninteractive
           command -v certbot >/dev/null 2>&1 || { apt-get update -y -qq; apt-get install -y -qq certbot python3-certbot-nginx; }
-          certbot --nginx --cert-name "$SSLIP" $NAMES --non-interactive --agree-tos --register-unsafely-without-email --redirect --expand --keep-until-expiring
-          nginx -t && systemctl reload nginx
+          names_ok=1
+          for n in $(echo "$NAMES" | sed 's/-d //g'); do
+            certbot certificates --cert-name "$SSLIP" 2>/dev/null | grep -q "Domains:.*\$n" || names_ok=0
+          done
+          if [ "\$names_ok" = 1 ]; then
+            echo "Сертификат уже покрывает нужные имена"
+          else
+            certbot certonly --nginx --cert-name "$SSLIP" $NAMES --non-interactive --agree-tos --register-unsafely-without-email --expand --keep-until-expiring
+          fi
+          conf=/etc/nginx/sites-available/kp-alinaas
+          cp /root/kp-alinaas-deploy/nginx-kp-alinaas-ssl.conf \$conf
+          [ -f /etc/letsencrypt/options-ssl-nginx.conf ] || sed -i '/options-ssl-nginx/d' \$conf
+          [ -f /etc/letsencrypt/ssl-dhparams.pem ] || sed -i '/ssl_dhparam/d' \$conf
+          if ! nginx -t; then
+            cp /root/kp-alinaas-deploy/previous.conf \$conf 2>/dev/null || true
+            nginx -t && systemctl reload nginx; exit 1
+          fi
+          systemctl reload nginx
           REMOTE
           for host in $SSLIP $( [ "$dns_ip" = "$server_ip" ] && echo $DOMAIN ); do
             code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 15 "https://$host/" || true)
             echo "https://$host/ -> $code"
             echo "LINK https://$host/"
-            echo "### КП: https://$host/" >> "$GITHUB_STEP_SUMMARY"
+            echo "### Сайт: https://$host/ · КП: https://$host/kp/" >> "$GITHUB_STEP_SUMMARY"
           done
