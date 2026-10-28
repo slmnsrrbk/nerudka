@@ -5,11 +5,13 @@
 import '@fontsource/onest/400.css';
 import '@fontsource/onest/500.css';
 import '@fontsource/onest/600.css';
+import '@fontsource/onest/700.css';
 import { PLANTS, fmt } from '../../lib/home';
 import { childCategories, products } from '../../lib/catalog';
 import { site } from '../../lib/home-site';
 import servicesData from '../../data/services.json';
 import siteData from '../../data/site.json';
+import Logo from '../../components/home/Logo.astro';
 import type { Product, Service } from '../../lib/types';
 
 const services = servicesData as Service[];
@@ -62,8 +64,10 @@ const groups = (['beton', 'rastvor'] as const).map((g) => ({
       html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       body { font: 400 9.5pt/1.35 'Onest', sans-serif; color: var(--ink); background: var(--w); }
       .cover { display: grid; grid-template-columns: 1fr auto; gap: 8mm; padding: 9mm 10mm; border-radius: 6mm; background: var(--ink); color: var(--w); }
-      .logo { display: flex; align-items: center; gap: 2.5mm; font-size: 13pt; font-weight: 600; }
-      .logo i { width: 5mm; height: 5mm; border-radius: 50%; background: var(--w); }
+      .logo { display: flex; align-items: center; gap: 2.5mm; font-size: 14pt; font-weight: 700; letter-spacing: -.02em; line-height: 1; }
+      .logo-mark { width: 6.5mm; height: 6.5mm; fill: currentColor; }
+      .logo-mark .logo-side { fill: var(--mute); }
+      .logo-opt { margin-left: -1mm; padding: .8mm 1.6mm; border-radius: 1.4mm; background: var(--w); color: var(--ink); font-size: 7pt; letter-spacing: .08em; }
       .cover h1 { margin-top: 9mm; font-size: 30pt; font-weight: 400; letter-spacing: -.02em; line-height: 1; }
       .cover h1 span { display: block; color: #9AA6C2; font-size: 17pt; margin-top: 2mm; }
       .cover p { margin-top: 4mm; color: #C9D1E3; max-width: 105mm; }
@@ -104,7 +108,7 @@ const groups = (['beton', 'rastvor'] as const).map((g) => ({
   <body>
     <header class="cover">
       <div>
-        <div class="logo"><i></i>{site.name}</div>
+        <div class="logo"><Logo /></div>
         <h1>Прайс-лист<span>бетон и растворы с завода</span></h1>
         <p>Цены за 1 м³ на условиях самовывоза. Прайс единый для всех шести РБУ — отгружаем с ближайшего к объекту узла.</p>
       </div>

@@ -73,8 +73,11 @@ ul, ol { list-style: none; }
 
 /* ---------- Навигация ---------- */
 .nav { display: flex; align-items: center; gap: 10px; min-height: 38px; }
-.logo { display: inline-flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 600; white-space: nowrap; }
-.logo-dot { width: 18px; height: 18px; border-radius: 50%; background: currentColor; }
+.logo { --logo-side: var(--sub); --logo-badge: var(--ink); --logo-on: var(--w); display: inline-flex; align-items: center; gap: 8px; font-size: 19px; font-weight: 700; letter-spacing: -.02em; line-height: 1; white-space: nowrap; }
+.logo-mark { flex: none; fill: currentColor; }
+.logo-mark .logo-side { fill: var(--logo-side); }
+.logo-opt { margin-left: -3px; padding: 3px 6px; border-radius: 5px; background: var(--logo-badge); color: var(--logo-on); font-size: 10px; letter-spacing: .08em; line-height: 1.2; }
+.nav-hero .logo { --logo-side: var(--mute); --logo-badge: var(--w); --logo-on: var(--ink); }
 .nav-links { display: flex; align-items: center; gap: clamp(8px, 1vw, 16px); margin-left: 4px; }
 /* Почта — в правой группе, вплотную к поиску и корзине */
 @media (min-width: 1241px) {
@@ -638,7 +641,7 @@ ul, ol { list-style: none; }
 .drawer-msg { display: flex; gap: 8px; }
 
 /* ================= Адаптив ================= */
-@media (max-width: 1279px) {
+@media (max-width: 1319px) {
   .nav-msg { display: none; }
 }
 @media (max-width: 1240px) {

@@ -1,12 +1,13 @@
 ---
 import Icon from './Icon.astro';
+import Logo from './Logo.astro';
 import { NAV } from '../../lib/menu';
 import { site } from '../../lib/home-site';
 interface Props { variant: 'hero' | 'sticky' | 'light' }
 const { variant } = Astro.props;
 ---
 <div class={`nav nav-${variant}`}>
-  <a class="logo" href="/" aria-label={`${site.name}, главная`}><span class="logo-dot"></span>{site.name}</a>
+  <a class="logo" href="/" aria-label={`${site.name}, главная`}><Logo /></a>
   <nav class="nav-links" aria-label="Основное меню">
     <button type="button" class="nav-link" data-mega-toggle aria-expanded="false" aria-controls="mega">Продукция</button>
     {NAV.map((l) => <a class="nav-link" href={l.href}>{l.label}</a>)}

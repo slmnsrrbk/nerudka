@@ -2,6 +2,7 @@
 // Мегаменю «Продукция» (десктоп) и выезжающее меню-аккордеон (мобильные). Дерево — src/lib/menu.ts.
 import Icon from './Icon.astro';
 import NavBar from './NavBar.astro';
+import Logo from './Logo.astro';
 import { MENU, NAV } from '../../lib/menu';
 import { site } from '../../lib/home-site';
 ---
@@ -58,7 +59,7 @@ import { site } from '../../lib/home-site';
 
 <div class="drawer" id="drawer" data-drawer hidden role="dialog" aria-modal="true" aria-label="Меню">
   <div class="drawer-top">
-    <a class="logo logo-dark" href="/"><span class="logo-dot"></span>{site.name}</a>
+    <a class="logo logo-dark" href="/" aria-label={`${site.name}, главная`}><Logo /></a>
     <a class="sq-btn" href={`tel:${site.phoneHref}`} aria-label="Позвонить"><Icon name="phone" size={20} /></a>
     <button type="button" class="sq-btn sq-dark" data-drawer-close aria-label="Закрыть меню"><Icon name="x" size={20} /></button>
   </div>
